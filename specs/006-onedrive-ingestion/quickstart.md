@@ -70,7 +70,7 @@ curl -s -m 60 http://localhost:28080/mcp -X POST \
 .venv/bin/python -m pytest tests/ -q
 ```
 
-**Expected**: all existing 152 tests + new OneDrive tests green; `web_search`, `web_research`, `specialty_search` canaries unchanged.
+**Expected**: all existing 152 tests + new OneDrive tests green (suite now 228); `web_search`, `web_research`, `specialty_search` canaries unchanged.
 
 ## Notes
 

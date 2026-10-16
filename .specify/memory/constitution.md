@@ -19,7 +19,7 @@ Superseding work retires the old design, it does not deprecate it: old code path
 
 ## Quality Gates
 
-- 100% of the pytest suite green before commit (currently 97 tests across unit/integration/contract)
+- 100% of the pytest suite green before commit (currently 228 tests across unit/integration/contract)
 - One runnable check per non-trivial behavior; deterministic tests (mocks at trust boundaries, no network in CI paths)
 - Performance targets are measured, not assumed; success criteria are hardware-relative when measurement demands it (see SC-001 amendment, spec 002)
 

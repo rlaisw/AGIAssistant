@@ -71,9 +71,9 @@ full developer traces; rotation caps the file at `rotation_size_mb ×
 rotation_count` (default 10 MB × 5). Frame request lines and application
 records land in the same file.
 
-Port rule: `-p 28080:28080` maps HOST 28080 → CONTAINER 8080. Host checks use
-`localhost:28080`; containers on the Docker network use `agentic-rag:28080`.
-`agentic-rag:28080` does NOT exist.
+Port rule: the sidecar binds **28080** inside the container, so `-p 28080:28080`
+maps HOST 28080 → CONTAINER 28080 (aligned). Host checks use `localhost:28080`;
+containers on the Docker network use `agentic-rag:28080`.
 
 ## Step 4 — Dify integration (only if this host runs Dify)
 
@@ -84,8 +84,8 @@ Port rule: `-p 28080:28080` maps HOST 28080 → CONTAINER 8080. Host checks use
    in the Dify compose `.env` add
    `SSRF_PROXY_ALLOW_PRIVATE_DOMAINS=agentic-rag`, then `docker compose up -d ssrf_proxy`.
 3. Dify UI → Tools → MCP → Add Server: `http://agentic-rag:28080/mcp`
-   (container-internal port — do NOT use 28080 here), no headers, no Dynamic
-   Client Registration.
+   (container DNS name + the aligned container port 28080; never `localhost`),
+   no headers, no Dynamic Client Registration.
 4. Import the chatflow: `AgenticRAG/dify/Chatflow Basic (AgenticRAG Agent).yml`
    (Studio → Import DSL). Re-select tools in the Agent node if they don't resolve.
 5. Rules learned the hard way:
@@ -196,7 +196,7 @@ first to discover available topics, then picks the right profile for the questio
 curl -s localhost:28080/healthz                                  # {"status": "ok"}
 curl -s -X POST localhost:28080/mcp -H 'Content-Type: application/json' \
   -H 'Accept: application/json, text/event-stream' \
-  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'   # 10 tools
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'   # 16 tools
 # then exercise: status, search, ask, sources_list, sources_add/sync/remove,
 # web_search (live), fetch_url (live), graph_query (honest disabled error)
 ```

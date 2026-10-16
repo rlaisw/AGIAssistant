@@ -33,7 +33,7 @@ Same call with a query that surfaces a JS-only or blocked page (or temporarily p
 .venv/bin/python -m pytest tests/ -q
 ```
 
-**Expected**: all existing 99 tests plus the new research suites green — including every row of the error-handling matrix (timeouts, 403, JS-only, SSRF-blocked, truncation, dedup, engine-down, all-engines-down, render order).
+**Expected**: all existing 99 tests plus the new research suites green (suite now 228) — including every row of the error-handling matrix (timeouts, 403, JS-only, SSRF-blocked, truncation, dedup, engine-down, all-engines-down, render order).
 
 ## S5 — `ask` live-web evidence upgrade (FR-012)
 

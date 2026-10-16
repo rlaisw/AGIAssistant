@@ -29,7 +29,7 @@ Change the AgenticRAG sidecar and SearXNG containers from the "published-port �
 | Principle | Status | Evidence |
 |---|---|---|
 | I. Contract Preservation | PASS | FR-006 pins all 11 tool response shapes; only the listen port changes |
-| II. Tests-First | PASS (waived for this feature) | No new logic — config-only change; existing 131 tests pass unchanged; no new test file needed |
+| II. Tests-First | PASS (waived for this feature) | No new logic — config-only change; existing 131 tests pass unchanged (suite now 228); no new test file needed |
 | III. Minimal Dependencies | PASS | Zero new dependencies |
 | IV. Honest Answers | PASS | Clean cutover (FR-007) — old port refused, no half-state |
 | V. Spec-Driven Replacement | PASS | Config replacement, not code replacement; old values deleted from all committed references (FR-005) |

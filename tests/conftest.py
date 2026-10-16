@@ -17,9 +17,11 @@ def corpus(tmp_path):
     d.add_paragraph("Project Apollo landed humans on the Moon in 1969.")
     d.save(docs / "moon.docx")
 
-    from pypdf import PdfWriter
-    from reportlab.pdfgen import canvas  # noqa: F401 - fallback below if missing
+    from pypdf import PdfWriter  # noqa: F401
     try:
+        # reportlab is optional; the except branch writes a minimal PDF by hand
+        from reportlab.pdfgen import canvas
+
         pdf_path = docs / "physics.pdf"
         c = canvas.Canvas(str(pdf_path))
         c.drawString(72, 720, "The speed of light in vacuum is approximately 299,792 km per second.")

@@ -1,6 +1,6 @@
 # Agentic RAG MCP Server
 
-Agentic retrieval-augmented generation as an MCP server, with a **dual-system workflow**: an embedded structured **decision node** (System 1) routes every request, and a **LangGraph reflexion graph** (System 2) handles complex questions with self-correcting, memory-conditioned retries. 97 tests, contract-preserved responses, provenance on every decision.
+Agentic retrieval-augmented generation as an MCP server, with a **dual-system workflow**: an embedded structured **decision node** (System 1) routes every request, and a **LangGraph reflexion graph** (System 2) handles complex questions with self-correcting, memory-conditioned retries. 228 tests, contract-preserved responses, provenance on every decision.
 
 Specs: [`specs/001-agentic-rag-mcp/`](specs/001-agentic-rag-mcp/) (server, ingestion, contracts) · [`specs/002-laya-reflexion-nodes/`](specs/002-laya-reflexion-nodes/) (dual-system replacement — supersedes 001's routing/loop design).
 

@@ -55,7 +55,7 @@ flowchart LR
 ## The two rules this encodes
 
 1. **Dify never touches the host ports.** Its path (②→③) runs entirely inside the
-   Docker networks using container DNS names and the *internal* port **8080**.
+   Docker networks using container DNS names and the *internal* port **28080**.
    That is why the Dify UI URL is `http://agentic-rag:28080/mcp`, and why changing
    the host port to 28080 required zero Dify changes.
 2. **28080 / 28888 are host-only windows.** They exist solely so you can reach the
@@ -75,7 +75,7 @@ flowchart LR
 
 | Symptom | Meaning | See |
 |---|---|---|
-| `agentic-rag:28080` refused from a container | Wrong path — internal port is 8080 | matrix ③ |
+| `agentic-rag:28080` refused from a container | Wrong path — internal port is 28080 | matrix ③ |
 | `localhost:8080` refused on host | Old port freed by alignment | use 28080 (matrix ⑤) |
 | Dify "Cannot connect to MCP server" | SSRF allowlist missing | `DEPLOY.md` Step 4.2 |
 | Dify edit-save → 500 | Dify identifier-vs-UUID bug — delete + re-add | `DEPLOY.md` Step 4.5 |

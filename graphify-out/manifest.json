@@ -408,10 +408,10 @@
     "semantic_hash": "f2975b717ba02782a2e95b1a8a2843e0"
   },
   "tests/conftest.py": {
-    "mtime": 1792118774.1895897,
-    "seen": 1792128858.529397,
-    "ast_hash": "f9fdc4f872b1b6e471881c5fca4e10df",
-    "semantic_hash": "f9fdc4f872b1b6e471881c5fca4e10df"
+    "mtime": 1792136118.9858072,
+    "seen": 1792137323.663855,
+    "ast_hash": "e41495afb431fed75b5d574e10381c0a",
+    "semantic_hash": ""
   },
   "tests/contract/test_ask_response_contract.py": {
     "mtime": 1792118774.18975,
@@ -546,10 +546,10 @@
     "semantic_hash": "e51e89bf3c8cc47151840a16620fc2e8"
   },
   ".cocoindex_code/settings.yml": {
-    "mtime": 1792118774.1681802,
-    "seen": 1792128858.529418,
-    "ast_hash": "884a94feaa26178acc0d4bcd8525e291",
-    "semantic_hash": "884a94feaa26178acc0d4bcd8525e291"
+    "mtime": 1792128905.4564602,
+    "seen": 1792137323.6639497,
+    "ast_hash": "7e08da75ff0330a07929dd2ccd05a6ba",
+    "semantic_hash": ""
   },
   ".kilo/commands/graphify.md": {
     "mtime": 1792118774.1711938,

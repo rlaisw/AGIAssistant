@@ -1,15 +1,17 @@
 # Graph Report - AgenticRAG  (2026-10-16)
 
 ## Corpus Check
-- cluster-only mode — file stats not available
+- 213 files · ~161,245 words
+- Verdict: corpus is large enough that graph structure adds value.
+- Unclassified: 6 file(s) not represented in the graph (top: (none) 5, .code-workspace 1)
 
 ## Summary
 - 1863 nodes · 3587 edges · 125 communities (93 shown, 32 thin omitted)
 - Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 508 edges (avg confidence: 0.92)
-- Token cost: 10,994 input · 8,879 output
+- Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ba9f4624`
+- Built from commit: `e4d043e0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -134,8 +136,8 @@
 1. `build_server()` - 80 edges
 2. `ProviderError` - 41 edges
 3. `StateStore` - 40 edges
-4. `SourceAuthError` - 33 edges
-5. `Config` - 33 edges
+4. `Config` - 33 edges
+5. `SourceAuthError` - 33 edges
 6. `sources_auth()` - 30 edges
 7. `ask()` - 25 edges
 8. `status()` - 23 edges
@@ -143,16 +145,16 @@
 10. `resolve_template_content()` - 20 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Notes` --references--> `GraphAuth`  [INFERRED]
-  specs/006-onedrive-ingestion/checklists/requirements.md → src/agentic_rag_mcp/sources/graph_auth.py
-- `EmbedOutcome (onedrive_embed_files per-file results)` --references--> `status()`  [INFERRED]
-  specs/007-onedrive-on-demand/data-model.md → src/agentic_rag_mcp/server.py
-- `Constitution Check` --references--> `status()`  [INFERRED]
-  specs/008-app-logging/plan.md → src/agentic_rag_mcp/server.py
-- `Summary` --references--> `status()`  [INFERRED]
-  specs/008-app-logging/plan.md → src/agentic_rag_mcp/server.py
-- `2. Live check (running sidecar)` --references--> `status()`  [INFERRED]
-  specs/008-app-logging/quickstart.md → src/agentic_rag_mcp/server.py
+- `D3 — Non-blocking sources_auth flow` --references--> `warm_up()`  [INFERRED]
+  specs/006-onedrive-ingestion/research.md → src/agentic_rag_mcp/routing/laya_runtime.py
+- `Constitution Check` --references--> `ask()`  [INFERRED]
+  specs/007-onedrive-on-demand/plan.md → src/agentic_rag_mcp/server.py
+- `D9: DEBUG trace points (FR-004 / US3)` --references--> `ask()`  [INFERRED]
+  specs/008-app-logging/research.md → src/agentic_rag_mcp/server.py
+- `User Story 3 - DEBUG traces execution flow to the problem's source (Priority: P2)` --references--> `ask()`  [INFERRED]
+  specs/008-app-logging/spec.md → src/agentic_rag_mcp/server.py
+- `S2 — `specialty_search` scoped results (FR-005/006 / SC-001)` --references--> `specialty_search()`  [INFERRED]
+  specs/005-specialty-search/quickstart.md → src/agentic_rag_mcp/server.py
 
 ## Import Cycles
 - None detected.
@@ -547,7 +549,7 @@ Nodes (3): construct_scoped_query(), test_construct_scoped_query_multiple_sites(
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `build_server()` connect `Logging Design Decisions` to `Reflexion Graph Agent`, `OneDrive Freshness Probe`, `System 1 Decision Node`, `Logging Setup Configuration`, `Vector Store Wrapper`, `Migration Error Handling`, `Specialty Web Search`, `OneDrive Contract Tests`, `Logging and Tool Models`, `State Store Methods`, `OneDrive On-Demand Tests`, `Web Search Providers`, `Logging Integration Tests`, `Server Transport Config`, `OneDrive Graph Auth`, `Specialty Search Integration`, `Fallback Provenance Tests`, `Web Research Integration`, `Laya Runtime`, `Specialty Search Contract`, `MCP Server Core`, `Web Research Contract`, `Reflexion Quickstart Tests`, `Decision Routing Tests`, `MCP Contract Tests`, `Logging Contract Tests`, `End-to-End Tests`, `OneDrive On-Demand Tools`, `Success Criteria Tests`, `Ask Response Contract`, `OneDrive Auth Spec`, `OneDrive Staleness Research`, `OneDrive Auth Contract`, `Edge Case Tests`, `Web Research Implementation`, `Specialty Search Plan`, `Provider Chain Tests`, `Logging Status Contract`, `Research Page Renderer`, `Local Embeddings`, `Domain Filtering`, `Site-Scoped Query Builder`?**
-  _High betweenness centrality (0.214) - this node is a cross-community bridge._
+  _High betweenness centrality (0.190) - this node is a cross-community bridge._
 - **Are the 13 inferred relationships involving `build_server()` (e.g. with `D7: Migration — snapshot-absence defines the pending set; idempotent by construction` and `Phase 8: Cross-Cutting — One-Time Migration (FR-016)`) actually correct?**
   _`build_server()` has 13 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `agentic-rag-mcp`, `Speckit Full SDD Cycle (specify - plan - tasks - implement)`, `specialty_profiles MCP tool` to the rest of the system?**
@@ -555,7 +557,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `Prerequisite Check CLI` be split into smaller, more focused modules?**
   _Cohesion score 0.05777491408934708 - nodes in this community are weakly interconnected._
 - **Why does `sources_auth()` connect `OneDrive Auth Spec` to `OneDrive Ingestion Plan`, `OneDrive Ingestion Tasks`, `MCP Server Core`, `OneDrive Staleness Research`, `OneDrive Ingestion Spec`, `Logging Design Decisions`, `OneDrive Auth Contract`, `OneDrive On-Demand Tools`, `OneDrive Graph Auth`, `OneDrive Ingestion Data Model`?**
-  _High betweenness centrality (0.072) - this node is a cross-community bridge._
+  _High betweenness centrality (0.065) - this node is a cross-community bridge._
 - **Are the 22 inferred relationships involving `ProviderError` (e.g. with `Error taxonomy (binding mapping)` and `D9: Error handling — one honest per-file outcome model everywhere`) actually correct?**
   _`ProviderError` has 22 INFERRED edges - model-reasoned connections that need verification._
 - **Should `RL Agent Shared Code` be split into smaller, more focused modules?**

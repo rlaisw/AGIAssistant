@@ -121,7 +121,7 @@ Single project: `src/`, `tests/` at repository root (package `agentic_rag_mcp`).
 - [X] T026 [P] Document the `[decider]` config section, decision-model download/cache behavior (~1.7 GB first run, ~2 GB RAM loaded), and provenance semantics in `README.md`
 - [X] T027 Run the quickstart.md S1–S4 validation end-to-end against the host-venv server; record results
 - [X] T028 Rebuild the Dify sidecar image (`docker build -f dify/docker/mcp-server/Dockerfile`) and refresh Dify's MCP provider tool cache so the deployed chatflow uses the replaced workflow
-- [X] T029 Full suite green: `.venv/bin/python -m pytest tests/ -q` — all pre-existing 51 tests plus the new suites pass
+- [X] T029 Full suite green: `.venv/bin/python -m pytest tests/ -q` — all pre-existing 51 tests plus the new suites pass (suite now 228)
 
 ---
 

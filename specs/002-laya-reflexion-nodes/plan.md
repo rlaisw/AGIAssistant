@@ -16,7 +16,7 @@ Replace the current single-label routing (`fast|deliberative` classifier, keywor
 
 **Storage**: Existing SQLite state + LanceDB vectors. Episodic memory is in-process and per-request — no persistence (FR-012).
 
-**Testing**: pytest (51 tests currently: unit / integration / contract layout). New suites mirror that layout.
+**Testing**: pytest (51 tests at planning time; 228 now: unit / integration / contract layout). New suites mirror that layout.
 
 **Target Platform**: Linux (host venv today; Docker sidecar `agentic-rag` for Dify). Decision model adds ~2 GB RAM when loaded; container image impact is a tasks-phase packaging decision.
 

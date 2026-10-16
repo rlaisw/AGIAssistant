@@ -18,7 +18,7 @@ Extend the existing web-provider chain (kept — litellm rejected with evidence)
 
 **Storage**: none new — research results are per-request and ephemeral; the rendered artifact travels inline in the response (FR-010). No LanceDB/state changes.
 
-**Testing**: pytest (currently 99 tests). Three new layers per research D6: unit (extraction fixtures, SSRF guard, renderer), integration (`web_research` end-to-end over local fixture pages with the engine chain mocked — no live web in CI), contract (`web_search` shape frozen + `web_research` response schema pinned). **Error-handling tests are first-class**: one test per fallback path (timeout, JS-only, HTTP error, private-address block, oversized page, engine-down, all-engines-down).
+**Testing**: pytest (99 tests at planning time; 228 now). Three new layers per research D6: unit (extraction fixtures, SSRF guard, renderer), integration (`web_research` end-to-end over local fixture pages with the engine chain mocked — no live web in CI), contract (`web_search` shape frozen + `web_research` response schema pinned). **Error-handling tests are first-class**: one test per fallback path (timeout, JS-only, HTTP error, private-address block, oversized page, engine-down, all-engines-down).
 
 **Target Platform**: Linux host venv + the deployed Docker sidecar (on Dify networks — hence the SSRF guard, FR-013).
 
