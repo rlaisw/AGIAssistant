@@ -8,6 +8,8 @@ exclude_patterns:
 - '**/vendor/*'
 - '**/.cocoindex_code'
 - '**/.git'
+- '**/.kilocode'
+- '**/.kilo'
 include_patterns:
 - '**/*.py'
 - '**/*.pyi'
