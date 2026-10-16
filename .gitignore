@@ -29,3 +29,8 @@ graphify-out/.graphify_python
 graphify-out/.graphify_root
 graphify-out/.graphify_analysis.json
 graphify-out/20*/
+graphify-out/.graphify_labels.json.sig
+graphify-out/.graphify_semantic_marker
+
+# Machine-local MCP launcher (hard-coded local paths; not portable)
+ccc-mcp-wrapper.sh
