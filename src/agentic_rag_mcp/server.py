@@ -8,16 +8,16 @@ import uuid
 from pathlib import Path
 
 import httpx
-
 from mcp.server.fastmcp import FastMCP
 
 from .agents import synthesis
 from .agents.reflexion import ReflexionAgent
-from .agents.tools import make_sql_tool, make_vector_tool, make_web_tool
+from .agents.tools import make_vector_tool, make_web_tool
 from .config import Config, init_config, load_config
-from .errors import FeatureDisabledError, NotFoundError, RagError
+from .errors import FeatureDisabledError, NotFoundError, SourceAuthError
 from .ingestion.pipeline import IngestionPipeline
 from .ingestion.watchers import Watcher
+from .logging_setup import configure_logging, current_setup
 from .routing import decision as decision_mod
 from .search.embeddings import Embedder
 from .search.graphify_search import GraphifySearch
@@ -43,14 +43,43 @@ def _fetch_url(url: str, max_chars: int = 4000) -> dict:
     }
 
 
+def _onedrive_auth(src: dict):
+    """MSAL auth for a stored onedrive source (delegated device flow or app-only)."""
+    from pathlib import Path as _P
+
+    from .sources.graph_auth import ClientCredentialsAuth, GraphAuth
+
+    cfg = src["config"]
+    if cfg.get("client_secret"):  # app-only auth — no user sign-in
+        return ClientCredentialsAuth(cfg["client_id"], cfg["client_secret"],
+                                     cfg.get("tenant_id", "common"))
+    token_path = _P.home() / ".config/agentic-rag-mcp/tokens" / f"{src['id']}.json"
+    return GraphAuth(cfg["client_id"], token_path, cfg.get("tenant_id", "common"))
+
+
+def _onedrive_source(src: dict):
+    from .sources.onedrive import OneDriveSource
+
+    return OneDriveSource(_onedrive_auth(src), src["config"])
+
+
 def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
     """Build the MCP server. `fastmcp_kwargs` override FastMCP settings
     (e.g. stateless_http=True for Dify's streamable-HTTP client)."""
     cfg = cfg or load_config()
+    configure_logging(cfg)  # spec 008: file+console setup before anything serves
     state = StateStore(cfg.state_db)
     vectors = VectorStore(cfg.vector_dir)
     embedder = Embedder(cfg.embedding_model, cfg.embedding_device)
     pipeline = IngestionPipeline(state, vectors, embedder)
+    # one-time migration (FR-016): legacy snapshot-less onedrive docs re-embed once;
+    # wrapped — a migration failure never blocks server start (retried next startup)
+    try:
+        pipeline.migrate_onedrive_sources(
+            {s["id"]: _onedrive_source(s) for s in state.list_sources()
+             if s["type"] == "onedrive"})
+    except Exception as exc:  # noqa: BLE001
+        log.warning("onedrive migration skipped: %s", exc)
     watcher = Watcher(pipeline, state)
     watcher.start()
 
@@ -61,7 +90,7 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
         """FR-012: grouped web content as reflexion evidence (internal shape) —
         the snippet field carries the bounded, grouped page text so synthesis
         and citations consume it unchanged; document_id = url for citations."""
-        from .search.web.research import render_page, research_pages, sections_to_text
+        from .search.web.research import research_pages, sections_to_text
 
         hits, _, _ = search_all(web_providers, query, limit)
         scrapes = research_pages(
@@ -106,6 +135,16 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
     def degraded_sources() -> list[str]:
         return [s["id"] for s in state.list_sources() if s["health"] != "healthy"]
 
+    def _require_onedrive(source_id: str) -> dict:
+        src = state.get_source(source_id)
+        if not src:
+            log.warning("source not found: %s", source_id)  # no silent failures (FR-002)
+            raise NotFoundError(f"source not found: {source_id}")
+        if src["type"] != "onedrive":
+            log.warning("source %s is not a onedrive source", source_id)
+            raise NotFoundError(f"source {source_id} is not a onedrive source")
+        return src
+
     def route_question(question: str):
         """FR-001/FR-003: the decision node is primary; keyword heuristic only on outage."""
         if cfg.decider_enabled:
@@ -119,7 +158,7 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
             max_iterations: int | None = None) -> dict:
         """Answer a question with agentic retrieval and per-source citations."""
         request_id = uuid.uuid4().hex[:8]
-        log.info("ask[%s]: %s", request_id, question[:120])
+        log.debug("ask[%s]: %s", request_id, question[:120])  # question text: DEBUG-only
         d = route_question(question)
         # forced modes override execution, not the decision itself (FR-001: every request decided)
         if mode == "fast":
@@ -129,6 +168,7 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
         else:
             exec_route = d.route
             classifier = d.provenance  # "decision_node" | "fallback"
+        log.debug("routing[%s]: %s (%s)", request_id, exec_route, classifier)  # trace point
         agent._budget = max_iterations or cfg.max_iterations
         if exec_route in ("direct_retrieval", "source_management"):
             if exec_route == "source_management":
@@ -146,6 +186,7 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
                     citations = []
             else:
                 hits = make_vector_tool(vectors, embedder)(question)
+                log.debug("retrieval[%s]: %d hits", request_id, len(hits))  # trace point
                 if hits:
                     answer = synthesis.synthesize(question, hits, "normal")
                     citations = synthesis.citations(hits)
@@ -168,7 +209,30 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
             result = agent.run(question, web_first=(exec_route == "live_web"))
             result["classifier"] = classifier
             result["degraded_sources"] = degraded_sources()
+        # freshness probe (FR-010): cited onedrive files only; a reminder is a
+        # prompt — it never downloads (FR-011); failures never break the answer
+        warnings: list[dict] = []
+        try:
+            onedrive_srcs = {s["id"]: s for s in state.list_sources() if s["type"] == "onedrive"}
+            doc_refs = [c["ref"] for c in result.get("citations", [])
+                        if c.get("kind") == "document"]
+            if onedrive_srcs and doc_refs:
+                from .sources.onedrive_freshness import probe_cited
+
+                warnings = probe_cited(
+                    doc_refs, state,
+                    {sid: _onedrive_source(src) for sid, src in onedrive_srcs.items()})
+        except Exception:  # noqa: BLE001 — probe is best-effort, never blocks the answer
+            warnings = []
+        if warnings:
+            result["answer"] = result["answer"] + "\n\n" + "\n".join(
+                w["message"] for w in warnings)
+        result["freshness_warnings"] = warnings
+        result["degraded_sources"] = degraded_sources()  # refresh after probe auth-fails
         result["decision"] = d.to_dict()  # FR-014: full System 1 trace on every response
+        log.info("ask answered: %d citations, confidence=%s, classifier=%s",
+                 len(result.get("citations", [])), result.get("confidence", "normal"),
+                 result.get("classifier", "unknown"))
         state.save_session({"question": question, "classification": result.get("classification"),
                             "classifier": classifier, "plan": result.get("plan", []),
                             "iterations": result.get("iterations", 0),
@@ -180,11 +244,13 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
     @mcp.tool()
     def search(query: str, collections: list[str] | None = None, limit: int = 5) -> list[dict]:
         """Direct vector search without synthesis."""
+        log.debug("tool search: %r (limit=%s)", query, limit)
         return make_vector_tool(vectors, embedder)(query, limit=limit)
 
     @mcp.tool()
     def web_search(query: str, limit: int = 5) -> list[dict]:
         """Live web search via configured providers (SearXNG first; falls back to Tavily/Exa). Returns [{title, url, snippet}]."""
+        log.debug("tool web_search: %r (limit=%s)", query, limit)
         return make_web_tool(web_providers)(query, limit=limit)
 
     @mcp.tool()
@@ -204,7 +270,10 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
         """Domain-scoped web search: results only from the profile's configured sites.
         The domain restriction is a hard filter (site: operator + post-filter)."""
         from .search.web.specialty import (
-            construct_scoped_query, filter_by_domains, load_profiles, resolve_profile,
+            construct_scoped_query,
+            filter_by_domains,
+            load_profiles,
+            resolve_profile,
         )
 
         path = cfg.specialty_profiles_file or None
@@ -268,6 +337,7 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
     @mcp.tool()
     def sources_add(type: str, config: dict) -> dict:
         """Register a source. Types: local_folder, sqlite, onedrive."""
+        log.debug("tool sources_add: %s %s", type, config)
         if type == "local_folder":
             source_id = state.add_source(type, config)
             stats = pipeline.sync_local_folder(source_id, config["path"])
@@ -277,32 +347,29 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
                 source_id, SqliteSource(config["db_path"], config["table"],
                                         config.get("template", "{row}")))
         elif type == "onedrive":
-            from pathlib import Path as _P
-            from .sources.graph_auth import GraphAuth
-            from .sources.onedrive import OneDriveSource
-
             if not config.get("client_id"):
                 raise NotFoundError("onedrive source requires config.client_id")
             source_id = state.add_source(type, {
                 "client_id": config["client_id"],
+                "tenant_id": config.get("tenant_id", "common"),
+                "client_secret": config.get("client_secret", ""),
+                "user": config.get("user", ""),
                 "folder_path": config.get("folder_path", "/"),
                 "include_subfolders": config.get("include_subfolders", True),
                 "max_file_size_mb": config.get("max_file_size_mb", 50),
             })
-            token_path = _P.home() / ".config/agentic-rag-mcp/tokens" / f"{source_id}.json"
-            auth = GraphAuth(config["client_id"], token_path)
             try:
-                auth.token()  # check for existing valid token (FR-002)
+                _onedrive_source(state.get_source(source_id))._auth.token()  # existing token? (FR-002)
             except Exception:  # noqa: BLE001 — no token yet is expected for new sources
                 state.set_health(source_id, "degraded", "needs sign-in")
                 return {"source_id": source_id, "status": "needs_auth",
-                        "message": "Call sources_auth to complete Microsoft sign-in."}
-            source = OneDriveSource(auth, config)
-            try:
-                stats = pipeline.sync_onedrive(source_id, source)
-            except Exception as exc:  # noqa: BLE001 — sync failure marks degraded, doesn't crash
-                state.set_health(source_id, "degraded", str(exc))
-                return {"source_id": source_id, "status": "ok", "sync": {"error": str(exc)}}
+                        "message": "Call sources_auth to complete Microsoft sign-in."
+                        if not config.get("client_secret")
+                        else "Client credentials failed — check tenant_id/client_secret and Files.Read.All application permission."}
+            # credentials verified — on-demand source registered; ingestion happens
+            # ONLY via onedrive_embed_files (spec 007: never auto-synced)
+            return {"source_id": source_id, "status": "ok",
+                    "sync": {"message": "registered; on-demand source — use onedrive_list_files and onedrive_embed_files"}}
         else:
             raise NotFoundError(f"unsupported source type for manual add: {type}")
         return {"source_id": source_id, "status": "ok", "sync": stats}
@@ -312,8 +379,10 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
         """Complete Microsoft sign-in for a OneDrive source (device code flow).
         Returns the sign-in URL and user code; the connection completes in the
         background after the user signs in. Call again to check status."""
+        log.debug("tool sources_auth: %s", source_id)
         import threading
         from pathlib import Path as _P
+
         from .sources.graph_auth import GraphAuth
 
         sources = state.get_source(source_id)
@@ -323,40 +392,28 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
             raise NotFoundError(f"source {source_id} is not a onedrive source")
         client_id = sources["config"]["client_id"]
         token_path = _P.home() / ".config/agentic-rag-mcp/tokens" / f"{source_id}.json"
-        auth = GraphAuth(client_id, token_path)
+        auth = GraphAuth(client_id, token_path, sources["config"].get("tenant_id", "common"))
 
         try:
             auth.token()  # already authenticated (FR-003: already_authenticated)
             return {"status": "already_authenticated",
                     "message": "This source has a valid token."}
-        except Exception:  # noqa: BLE001 — needs sign-in
-            pass
+        except Exception as exc:  # noqa: BLE001 — needs sign-in (expected, not a failure)
+            log.debug("no valid token yet: %s", exc)
 
-        # initiate device flow non-blocking (research.md D3)
+        # initiate device flow non-blocking (research.md D3) — ONE flow: the code
+        # shown to the user is the code the background thread completes
         def _complete_sign_in():
             try:
-                auth.device_sign_in()
-                state.set_health(source_id, "healthy", None)
-                # trigger a sync after successful auth
-                from .sources.onedrive import OneDriveSource
-                source = OneDriveSource(auth, sources["config"])
-                try:
-                    pipeline.sync_onedrive(source_id, source)
-                except Exception:  # noqa: BLE001 — best-effort sync after auth
-                    pass
+                auth.device_sign_in(flow)
+                state.set_health(source_id, "healthy", None)  # auth only — no ingestion (FR-002)
             except Exception as exc:  # noqa: BLE001
                 state.set_health(source_id, "degraded", str(exc))
 
-        # start the flow to get the URL+code
         try:
-            flow = auth._app.initiate_device_flow(scopes=auth.__class__.SCOPES
-                                                    if hasattr(auth.__class__, "SCOPES")
-                                                    else ["Files.Read"])
+            flow = auth.begin_device_flow()
         except Exception as exc:  # noqa: BLE001
             return {"status": "error", "message": f"failed to start sign-in: {exc}"}
-
-        if "user_code" not in flow:
-            return {"status": "error", "message": "device flow failed to start"}
 
         # return URL+code immediately; background thread waits for completion
         threading.Thread(target=_complete_sign_in, daemon=True).start()
@@ -371,6 +428,7 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
     @mcp.tool()
     def sources_list() -> list[dict]:
         """List sources with health and sync metadata."""
+        log.debug("tool sources_list")
         return [
             {"id": s["id"], "type": s["type"], "health": s["health"],
              "health_reason": s["health_reason"], "last_sync_at": s["last_sync_at"],
@@ -381,6 +439,7 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
     @mcp.tool()
     def sources_remove(source_id: str) -> dict:
         """Remove a source; drops documents whose last origin was this source."""
+        log.debug("tool sources_remove: %s", source_id)
         deleted = state.remove_source(source_id)
         for doc_id in deleted:
             vectors.delete_document(vectors.default_collection(), doc_id)
@@ -388,11 +447,51 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
 
     @mcp.tool()
     def sources_sync(source_id: str | None = None) -> dict:
-        """Manually trigger incremental sync."""
-        results = watcher.sync_once()
+        """Manually trigger incremental sync (local_folder/sqlite). OneDrive sources
+        are on-demand: use onedrive_embed_files to embed chosen files."""
+        log.debug("tool sources_sync: %s", source_id)
         if source_id:
+            src = state.get_source(source_id)
+            if src and src["type"] == "onedrive":
+                return {source_id: {"status": "on_demand",
+                                   "message": "OneDrive sources are on-demand; use onedrive_embed_files to embed chosen files."}}
+            results = watcher.sync_once()
             return {source_id: results.get(source_id, {"error": "unknown source"})}
-        return results
+        return watcher.sync_once()
+
+    @mcp.tool()
+    def onedrive_list_files(source_id: str, search: str = "", folder: str = "",
+                            limit: int = 100) -> dict:
+        """Browse OneDrive file metadata (path, name, size, modified time) without
+        downloading content. Filter by name with `search`; scope with `folder`.
+        OneDrive is on-demand: embed chosen files with onedrive_embed_files."""
+        log.debug("tool onedrive_list_files: %s (search=%r)", source_id, search)
+        src = _require_onedrive(source_id)
+        try:
+            out = _onedrive_source(src).list_files(search=search, folder=folder or None,
+                                                  limit=limit)
+        except SourceAuthError:
+            state.set_health(source_id, "degraded", "needs sign-in")
+            raise
+        state.set_health(source_id, "healthy", None)
+        root = folder or src["config"].get("folder_path", "/") or "/"
+        return {"source_id": source_id, "folder": root, "files": out["files"],
+                "truncated": out["truncated"]}
+
+    @mcp.tool()
+    def onedrive_embed_files(source_id: str, files: list) -> dict:
+        """Embed ONLY the named OneDrive files (paths and/or item ids), one-time.
+        Never syncs the drive. Returns per-file outcomes with honest reasons;
+        mid-batch cloud failures continue the batch (re-run for failed files)."""
+        log.debug("tool onedrive_embed_files: %s %s", source_id, list(files))
+        src = _require_onedrive(source_id)
+        try:
+            out = pipeline.embed_onedrive_files(source_id, _onedrive_source(src), list(files))
+        except SourceAuthError:
+            state.set_health(source_id, "degraded", "needs sign-in")
+            raise
+        state.set_health(source_id, "healthy", None)
+        return out
 
     @mcp.tool()
     def graph_query(query: str) -> dict:
@@ -413,6 +512,7 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
             "sources": sources_list(),
             "index": {"documents": state.doc_count(), "chunks": stats["chunks"],
                       "collections": stats["collections"]},
+            "logging": current_setup().status_dict(),  # additive (spec 008, FR-012)
         }
 
     return mcp
@@ -427,13 +527,13 @@ def main() -> None:
     args, _unknown = parser.parse_known_args()
     if args.init:
         path = init_config()
-        print(f"config written: {path}")
+        print(f"config written: {path}")  # exits before logging exists (bootstrap)
         return
-    logging.basicConfig(level=logging.INFO)
     cfg = load_config()
-    mcp = build_server(cfg)
+    mcp = build_server(cfg)  # configure_logging runs inside build_server (spec 008)
     if args.transport == "streamable-http":
-        print(f"agentic-rag-mcp MCP endpoint: http://{cfg.mcp_host}:{cfg.mcp_port}/mcp")
+        logging.getLogger("agentic_rag_mcp").info(
+            "agentic-rag-mcp MCP endpoint: http://%s:%s/mcp", cfg.mcp_host, cfg.mcp_port)
         mcp.run(transport="streamable-http")
     else:
         mcp.run()

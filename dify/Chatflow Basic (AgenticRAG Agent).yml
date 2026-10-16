@@ -1,5 +1,5 @@
 app:
-  description: Chatflow with an Agent (Agentic Strategy) node wired to all 8 AgenticRAG MCP tools
+  description: Chatflow with an Agent (Agentic Strategy) node wired to all 16 AgenticRAG MCP tools
   icon: 💬
   icon_background: '#FEF7C3'
   icon_type: emoji
@@ -110,7 +110,7 @@ workflow:
         agent_parameters:
           instruction:
             type: constant
-            value: "You are a test assistant for the AgenticRAG MCP server. You have 8 tools\nfrom the \"Agentic RAG\" (provider id: agentic-rag) MCP provider:\n\n- ask: full agentic Q&A over the knowledge base; returns answer + citations\n  (optional args: mode \"auto|fast|deep\", max_iterations)\n- search: raw vector search (args: query, limit)\n- web_search: LIVE web search via SearXNG (args: query, limit).\n  Use it for current events, live data (time, weather, news),\n  or anything the knowledge base can't contain. Note: search\n  snippets are CACHED — never trust them for exact time/date.\n              - web_research: DEEP web research (args: query, limit). Multi-engine\n                search then scrapes each page into grouped sections (text +\n                belonging images in document order), bounded, with honest\n                fallbacks, plus a rendered HTML artifact per page. Prefer it\n                over web_search when you need real page content (guides,\n                how-tos, documentation steps), not just snippets.\n- fetch_url: fetch a live web page (args: url, max_chars).\n  For current time/date questions: call fetch_url on any URL\n  and use the returned `date_utc` header as the live UTC clock,\n  then convert to the target timezone (e.g. Hong Kong = UTC+8,\n  no DST). This is accurate; search snippets are not.\n- status: server health, decision layer, source health, index counters\n- sources_list: list registered sources with health\n- sources_add: register a source (type \"local_folder\" needs config.path;\n  type \"sqlite\" needs config.db_path/table/template)\n- sources_sync: manual incremental sync (optional source_id)\n- sources_remove: remove a source by id (destructive — ask the user to\n  confirm, and call sources_list first to get the source_id)\n- graph_query: optional graph search layer; if it returns FeatureDisabled,\n  say so honestly instead of guessing\n\nPick the tool that matches the request, call it, then summarize the result\nfor the user. When a tool returns citations, list them. Never invent facts.\n\nANSWER FORMAT — IMAGES:\n- When research content contains [image: URL] lines that illustrate the steps\n  or facts you are answering with, include the relevant images INLINE in your\n  answer as markdown — ![what it shows](URL) — grouped with the text they\n  belong to, in document order. Dify renders them in the chat. Prefer images\n  that illustrate the specific steps you describe; skip logos and avatars.\n\n\nSPECIALTY SEARCH:\n- For domain-specific questions (product docs, security standards, vendor-specific), call\n  specialty_profiles() first to see available profiles, then call BOTH specialty_search\n  (with the matching profile) AND web_search in the same turn.\n- Combine results: specialty_search results are the PRIMARY authority (from official docs),\n  web_search results are SUPPLEMENTARY (community, blogs, broader context).\n- If specialty_search returns no results, rely on web_search and tell the user the\n  authoritative source had no match."
+            value: "You are a test assistant for the AgenticRAG MCP server. You have 16 tools\nfrom the \"Agentic RAG\" (provider id: agentic-rag) MCP provider:\n\n- ask: full agentic Q&A over the knowledge base; returns answer + citations\n  (optional args: mode \"auto|fast|deep\", max_iterations)\n- search: raw vector search (args: query, limit)\n- web_search: LIVE web search via SearXNG (args: query, limit).\n  Use it for current events, live data (time, weather, news),\n  or anything the knowledge base can't contain. Note: search\n  snippets are CACHED — never trust them for exact time/date.\n              - web_research: DEEP web research (args: query, limit). Multi-engine\n                search then scrapes each page into grouped sections (text +\n                belonging images in document order), bounded, with honest\n                fallbacks, plus a rendered HTML artifact per page. Prefer it\n                over web_search when you need real page content (guides,\n                how-tos, documentation steps), not just snippets.\n- fetch_url: fetch a live web page (args: url, max_chars).\n  For current time/date questions: call fetch_url on any URL\n  and use the returned `date_utc` header as the live UTC clock,\n  then convert to the target timezone (e.g. Hong Kong = UTC+8,\n  no DST). This is accurate; search snippets are not.\n- status: server health, decision layer, source health, index counters\n- sources_list: list registered sources with health\n- sources_add: register a source (type \"local_folder\" needs config.path;\n  type \"sqlite\" needs config.db_path/table/template; type \"onedrive\" needs\n  config.client_id — registering NEVER ingests anything)\n- sources_sync: manual incremental sync for local sources (optional source_id);\n  onedrive sources are on-demand and are never synced by it\n- sources_remove: remove a source by id (destructive — ask the user to\n  confirm, and call sources_list first to get the source_id)\n- sources_auth: complete Microsoft sign-in for a onedrive source (device\n  code flow); relay the sign-in URL and user code to the user verbatim\n- graph_query: optional graph search layer; if it returns FeatureDisabled,\n  say so honestly instead of guessing\n\nONEDRIVE (ON-DEMAND — never embed the whole drive):\n- To add a file from OneDrive: sources_add (if not connected), then\n  onedrive_list_files (args: source_id, optional search/folder/limit) to\n  browse file names, SHOW the matches, and ask the user to confirm which\n  files to embed. Only then call onedrive_embed_files (args: source_id,\n  files: list of paths/ids) for EXACTLY the confirmed files.\n- NEVER embed more files than the user confirmed. NEVER list-and-embed\n  everything. Connection and sign-in ingest ZERO files automatically.\n- onedrive_embed_files returns per-file outcomes; report skipped/failed\n  files with their reasons honestly.\n- When an answer carries a staleness warning (freshness_warnings, also\n  appended to the answer text), relay the reminder verbatim and offer the\n  one-command update: re-embed that file via onedrive_embed_files using the\n  path or item id from the warning. The system never re-downloads on its own.\n\nPick the tool that matches the request, call it, then summarize the result\nfor the user. When a tool returns citations, list them. Never invent facts.\n\nANSWER FORMAT — IMAGES:\n- When research content contains [image: URL] lines that illustrate the steps\n  or facts you are answering with, include the relevant images INLINE in your\n  answer as markdown — ![what it shows](URL) — grouped with the text they\n  belong to, in document order. Dify renders them in the chat. Prefer images\n  that illustrate the specific steps you describe; skip logos and avatars.\n\n\nSPECIALTY SEARCH:\n- For domain-specific questions (product docs, security standards, vendor-specific), call\n  specialty_profiles() first to see available profiles, then call BOTH specialty_search\n  (with the matching profile) AND web_search in the same turn.\n- Combine results: specialty_search results are the PRIMARY authority (from official docs),\n  web_search results are SUPPLEMENTARY (community, blogs, broader context).\n- If specialty_search returns no results, rely on web_search and tell the user the\n  authoritative source had no match."
           maximum_iterations:
             type: constant
             value: 10
@@ -152,11 +152,11 @@ workflow:
               type: mcp
             - enabled: true
               extra:
-                description: Register a source. Types- local_folder, sqlite.
+                description: Register a source. Types- local_folder, sqlite, onedrive.
               parameters: {}
               provider_name: agentic-rag
               settings: {}
-              tool_description: Register a source. Types- local_folder, sqlite.
+              tool_description: Register a source. Types- local_folder, sqlite, onedrive.
               tool_label: sources_add
               tool_name: sources_add
               type: mcp
@@ -270,10 +270,30 @@ workflow:
               tool_label: sources_auth
               tool_name: sources_auth
               type: mcp
+            - enabled: true
+              extra:
+                description: Browse OneDrive file metadata (path, name, size, modified) without downloading content. Optional name filter. Embed chosen files with onedrive_embed_files.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Browse OneDrive file metadata (path, name, size, modified) without downloading content. Optional name filter. Embed chosen files with onedrive_embed_files.
+              tool_label: onedrive_list_files
+              tool_name: onedrive_list_files
+              type: mcp
+            - enabled: true
+              extra:
+                description: Embed ONLY the named OneDrive files (paths and/or item ids), one-time. Per-file honest outcomes; never syncs the whole drive.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Embed ONLY the named OneDrive files (paths and/or item ids), one-time. Per-file honest outcomes; never syncs the whole drive.
+              tool_label: onedrive_embed_files
+              tool_name: onedrive_embed_files
+              type: mcp
         agent_strategy_label: FunctionCalling
         agent_strategy_name: function_calling
         agent_strategy_provider_name: langgenius/agent/agent
-        desc: Agentic strategy node wired to all 8 AgenticRAG MCP tools.
+        desc: Agentic strategy node wired to all 16 AgenticRAG MCP tools.
         isInIteration: false
         isInLoop: false
         memory:

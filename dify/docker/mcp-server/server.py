@@ -80,4 +80,7 @@ app = Starlette(
 )
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=HOST, port=PORT)
+    # log_config=None: uvicorn must not attach its own handlers (they set
+    # propagate=False, which would bypass our root file setup) — request
+    # lines flow to the root handlers and land in the log file (spec 008).
+    uvicorn.run(app, host=HOST, port=PORT, log_config=None)

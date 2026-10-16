@@ -5,6 +5,7 @@ Config file: ~/.config/agentic-rag-mcp/config.toml
 
 from __future__ import annotations
 
+import os
 import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -60,6 +61,14 @@ max_concurrent = 4           # parallel page fetches
 [features]
 graphify = false             # optional graph-search layer
 
+[logging]
+# level = "INFO"             # DEBUG|INFO|WARNING|ERROR; LOG_LEVEL env overrides;
+                             # invalid values fall back to INFO with a WARNING record
+# log_file = ""              # default: <state_db dir>/logs/server.log (persistent,
+                             # on the mounted config volume in deployment)
+rotation_size_mb = 10.0       # rotate at this size (float — tests can shrink it)
+rotation_count = 5           # keep N generations; total cap = size × count
+
 [storage]
 # state_db / vector_dir default to ~/.config/agentic-rag-mcp/
 """
@@ -86,6 +95,10 @@ class Config:
     research_overall_timeout_s: float = 30.0
     research_max_concurrent: int = 4
     graphify_enabled: bool = False
+    log_level: str = "INFO"
+    log_file: Path | None = None
+    rotation_size_mb: float = 10.0
+    rotation_count: int = 5
     mcp_host: str = "127.0.0.1"
     mcp_port: int = 8811
     state_db: Path = STATE_DB
@@ -129,6 +142,12 @@ def load_config(path: Path | None = None) -> Config:
         research_overall_timeout_s=float(_get(raw, "web", "research", "overall_timeout_s", default=30.0)),
         research_max_concurrent=int(_get(raw, "web", "research", "max_concurrent", default=4)),
         graphify_enabled=bool(_get(raw, "features", "graphify", default=False)),
+        log_level=os.environ.get("LOG_LEVEL")
+        or str(_get(raw, "logging", "level", default="INFO")),
+        log_file=Path(str(_get(raw, "logging", "log_file", default=""))).expanduser()
+        if _get(raw, "logging", "log_file") else None,
+        rotation_size_mb=float(_get(raw, "logging", "rotation_size_mb", default=10.0)),
+        rotation_count=int(_get(raw, "logging", "rotation_count", default=5)),
         mcp_host=_get(raw, "server", "host", default="127.0.0.1"),
         mcp_port=int(_get(raw, "server", "port", default=8811)),
         raw=raw,

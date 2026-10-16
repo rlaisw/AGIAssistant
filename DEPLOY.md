@@ -58,9 +58,18 @@ docker run -d --name agentic-rag \
   -v ~/.config/agentic-rag-mcp:/root/.config/agentic-rag-mcp \
   -v ~/.cache/huggingface:/root/.cache/huggingface \
   -p 28080:28080 \
+  -e LOG_LEVEL=INFO \
   --restart always \
   agentic-rag-mcp:latest
 ```
+
+Logs (spec 008): the server writes a persistent leveled log to
+`~/.config/agentic-rag-mcp/logs/server.log` — the mounted volume, so history
+survives container recreation. `LOG_LEVEL` (or `[logging] level` in
+config.toml) sets the level: INFO for working-as-expected events, DEBUG for
+full developer traces; rotation caps the file at `rotation_size_mb ×
+rotation_count` (default 10 MB × 5). Frame request lines and application
+records land in the same file.
 
 Port rule: `-p 28080:28080` maps HOST 28080 → CONTAINER 8080. Host checks use
 `localhost:28080`; containers on the Docker network use `agentic-rag:28080`.
@@ -122,6 +131,42 @@ via any MCP client or curl: `sources_add {"type": "local_folder", "config":
 {"path": "/data/your-docs"}}`. Auto-update: the watcher re-syncs every 5
 minutes; `sources_sync` for instant. Verify with `sources_list` → `healthy`.
 
+## OneDrive (on-demand) setup
+
+OneDrive sources are **on-demand** (spec 007): connection ingests zero files;
+you browse metadata and embed only the files you explicitly confirm. The
+watcher never touches OneDrive.
+
+**Azure app registration (one-time):**
+
+1. Register an app in Entra ID; note the **client_id**
+2. Add delegated permission **`Files.Read`** (Microsoft Graph) and grant consent
+   — that is the only permission needed; `offline_access` is requested by MSAL
+   automatically (never pass it explicitly — MSAL rejects reserved scopes)
+3. If the app is **single-tenant**, note the **tenant_id** — it MUST be passed
+   at `sources_add` (a `common` authority cannot see single-tenant apps, and
+   the device flow will fail to start)
+4. Optional app-only path: `client_secret` + **application** `Files.Read.All`
+   requires a target `user` (UPN) in the config; the delegated device flow
+   above is the normal path and needs no secret
+
+**Connect (via the Dify chat or any MCP client):**
+
+```
+sources_add {"type": "onedrive", "config": {"client_id": "<id>", "tenant_id": "<tenant>"}}
+sources_auth {"source_id": "<id>"}     → returns sign_in_url + user_code
+```
+
+Visit https://login.microsoft.com/device, enter the code, sign in with the
+account that owns the OneDrive — complete ALL steps to "You may now close
+this window". The connection completes automatically within seconds (the
+background thread completes the same flow whose code you entered).
+
+**Then:** `onedrive_list_files` to browse (nothing downloads), confirm the
+matches, `onedrive_embed_files` for exactly the confirmed files. Answers citing
+a cloud-changed file carry a staleness reminder; re-embedding is always your
+explicit command.
+
 ## Step 6b — Specialty search profiles (optional, for domain-scoped questions)
 
 Create `~/.config/agentic-rag-mcp/specialty_profiles.json` with your domain profiles:
@@ -170,3 +215,6 @@ curl -s -X POST localhost:28080/mcp -H 'Content-Type: application/json' \
 | Tool not found after server update | Dify's cached tool list is stale | Update tools in Dify's MCP page |
 | Sidecar OOM-killed / host low on RAM | Decision model ~2 GB resident | `[decider] enabled = false` + restart = instant relief |
 | Edited file's changes don't appear in answers | Wait for the 5-min watcher cycle or run `sources_sync` | Auto-update replaces old chunks (eviction fix, commit 5c9b4ae) |
+| OneDrive device flow fails to start | Single-tenant app + `common` authority, or a reserved scope passed explicitly | Pass the real `tenant_id` at `sources_add`; never include `offline_access`/`profile`/`openid` in scopes — MSAL adds them internally |
+| Device sign-in stays "pending" forever | Browser flow not completed (or code expired after 15 min) | Re-run `sources_auth`, complete ALL browser steps to "You may now close this window" — the background thread completes the same flow whose code you entered |
+| No DEBUG detail in the log file | Level is INFO | `-e LOG_LEVEL=DEBUG` + recreate; confirm via `status` → `logging.level` |

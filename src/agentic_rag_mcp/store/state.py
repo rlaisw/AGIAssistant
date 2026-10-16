@@ -7,11 +7,14 @@ Deletion rule: a Document is dropped only when its LAST OriginRef is removed.
 from __future__ import annotations
 
 import json
+import logging
 import sqlite3
 import uuid
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
+
+log = logging.getLogger("agentic_rag_mcp.state")
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS documents (
@@ -33,6 +36,7 @@ CREATE TABLE IF NOT EXISTS origins (
     source_id TEXT NOT NULL,
     locator TEXT NOT NULL,
     last_seen_at TEXT NOT NULL,
+    snapshot TEXT,
     UNIQUE (source_id, locator)
 );
 CREATE TABLE IF NOT EXISTS sources (
@@ -64,7 +68,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 class StateStore:
@@ -73,6 +77,9 @@ class StateStore:
         self._path = path
         with self._conn() as conn:
             conn.executescript(SCHEMA)
+            cols = {r["name"] for r in conn.execute("PRAGMA table_info(origins)")}
+            if "snapshot" not in cols:  # pre-007 DBs: add the freshness column
+                conn.execute("ALTER TABLE origins ADD COLUMN snapshot TEXT")
 
     @contextmanager
     def _conn(self):
@@ -182,6 +189,48 @@ class StateStore:
             row = conn.execute("SELECT * FROM documents WHERE id = ?", (doc_id,)).fetchone()
             return dict(row) if row else None
 
+    # ---- freshness snapshots (spec 007) ---------------------------------
+
+    def set_origin_snapshot(self, source_id: str, locator: str, snapshot: dict) -> None:
+        """Record the freshness snapshot of an embedded OneDrive file.
+        Binding rule (data-model.md): snapshot.item_id MUST equal the locator."""
+        if snapshot.get("item_id") != locator:
+            raise ValueError("snapshot.item_id must equal the origin locator")
+        with self._conn() as conn:
+            conn.execute(
+                "UPDATE origins SET snapshot = ? WHERE source_id = ? AND locator = ?",
+                (json.dumps(snapshot), source_id, locator),
+            )
+
+    def get_origin_snapshot(self, source_id: str, locator: str) -> dict | None:
+        with self._conn() as conn:
+            row = conn.execute(
+                "SELECT snapshot FROM origins WHERE source_id = ? AND locator = ?",
+                (source_id, locator),
+            ).fetchone()
+            return json.loads(row["snapshot"]) if row and row["snapshot"] else None
+
+    def origins_for_document(self, doc_id: str) -> list[dict]:
+        """Map a cited document to its origins (freshness probe entry point)."""
+        with self._conn() as conn:
+            rows = conn.execute(
+                "SELECT source_id, locator, snapshot FROM origins WHERE document_id = ?",
+                (doc_id,),
+            ).fetchall()
+            return [{"source_id": r["source_id"], "locator": r["locator"],
+                     "snapshot": json.loads(r["snapshot"]) if r["snapshot"] else None}
+                    for r in rows]
+
+    def onedrive_origins_without_snapshot(self, source_id: str) -> list[dict]:
+        """Migration pending set: this source's origins lacking a snapshot."""
+        with self._conn() as conn:
+            rows = conn.execute(
+                "SELECT locator, document_id FROM origins"
+                " WHERE source_id = ? AND snapshot IS NULL",
+                (source_id,),
+            ).fetchall()
+            return [dict(r) for r in rows]
+
     def doc_count(self) -> int:
         with self._conn() as conn:
             return conn.execute("SELECT COUNT(*) AS n FROM documents WHERE status='ok'").fetchone()[
@@ -242,6 +291,12 @@ class StateStore:
                 "UPDATE sources SET health = ?, health_reason = ? WHERE id = ?",
                 (health, reason, source_id),
             )
+        # spec 008 US1/AC4: every health transition is recorded at its matching
+        # level — one choke point covering probe, tool guards, auth, migration
+        if health == "healthy":
+            log.info("source %s healthy", source_id)
+        else:
+            log.warning("source %s degraded: %s", source_id, reason or health)
 
     def set_sync_state(self, source_id: str, state: dict) -> None:
         with self._conn() as conn:

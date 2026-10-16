@@ -132,10 +132,10 @@
     "semantic_hash": "923af067cd5c8c95f68283a563cc3bf7"
   },
   "dify/docker/mcp-server/server.py": {
-    "mtime": 1791593101.8591247,
-    "seen": 1791613945.1475646,
-    "ast_hash": "eb46dffd44de1b20d98eb4cc57eccb9d",
-    "semantic_hash": "eb46dffd44de1b20d98eb4cc57eccb9d"
+    "mtime": 1791784606.224112,
+    "seen": 1792057522.4891846,
+    "ast_hash": "b900ec42b971678dd782dab25f927e73",
+    "semantic_hash": "b900ec42b971678dd782dab25f927e73"
   },
   "pyproject.toml": {
     "mtime": 1791525430.2380629,
@@ -216,10 +216,10 @@
     "semantic_hash": "366689124ca42b54b992cf8129db2ca6"
   },
   "src/agentic_rag_mcp/config.py": {
-    "mtime": 1791609609.807442,
-    "seen": 1791613945.148151,
-    "ast_hash": "113fd21bef0fa0a74db506aabb63a631",
-    "semantic_hash": "113fd21bef0fa0a74db506aabb63a631"
+    "mtime": 1791784228.4107692,
+    "seen": 1792057522.4898915,
+    "ast_hash": "0a35b4efd5de1572a091d4367afe8298",
+    "semantic_hash": "0a35b4efd5de1572a091d4367afe8298"
   },
   "src/agentic_rag_mcp/errors.py": {
     "mtime": 1791180402.8434193,
@@ -246,16 +246,16 @@
     "semantic_hash": "2c6a173ccb5fe5a2fbdd3d59e7e694c9"
   },
   "src/agentic_rag_mcp/ingestion/pipeline.py": {
-    "mtime": 1791451233.935477,
-    "seen": 1791531155.8892152,
-    "ast_hash": "4aa034ed380a86b3e61c39892417174e",
-    "semantic_hash": "4aa034ed380a86b3e61c39892417174e"
+    "mtime": 1791791176.5862832,
+    "seen": 1792057522.490062,
+    "ast_hash": "522312cdcc596e6bb7f35fbd9ccbe46d",
+    "semantic_hash": "522312cdcc596e6bb7f35fbd9ccbe46d"
   },
   "src/agentic_rag_mcp/ingestion/watchers.py": {
-    "mtime": 1791181145.727782,
-    "seen": 1791449231.837831,
-    "ast_hash": "6a1df74d5dd2053f7faf76fbabcb0d0e",
-    "semantic_hash": "6a1df74d5dd2053f7faf76fbabcb0d0e"
+    "mtime": 1791786313.7015662,
+    "seen": 1792057522.4900644,
+    "ast_hash": "9ee24e328b8c068807f161c4f7dfab62",
+    "semantic_hash": "9ee24e328b8c068807f161c4f7dfab62"
   },
   "src/agentic_rag_mcp/routing/__init__.py": {
     "mtime": 1791432796.5437908,
@@ -348,10 +348,10 @@
     "semantic_hash": "0351c98ec054f4bff086a5df3dcf735d"
   },
   "src/agentic_rag_mcp/server.py": {
-    "mtime": 1791609777.010338,
-    "seen": 1791613945.150177,
-    "ast_hash": "8fd8b3bfbea3c3dfb85b395e3c9e5911",
-    "semantic_hash": "8fd8b3bfbea3c3dfb85b395e3c9e5911"
+    "mtime": 1791799720.9719853,
+    "seen": 1792057522.4908593,
+    "ast_hash": "051bdfefb345bf7924198315e417a4b7",
+    "semantic_hash": "051bdfefb345bf7924198315e417a4b7"
   },
   "src/agentic_rag_mcp/sources/__init__.py": {
     "mtime": 1791180260.7906744,
@@ -360,10 +360,10 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "src/agentic_rag_mcp/sources/graph_auth.py": {
-    "mtime": 1791180786.454835,
-    "seen": 1791449231.8378525,
-    "ast_hash": "3cd0b2b16d818d6286ebabd8ffd39d7e",
-    "semantic_hash": "3cd0b2b16d818d6286ebabd8ffd39d7e"
+    "mtime": 1791799979.904745,
+    "seen": 1792057522.4909036,
+    "ast_hash": "139fe8f6aa36f3a9027e534e983b901b",
+    "semantic_hash": "139fe8f6aa36f3a9027e534e983b901b"
   },
   "src/agentic_rag_mcp/sources/local_folder.py": {
     "mtime": 1791191395.3963408,
@@ -372,10 +372,10 @@
     "semantic_hash": "7053ca38b93146efd9bfb9237ca05146"
   },
   "src/agentic_rag_mcp/sources/onedrive.py": {
-    "mtime": 1791181084.0695899,
-    "seen": 1791449231.8378544,
-    "ast_hash": "ad2dc835e66f843cee5e1bb8f3bb9258",
-    "semantic_hash": "ad2dc835e66f843cee5e1bb8f3bb9258"
+    "mtime": 1791714226.3762093,
+    "seen": 1792057522.4911995,
+    "ast_hash": "5ba61b2428237f87d1cf63c0416edb1f",
+    "semantic_hash": "5ba61b2428237f87d1cf63c0416edb1f"
   },
   "src/agentic_rag_mcp/sources/sharepoint.py": {
     "mtime": 1791181145.7301626,
@@ -396,10 +396,10 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "src/agentic_rag_mcp/store/state.py": {
-    "mtime": 1791451219.912204,
-    "seen": 1791531155.8902647,
-    "ast_hash": "857e0bc581bb0272ef53396033fe2b9b",
-    "semantic_hash": "857e0bc581bb0272ef53396033fe2b9b"
+    "mtime": 1791791388.410459,
+    "seen": 1792057522.4913404,
+    "ast_hash": "c6a4a40147d4d81f6107d830323c5f31",
+    "semantic_hash": "c6a4a40147d4d81f6107d830323c5f31"
   },
   "src/agentic_rag_mcp/store/vectordb.py": {
     "mtime": 1791180652.3312418,
@@ -420,16 +420,16 @@
     "semantic_hash": "773069dd5629fc1a52cf25301ac49198"
   },
   "tests/contract/test_edge_cases.py": {
-    "mtime": 1791451239.673983,
-    "seen": 1791531155.8903925,
-    "ast_hash": "6dae3adb05a602cebf7eb441be402c20",
-    "semantic_hash": "6dae3adb05a602cebf7eb441be402c20"
+    "mtime": 1791714079.811315,
+    "seen": 1792057522.4914632,
+    "ast_hash": "d1609ae3e8af6a364ed97d8b13d87c85",
+    "semantic_hash": "d1609ae3e8af6a364ed97d8b13d87c85"
   },
   "tests/contract/test_graph_connectors.py": {
-    "mtime": 1791181410.9999123,
-    "seen": 1791449231.8378637,
-    "ast_hash": "dfaec27934ddffb957cabfe757930c70",
-    "semantic_hash": "dfaec27934ddffb957cabfe757930c70"
+    "mtime": 1791714079.813835,
+    "seen": 1792057522.4914649,
+    "ast_hash": "50ffa570c3f16b2d589f57be0bb2873c",
+    "semantic_hash": "50ffa570c3f16b2d589f57be0bb2873c"
   },
   "tests/contract/test_mcp_contract.py": {
     "mtime": 1791433631.1578305,
@@ -1042,5 +1042,77 @@
     "seen": 1791613945.1520014,
     "ast_hash": "f5fd78a9019ac71629bfd2cbfc9d735a",
     "semantic_hash": "f5fd78a9019ac71629bfd2cbfc9d735a"
+  },
+  "scripts/deploy.sh": {
+    "mtime": 1791617505.4257443,
+    "seen": 1792057522.4892228,
+    "ast_hash": "e786c080d0805fed0408ce228f854066",
+    "semantic_hash": "e786c080d0805fed0408ce228f854066"
+  },
+  "src/agentic_rag_mcp/logging_setup.py": {
+    "mtime": 1791784220.1276083,
+    "seen": 1792057522.4900665,
+    "ast_hash": "670b22e865ffe4546f0109eb02563d2b",
+    "semantic_hash": "670b22e865ffe4546f0109eb02563d2b"
+  },
+  "src/agentic_rag_mcp/sources/onedrive_freshness.py": {
+    "mtime": 1791785263.3690486,
+    "seen": 1792057522.4912019,
+    "ast_hash": "fa04524eca9a6682ce0615efd80c477a",
+    "semantic_hash": "fa04524eca9a6682ce0615efd80c477a"
+  },
+  "tests/contract/test_logging_contract.py": {
+    "mtime": 1791786313.7015662,
+    "seen": 1792057522.4914668,
+    "ast_hash": "d51365f4bfd373290b34199b2ed054ab",
+    "semantic_hash": "d51365f4bfd373290b34199b2ed054ab"
+  },
+  "tests/contract/test_onedrive_contract.py": {
+    "mtime": 1791800519.483797,
+    "seen": 1792057522.491544,
+    "ast_hash": "12f36742e7f86f45d85786e0480f1f82",
+    "semantic_hash": "12f36742e7f86f45d85786e0480f1f82"
+  },
+  "tests/integration/test_logging_integration.py": {
+    "mtime": 1791791055.2798824,
+    "seen": 1792057522.4918244,
+    "ast_hash": "94b975a710cea56ae9b1c7d620ea2593",
+    "semantic_hash": "94b975a710cea56ae9b1c7d620ea2593"
+  },
+  "tests/integration/test_onedrive_on_demand.py": {
+    "mtime": 1791799979.971214,
+    "seen": 1792057522.4918258,
+    "ast_hash": "3dcbf35d1c169e24b889a4e5c8259086",
+    "semantic_hash": "3dcbf35d1c169e24b889a4e5c8259086"
+  },
+  "tests/unit/test_logging_setup.py": {
+    "mtime": 1791791055.2728822,
+    "seen": 1792057522.492529,
+    "ast_hash": "a0cfa288511d5c7b6c0b63636341c42e",
+    "semantic_hash": "a0cfa288511d5c7b6c0b63636341c42e"
+  },
+  "tests/unit/test_migration.py": {
+    "mtime": 1791714343.5263758,
+    "seen": 1792057522.4925745,
+    "ast_hash": "2b7c7394785d5e9327b01d21b4db2cb4",
+    "semantic_hash": "2b7c7394785d5e9327b01d21b4db2cb4"
+  },
+  "tests/unit/test_onedrive.py": {
+    "mtime": 1791725441.6263163,
+    "seen": 1792057522.4925766,
+    "ast_hash": "d952ea1b05f119ff42ee5089f1f047c5",
+    "semantic_hash": "d952ea1b05f119ff42ee5089f1f047c5"
+  },
+  "tests/unit/test_onedrive_freshness.py": {
+    "mtime": 1791716536.8776066,
+    "seen": 1792057522.4925783,
+    "ast_hash": "25bf80d2590c6210ca505385eb641010",
+    "semantic_hash": "25bf80d2590c6210ca505385eb641010"
+  },
+  "tests/unit/test_state_snapshot.py": {
+    "mtime": 1791714242.697946,
+    "seen": 1792057522.4928913,
+    "ast_hash": "ff20a2fb4d6f626f2c5d4c7604a4fb99",
+    "semantic_hash": "ff20a2fb4d6f626f2c5d4c7604a4fb99"
   }
 }

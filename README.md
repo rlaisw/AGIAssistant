@@ -20,7 +20,7 @@ question ──► System 1: embedded Laya decision model (one pass, no text gen
 
 Outage behavior: if the decision node is unavailable/invalid/timed-out, the keyword heuristic routes and responses are marked `provenance: "fallback"` (FR-003 of spec 002).
 
-## MCP tools (14)
+## MCP tools (16)
 
 | Tool | Purpose |
 |---|---|
@@ -34,7 +34,37 @@ Outage behavior: if the decision node is unavailable/invalid/timed-out, the keyw
 | `specialty_search` | Domain-scoped search: results only from a profile's configured authoritative sites (spec 005) |
 | `specialty_profiles` | List available specialty profiles (name, sites, description) — agent calls this first |
 | `sources_auth` | Complete Microsoft sign-in for OneDrive sources (device code flow) |
-| `status` | Decision-node provenance, source health, index counters |
+| `onedrive_list_files` | Browse OneDrive file metadata (names/paths/sizes only — nothing downloaded); optional name filter (spec 007) |
+| `onedrive_embed_files` | Embed ONLY the named OneDrive files, one-time; per-file honest outcomes; the drive is never synced (spec 007) |
+| `status` | Decision-node provenance, source health, index counters, and the active logging config (level, file, writability — spec 008) |
+
+## OneDrive — on-demand embedding (spec 007)
+
+OneDrive sources are **on-demand only**: your drive is never scanned, synced, or embedded wholesale. Connecting ingests zero files.
+
+```
+1. sources_add(type:"onedrive", {client_id, tenant_id})   → register (nothing ingested)
+2. sources_auth(source_id)                                → device code; sign in at
+                                                            login.microsoft.com/device
+3. onedrive_list_files(source_id, search="…")             → metadata only, nothing downloaded
+4. onedrive_embed_files(source_id, files=[…])             → embed EXACTLY the confirmed files
+```
+
+- The chat agent shows file matches and **asks you to confirm** before embedding — never more than you confirmed.
+- Local folders and sqlite sources keep their automatic sync; OneDrive is excluded from the watcher entirely.
+- **Staleness reminders**: when an answer cites a OneDrive file that changed in the cloud after embedding, the answer carries a reminder with both timestamps — the system never re-downloads on its own; you re-embed with one command.
+- Azure app requirements: delegated `Files.Read`; single-tenant apps must pass their `tenant_id` at `sources_add`. Setup details: [DEPLOY.md](DEPLOY.md#onedrive-on-demand-setup).
+
+## Reading the logs (spec 008)
+
+The server writes a persistent, leveled log to `<state_db dir>/logs/server.log` (default `~/.config/agentic-rag-mcp/logs/server.log` — the mounted volume, so history survives container recreation):
+
+- **INFO** — working-as-expected events (startup, watcher cycles, embeds, answers, health transitions); records carry counts, not user text
+- **WARNING / ERROR** — every failure with its reason; nothing fails silently
+- **DEBUG** — full developer trace (tool entries with arguments, routing decisions, retrieval counts, probe outcomes) — question text and file names appear **only** at DEBUG
+- Credentials are redacted at every level; rotation caps disk at `rotation_size_mb × rotation_count` (default ~50 MB)
+
+Console (stderr) mirrors the file at the same level, so `docker logs` keeps working. Set `LOG_LEVEL=DEBUG` in the container environment for a troubleshooting session; the active level is visible in the `status` tool's `logging` field.
 
 ## Install
 
@@ -66,6 +96,12 @@ Dify UI → Tools → MCP → URL `http://agentic-rag:28080/mcp` (container port
 ## Configuration
 
 ```toml
+[logging]                   # persistent leveled log file (spec 008)
+level = "INFO"               # DEBUG|INFO|WARNING|ERROR; LOG_LEVEL env overrides;
+                            # invalid values fall back to INFO with a WARNING record
+# log_file = ""             # default: <state_db dir>/logs/server.log
+rotation_size_mb = 10.0      # rotate at this size; keep rotation_count generations
+
 [decider]                   # System 1 (see "System 1 decision node" details below)
 enabled = true              # false => keyword heuristic routes (provenance: fallback)
 model_repo = "convaiinnovations/laya"

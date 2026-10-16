@@ -1,9 +1,8 @@
-"""OneDrive source: Graph API connector with delta sync, pagination, download (FR-001..FR-014).
+"""OneDrive source: on-demand connector (spec 007; research.md D1/D2/D4).
 
-Delta queries are used for BOTH initial and incremental sync (research.md D1/D2):
-the first delta call (no cursor) enumerates ALL files; subsequent calls (with
-the persisted delta-link cursor) return only changes (adds/modifies/deletes).
-Pagination via @odata.nextLink is always followed (FR-014).
+Metadata-only listing (recursive children traversal, paginated, filterable),
+one-call file resolution, freshness probe, download. The superseded delta-sync
+machinery is deleted (Constitution V / FR-015).
 """
 
 from __future__ import annotations
@@ -14,6 +13,7 @@ from ..errors import ProviderError, SourceAuthError
 
 GRAPH = "https://graph.microsoft.com/v1.0"
 SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".xlsx", ".pptx"}
+LIST_SELECT = "id,name,size,file,lastModifiedDateTime"
 
 
 class GraphBase:
@@ -23,7 +23,7 @@ class GraphBase:
         self._auth = auth
 
     def _get(self, url: str, params: dict | None = None) -> dict:
-        """GET with auth token, following @odata.nextLink pagination (FR-014)."""
+        """GET with auth token, following @odata.nextLink pagination."""
         items: list[dict] = []
         next_url = f"{GRAPH}{url}"
         first = True
@@ -35,28 +35,30 @@ class GraphBase:
                 resp = self._request(next_url, None)
             items.extend(resp.get("value", []))
             next_url = resp.get("@odata.nextLink")
-        delta_link = resp.get("@odata.deltaLink")
-        return {"items": items, "delta_link": delta_link}
+        return {"items": items}
 
-    def _request(self, url: str, params: dict | None) -> dict:
+    def _request(self, url: str, params: dict | None, allow_404: bool = False,
+                 timeout: float = 30.0) -> dict | None:
         try:
             token = self._auth.token()
-        except SourceAuthError:
+        except SourceAuthError:  # noqa: TRY203 — deliberate: must not become ProviderError
             raise
         try:
             resp = httpx.get(url, headers={"Authorization": f"Bearer {token}"},
-                             params=params or {}, timeout=30.0)
+                             params=params or {}, timeout=timeout)
             if resp.status_code in (401, 403):
                 raise SourceAuthError(f"graph auth failed: {resp.status_code}")
             if resp.status_code == 429:
-                raise ProviderError("graph rate limited (429) — retry next cycle")
+                raise ProviderError("graph rate limited (429) — retry this file")
+            if allow_404 and resp.status_code == 404:
+                return None
             resp.raise_for_status()
             return resp.json()
         except SourceAuthError:
             raise
         except ProviderError:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             raise ProviderError(f"graph request failed: {exc}") from exc
 
 
@@ -67,82 +69,106 @@ class OneDriveSource(GraphBase):
         super().__init__(auth)
         self._config = config
 
-    def delta(self, delta_link: str | None = None) -> dict:
-        """Delta query: returns {items, delta_link}. First call (no cursor) = full listing."""
-        if delta_link:
-            # subsequent sync — use the persisted cursor directly
-            return self._get_url(delta_link)
-        # initial sync — enumerate from the configured folder root
-        folder = self._config.get("folder_path", "/") or "/"
-        if folder == "/":
-            url = "/me/drive/root/delta"
-        else:
-            url = f"/me/drive/root:{folder}:/delta"
-        return self._get(url)
+    # ---- helpers ---------------------------------------------------------
 
-    def _get_url(self, url: str) -> dict:
-        """GET a full URL (for delta cursors) with pagination."""
-        items: list[dict] = []
-        next_url = url
-        resp = {}
-        while next_url:
-            resp = self._request(next_url, None)
-            items.extend(resp.get("value", []))
-            next_url = resp.get("@odata.nextLink")
-        return {"items": items, "delta_link": resp.get("@odata.deltaLink")}
+    def _prefix(self) -> str:
+        user = self._config.get("user", "")
+        return f"/users/{user}" if user else "/me"
+
+    def _max_bytes(self) -> int:
+        return self._config.get("max_file_size_mb", 50) * 1024 * 1024
+
+    def _entry(self, item: dict, folder: str) -> dict:
+        name = item.get("name", "")
+        ext = ("." + name.rsplit(".", 1)[-1].lower()) if "." in name else ""
+        size = item.get("size", 0)
+        path = f"{folder.rstrip('/')}/{name}" if folder != "/" else f"/{name}"
+        return {
+            "locator": item["id"],
+            "title": name,
+            "path": path,
+            "size": size,
+            "last_modified": item.get("lastModifiedDateTime", ""),
+            "embeddable": ext in SUPPORTED_EXTENSIONS and size <= self._max_bytes(),
+        }
+
+    # ---- U1: metadata-only listing (FR-005, research.md D1) -----------------
+
+    def list_files(self, search: str = "", folder: str | None = None, limit: int = 100) -> dict:
+        """Recursive metadata-only listing from the folder scope root.
+        Returns {files: [FileListingEntry], truncated: bool}. Never downloads content."""
+        root = folder or self._config.get("folder_path", "/") or "/"
+        files: list[dict] = []
+        self._walk(root, search, files)
+        # ponytail: collects all metadata then slices — fine at single-user drive
+        # scale; stream+early-stop if a huge drive makes this slow
+        truncated = len(files) > limit
+        return {"files": files[:limit], "truncated": truncated}
+
+    def _walk(self, folder: str, search: str, out: list[dict]) -> None:
+        url = (f"{self._prefix()}/drive/root/children" if folder == "/"
+               else f"{self._prefix()}/drive/root:{folder}:/children")
+        result = self._get(url, params={"$select": LIST_SELECT})
+        for item in result["items"]:
+            if "folder" in item:
+                if self._config.get("include_subfolders", True):
+                    self._walk(self._entry(item, folder)["path"], search, out)
+                continue
+            if "file" not in item:
+                continue
+            if search and search.lower() not in item.get("name", "").lower():
+                continue
+            out.append(self._entry(item, folder))
+
+    # ---- U2: one-call resolution + probe (FR-006/010, research.md D2/D4) ---
+
+    def resolve(self, path_or_id: str) -> dict | None:
+        """One Graph call per file: paths ('/' or '.') via root:{path}, bare ids
+        via /items/{id}. None on 404 — the caller reports honest not_found."""
+        if "/" in path_or_id or "." in path_or_id:
+            url = f"{self._prefix()}/drive/root:{path_or_id}"
+        else:
+            url = f"{self._prefix()}/drive/items/{path_or_id}"
+        item = self._request(f"{GRAPH}{url}", None, allow_404=True)
+        if not item:
+            return None
+        name = item.get("name", "")
+        return {
+            "locator": item["id"],
+            "title": name,
+            "size": item.get("size", 0),
+            "last_modified": item.get("lastModifiedDateTime", ""),
+            "download_url": item.get("@microsoft.graph.downloadUrl"),
+            "ext": name.rsplit(".", 1)[-1].lower() if "." in name else "",
+        }
+
+    def get_metadata(self, item_id: str) -> dict | None:
+        """Freshness probe (FR-010): metadata only; None on 404 = genuinely deleted
+        (item-id identity survives renames — research.md D4). Short timeout: the
+        probe runs inside the answer's 5-second budget."""
+        item = self._request(f"{GRAPH}{self._prefix()}/drive/items/{item_id}",
+                             {"$select": "id,name,lastModifiedDateTime,eTag,parentReference"},
+                             allow_404=True, timeout=4.0)
+        if not item:
+            return None
+        path = None
+        parent = (item.get("parentReference") or {}).get("path", "")
+        if parent:  # "/drive/root:/Documents" → "/Documents/report.docx"
+            base = parent.split(":", 1)[-1] or "/"
+            path = f"{base.rstrip('/')}/{item.get('name', '')}"
+        return {"locator": item_id, "title": item.get("name", ""), "path": path,
+                "last_modified": item.get("lastModifiedDateTime", ""),
+                "etag": item.get("eTag")}
 
     @staticmethod
     def download(download_url: str, timeout: float = 60.0) -> bytes:
-        """Download a file via its pre-authenticated Graph downloadUrl (D4)."""
+        """Download a file via its pre-authenticated Graph downloadUrl."""
         try:
             resp = httpx.get(download_url, timeout=timeout, follow_redirects=True)
             resp.raise_for_status()
             return resp.content
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             raise ProviderError(f"download failed: {exc}") from exc
-
-    def sync(self, state: dict | None = None) -> dict:
-        """Full sync cycle: delta → classify → return per-item results (research.md D6/D7).
-
-        Returns {added, updated, deleted, skipped, delta_link} where added/updated
-        items carry {locator, title, content} for the pipeline to parse+embed.
-        The caller (pipeline) handles LanceDB eviction for deleted locators.
-        """
-        state = state or {}
-        delta_link = state.get("delta_link")
-        result = self.delta(delta_link)
-        items, new_link = result["items"], result["delta_link"]
-
-        max_mb = self._config.get("max_file_size_mb", 50)
-        max_bytes = max_mb * 1024 * 1024
-        added, updated, deleted, skipped = [], [], [], []
-
-        for item in items:
-            if "deleted" in item:
-                deleted.append({"locator": item["id"], "title": item.get("name", "")})
-                continue
-            if "folder" in item:
-                continue  # folders are traversed implicitly by delta
-            name = item.get("name", "")
-            ext = "." + name.rsplit(".", 1)[-1].lower() if "." in name else ""
-            if ext not in SUPPORTED_EXTENSIONS:
-                skipped.append({"locator": item["id"], "reason": f"unsupported format: {ext or 'no extension'}"})
-                continue
-            if item.get("size", 0) > max_bytes:
-                skipped.append({"locator": item["id"], "reason": f"file too large: {item['size'] // (1024*1024)} MB > {max_mb} MB"})
-                continue
-            download_url = item.get("@microsoft.graph.downloadUrl")
-            if not download_url:
-                skipped.append({"locator": item["id"], "reason": "no download URL"})
-                continue
-            content = self.download(download_url)
-            entry = {"locator": item["id"], "title": name, "content": content,
-                     "media_type": ext.lstrip(".")}
-            # delta with a cursor: items are changes; without: all are new
-            (updated if delta_link else added).append(entry)
-
-        return {"added": added, "updated": updated, "deleted": deleted,
-                "skipped": skipped, "delta_link": new_link}
 
 
 class SharePointSource(GraphBase):
