@@ -93,6 +93,10 @@ docker run -d --name agentic-rag --network <dify_network> \
 
 Dify UI → Tools → MCP → URL `http://agentic-rag:28080/mcp` (container port aligned; the host also publishes **28080**, so host-side checks use `http://localhost:28080/healthz`). Edit MCP servers by delete + re-add (Dify 1.17's edit path has an identifier-vs-UUID bug).
 
+## Chat UI (optional frontend)
+
+[`ai-chat-landing/`](ai-chat-landing/) is a Chatbot-UI-style Next.js frontend wired to the Dify chatflow's Service API: questions stream the AgenticRAG agent's answers with full markdown (tables, images), a reasoning panel, and source badges. One env var to go live — a Dify app API key in `ai-chat-landing/.env.local`. Run with `pnpm dev` (http://localhost:3000); without a key it falls back to demo replies. Details: [`ai-chat-landing/README.md`](ai-chat-landing/README.md).
+
 ## Configuration
 
 ```toml

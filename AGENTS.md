@@ -11,3 +11,12 @@ Rules:
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
 - A committed graphify-out/graph.json is rewritten whole on every build, so a large diff to it in a pull request is expected. Do not flag it as churn or suggest skipping the graph rebuild or its hooks.
+
+## ai-chat-landing (Chat UI)
+
+Next.js 16 + shadcn/ui (Base UI, luma preset) chat frontend for the Dify AgenticRAG chatflow, in `ai-chat-landing/`. Questions stream through `app/api/chat/route.ts`; the Dify API key lives in `.env.local` (git-ignored — never commit it).
+
+Rules:
+- Validate with `pnpm typecheck && pnpm lint` inside `ai-chat-landing/` — NEVER run `pnpm build` while `pnpm dev` is running in the same directory (they share `.next/`; a build mid-request silently kills in-flight streams).
+- The shadcn skill in `ai-chat-landing/.agents/skills/shadcn/` is CLI-managed (`pnpm dlx skills add shadcn/ui`); `skills-lock.json` tracks versions — do not hand-edit it.
+- Full docs: `ai-chat-landing/README.md`; deployment: `DEPLOY.md` Step 8; topology: `docs/NETWORK.md` ⑦⑧.

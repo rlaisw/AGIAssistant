@@ -175,7 +175,13 @@ Create `~/.config/agentic-rag-mcp/specialty_profiles.json` with your domain prof
 cat > ~/.config/agentic-rag-mcp/specialty_profiles.json <<'EOF2'
 {
   "microsoft": {
-    "sites": ["learn.microsoft.com", "techcommunity.microsoft.com"],
+    "sites": [
+      "learn.microsoft.com",
+      "techcommunity.microsoft.com",
+      "educba.com",
+      "alitajran.com",
+      "newhelptech.wordpress.com"
+    ],
     "description": "Microsoft product documentation and community"
   },
   "huawei": {
@@ -200,6 +206,22 @@ curl -s -X POST localhost:28080/mcp -H 'Content-Type: application/json' \
 # then exercise: status, search, ask, sources_list, sources_add/sync/remove,
 # web_search (live), fetch_url (live), graph_query (honest disabled error)
 ```
+
+## Step 8 — Chat UI (optional, web frontend for the Dify chatflow)
+
+[`ai-chat-landing/`](ai-chat-landing/) streams the AgenticRAG agent's answers in a Chatbot-UI-style web app. Requires Step 4 (Dify running + chatflow imported).
+
+```bash
+cd ai-chat-landing && pnpm install
+# Dify UI → AgenticRAG app → API Access → Create Secret Key (format app-…)
+cat > .env.local <<'EOF'
+DIFY_API_BASE_URL=http://localhost/v1
+DIFY_API_KEY=app-your-key-here
+EOF
+pnpm dev        # http://localhost:3000
+```
+
+The API key stays server-side — the Next.js route handler `app/api/chat/route.ts` proxies `/api/chat` → Dify `/v1/chat-messages`, and `.env.local` is git-ignored. Without a key the UI runs in demo mode with canned replies. Never run `pnpm build` while `pnpm dev` is up in the same directory (they share `.next/`). Details: [`ai-chat-landing/README.md`](ai-chat-landing/README.md).
 
 ## Troubleshooting
 

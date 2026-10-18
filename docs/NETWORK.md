@@ -8,6 +8,7 @@ Who talks to whom, on which port, and why. Read this before touching any port.
 flowchart LR
     subgraph HOST["🖥️ LOCAL HOST (your machine)"]
         BROWSER["👤 Browser / terminal<br/>localhost"]
+        CHATUI["⌨️ ai-chat-landing (Next.js)<br/>listens :3000"]
     end
 
     subgraph DIFYNET["Docker network: docker_default + docker_ssrf_proxy_network"]
@@ -34,6 +35,8 @@ flowchart LR
 
     BROWSER -. "⑤ host-side checks<br/>curl localhost:28080/healthz<br/>(aligned 28080:28080)" .-> SIDECAR
     BROWSER -. "⑥ host-side checks<br/>curl localhost:28888<br/>(aligned 28888:28888)" .-> SEARXNG
+    BROWSER -- "⑦ Chat UI<br/>http://localhost:3000" --> CHATUI
+    CHATUI -- "⑧ Dify Service API (Bearer app-…)<br/>http://localhost/v1/chat-messages" --> NGINX
 
     style HOST fill:#fef7c3
     style DIFY fill:#dbeafe
@@ -51,6 +54,8 @@ flowchart LR
 | ④ | agentic-rag | searxng | `http://searxng:28888` | Container → container |
 | ⑤ | You (terminal) | **agentic-rag** | `localhost:28080` → aligned to 28080 | Host → published port only |
 | ⑥ | You (terminal) | searxng | `localhost:28888` → aligned to 28080 | Host → published port only |
+| ⑦ | You (browser) | Chat UI | `localhost:3000` | Host → Next.js dev/prod server |
+| ⑧ | Chat UI | Dify nginx | `http://localhost/v1/chat-messages` (Bearer app key, server-side only) | Host → published port 80 — same entry door as ①, Service API path |
 
 ## The two rules this encodes
 
@@ -70,6 +75,8 @@ flowchart LR
 | Host → sidecar | `http://localhost:28080/healthz` | 28080 avoids the crowded 8080 |
 | Sidecar → SearXNG | `http://searxng:28888` (config `[web.searxng] url`) | container DNS |
 | Host → SearXNG | `http://localhost:28888` | JSON API test: `/search?q=t&format=json` → 200 |
+| Browser → Chat UI | `http://localhost:3000` | Next.js (`ai-chat-landing/`) |
+| Chat UI → Dify Service API | `http://localhost/v1/chat-messages` | proxied server-side in `ai-chat-landing/app/api/chat/route.ts`; key in `.env.local` |
 
 ## Troubleshooting quick hits
 
