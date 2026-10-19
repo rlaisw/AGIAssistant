@@ -12,6 +12,9 @@ dist/
 .cocoindex_code/target_sqlite.db
 .cocoindex_code/cocoindex.db/
 
+# ppt-master: standalone git clone (kept out of this repo; it has its own .git for pulls)
+ppt-master/
+
 # Docker
 docker-compose.override.yml
 .docker/

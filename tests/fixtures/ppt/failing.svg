@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-page-role="content" font-family="Segoe UI, sans-serif">
+  <rect id="page-background" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#FAFAFA"/>
+  <g id="overflow-block" data-pptx-bounds="64 64 200 60">
+    <text x="64" y="120" font-size="44" font-weight="bold" fill="#212121">This deliberately long line of fixture text far exceeds its tiny module bounds so the quality checker reports a blocking horizontal overflow error</text>
+  </g>
+</svg>

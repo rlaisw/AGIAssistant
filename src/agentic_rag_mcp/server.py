@@ -515,6 +515,49 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
             "logging": current_setup().status_dict(),  # additive (spec 008, FR-012)
         }
 
+    # ---- PPT-Master tools (spec 009): bridge to the ppt-master toolchain ----
+
+    from .ppt import bridge as ppt_bridge
+    from .ppt.errors import PptError, envelope as _ppt_envelope
+
+    def _ppt(fn, *args, **kwargs):
+        """Run a bridge call; PptError -> honest envelope (FR-010, Constitution IV)."""
+        try:
+            return fn(cfg, *args, **kwargs)
+        except PptError as exc:
+            log.warning("ppt tool error: %s", exc.code if hasattr(exc, "code") else exc)
+            return _ppt_envelope(exc)
+
+    @mcp.tool()
+    def ppt_project_init(name: str) -> dict:
+        """Create an isolated PPT generation workspace. Returns {project_id, workspace, max_pages}.
+        Start every deck here; use the returned project_id in all other ppt_* tools."""
+        return _ppt(ppt_bridge.project_init, name)
+
+    @mcp.tool()
+    def ppt_icon_sync(project_id: str, icons: list[str]) -> dict:
+        """Prepare icons for a PPT project: syncs resolvable 'library/name' references into it.
+        Missing icons are reported honestly with re-pick guidance — never substituted."""
+        return _ppt(ppt_bridge.icon_sync, project_id, icons)
+
+    @mcp.tool()
+    def ppt_write_page(project_id: str, page_number: int, name: str, svg: str) -> dict:
+        """Write one slide page as a complete SVG document (root viewBox='0 0 1280 720',
+        grouped zones with data-pptx-bounds, native text). Page numbers run 1..max_pages."""
+        return _ppt(ppt_bridge.write_page, project_id, page_number, name, svg)
+
+    @mcp.tool()
+    def ppt_check(project_id: str) -> dict:
+        """Run the slide quality gate. Returns {passing, blocking_errors, warnings, details};
+        each [ERROR] detail names the file and the fixable issue. Fix pages, then re-check."""
+        return _ppt(ppt_bridge.check, project_id)
+
+    @mcp.tool()
+    def ppt_export(project_id: str) -> dict:
+        """Export the deck as a native editable .pptx (only after ppt_check passes).
+        Returns {file, url} — the url is a clickable download link for the chat answer."""
+        return _ppt(ppt_bridge.export_pptx, project_id)
+
     return mcp
 
 

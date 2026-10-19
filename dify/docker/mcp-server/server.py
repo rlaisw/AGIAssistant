@@ -29,7 +29,7 @@ if len(_p.parents) > 3 and (_p.parents[3] / "src" / "agentic_rag_mcp").is_dir():
 
 import uvicorn
 from starlette.applications import Starlette
-from starlette.responses import JSONResponse, Response
+from starlette.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from starlette.routing import Route
 
 from agentic_rag_mcp.config import load_config
@@ -40,7 +40,8 @@ PORT = int(os.environ.get("MCP_PORT", "28080"))
 
 # stateless_http=True is required so Dify can send stateless requests
 # without session-management errors.
-mcp = build_server(load_config(), stateless_http=True, host=HOST, port=PORT)
+cfg = load_config()
+mcp = build_server(cfg, stateless_http=True, host=HOST, port=PORT)
 
 streamable = mcp.streamable_http_app()  # registers POST /mcp, creates session manager
 sse = mcp.sse_app()                     # registers GET /sse, POST /messages/
@@ -49,6 +50,65 @@ sse = mcp.sse_app()                     # registers GET /sse, POST /messages/
 async def healthz(request) -> JSONResponse:
     """Container health check (docker exec ... curl http://agentic-rag:28080/healthz)."""
     return JSONResponse({"status": "ok"})
+
+
+async def export_file(request) -> Response:
+    """Serve a generated deck: GET /exports/<project_id>/<file>.pptx (spec 009, R2)."""
+    from agentic_rag_mcp.ppt.bridge import projects_root
+    from agentic_rag_mcp.ppt.errors import InvalidInput
+    from agentic_rag_mcp.ppt.http_exports import (
+        PPTX_CONTENT_TYPE,
+        ExportNotFound,
+        resolve_export,
+    )
+
+    try:
+        path = resolve_export(
+            projects_root(cfg),  # where the toolchain actually writes
+            request.path_params["project_id"],
+            request.path_params["filename"],
+        )
+    except InvalidInput:
+        return Response("bad request", status_code=400)
+    except ExportNotFound:
+        return Response("not found", status_code=404)
+    return FileResponse(path, media_type=PPTX_CONTENT_TYPE)
+
+
+async def completion_page(request) -> Response:
+    """Serve an export's completion page: GET /decks/<project_id>/<stem>/ (spec 010)."""
+    from agentic_rag_mcp.ppt.completion import artifact_exists, render_completion_page
+    from agentic_rag_mcp.ppt.errors import InvalidInput
+
+    try:
+        if not artifact_exists(cfg, request.path_params["project_id"],
+                               request.path_params["stem"]):
+            return Response("not found", status_code=404)
+        page = render_completion_page(
+            cfg, request.path_params["project_id"], request.path_params["stem"]
+        )
+    except InvalidInput:
+        return Response("bad request", status_code=400)
+    return HTMLResponse(page)
+
+
+async def completion_slide(request) -> Response:
+    """Serve one preview slide: GET /decks/<project_id>/<stem>/slides/<file> (spec 010)."""
+    from agentic_rag_mcp.ppt.completion import resolve_slide
+    from agentic_rag_mcp.ppt.errors import InvalidInput
+
+    try:
+        path = resolve_slide(
+            cfg,
+            request.path_params["project_id"],
+            request.path_params["stem"],
+            request.path_params["filename"],
+        )
+    except InvalidInput:
+        return Response("bad request", status_code=400)
+    except FileNotFoundError:
+        return Response("not found", status_code=404)
+    return FileResponse(path, media_type="image/svg+xml")
 
 
 async def mcp_get(request) -> Response:
@@ -73,6 +133,10 @@ app = Starlette(
     routes=[
         Route("/healthz", healthz, methods=["GET"]),
         Route("/mcp", mcp_get, methods=["GET"]),  # before the SDK route: intercepts GET only
+        Route("/exports/{project_id}/{filename}", export_file, methods=["GET"]),
+        Route("/decks/{project_id}/{stem}/", completion_page, methods=["GET"]),
+        Route("/decks/{project_id}/{stem}/slides/{filename}", completion_slide,
+              methods=["GET"]),
         *streamable.routes,
         *sse.routes,
     ],

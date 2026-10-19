@@ -2,6 +2,7 @@ import ReactMarkdown from "react-markdown"
 import remarkBreaks from "remark-breaks"
 import remarkGfm from "remark-gfm"
 
+import { DeckActions } from "@/components/deck-actions"
 import { Separator } from "@/components/ui/separator"
 import {
   Table,
@@ -12,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { parseDeckLink } from "@/lib/deck-url"
 
 export function Markdown({
   children,
@@ -46,16 +48,22 @@ export function Markdown({
             </h3>
           ),
           p: ({ children }) => <p>{children}</p>,
-          a: ({ href, children }) => (
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium underline underline-offset-4 hover:text-primary"
-            >
-              {children}
-            </a>
-          ),
+          a: ({ href, children }) => {
+            const deck = href ? parseDeckLink(href) : null
+            if (deck) {
+              return <DeckActions downloadUrl={deck.downloadUrl} pageUrl={deck.pageUrl} />
+            }
+            return (
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium underline underline-offset-4 hover:text-primary"
+              >
+                {children}
+              </a>
+            )
+          },
           ul: ({ children }) => (
             <ul className="list-disc space-y-1 pl-5">{children}</ul>
           ),

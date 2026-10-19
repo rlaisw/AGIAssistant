@@ -57,6 +57,7 @@ docker run -d --name agentic-rag \
   --network <DIFY_NETWORK> \
   -v ~/.config/agentic-rag-mcp:/root/.config/agentic-rag-mcp \
   -v ~/.cache/huggingface:/root/.cache/huggingface \
+  -v /kilocode/AGIAssistant/ppt-master:/opt/ppt-master \
   -p 28080:28080 \
   -e LOG_LEVEL=INFO \
   --restart always \
@@ -202,13 +203,12 @@ first to discover available topics, then picks the right profile for the questio
 curl -s localhost:28080/healthz                                  # {"status": "ok"}
 curl -s -X POST localhost:28080/mcp -H 'Content-Type: application/json' \
   -H 'Accept: application/json, text/event-stream' \
-  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'   # 16 tools
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'   # 21 tools (16 + 5 ppt_*)
 # then exercise: status, search, ask, sources_list, sources_add/sync/remove,
 # web_search (live), fetch_url (live), graph_query (honest disabled error)
 ```
 
 ## Step 8 — Chat UI (optional, web frontend for the Dify chatflow)
-
 [`ai-chat-landing/`](ai-chat-landing/) streams the AgenticRAG agent's answers in a Chatbot-UI-style web app. Requires Step 4 (Dify running + chatflow imported).
 
 ```bash
@@ -222,6 +222,50 @@ pnpm dev        # http://localhost:3000
 ```
 
 The API key stays server-side — the Next.js route handler `app/api/chat/route.ts` proxies `/api/chat` → Dify `/v1/chat-messages`, and `.env.local` is git-ignored. Without a key the UI runs in demo mode with canned replies. Never run `pnpm build` while `pnpm dev` is up in the same directory (they share `.next/`). Details: [`ai-chat-landing/README.md`](ai-chat-landing/README.md).
+
+## Step 9 — PPT-Master deck generation (optional, spec 009)
+
+Lets users type "help to generate a powerpoint, introduce Dify software" in the chat and receive a native editable `.pptx` download link. Requires the ppt-master clone (Step 0 of its own README: `git clone https://github.com/hugohe3/ppt-master.git` into the repo root, `python3 -m venv ppt-master/.venv`, install its requirements) plus the sidecar rebuilt with the ppt mount (Step 3 above includes `-v .../ppt-master:/opt/ppt-master`; the image bakes the export-path deps).
+
+1. Rebuild + recreate the sidecar (Step 3), verify 21 tools: `tools/list` shows `ppt_project_init`, `ppt_icon_sync`, `ppt_write_page`, `ppt_check`, `ppt_export`.
+2. Dify UI → Tools → MCP → the server → **Update** (cache refresh; new tools appear).
+3. Import the chatflow v2 DSL: `dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml` — adds an intent router (deck requests → PPT-Master agent, everything else → the existing AgenticRAG agent). Publish.
+4. Verify: ask for a one-page deck on a known topic; expect progress narration, then a `[Download the deck](http://localhost:28080/exports/<project>/<file>.pptx)` link that downloads a valid PowerPoint. Exported decks land under `ppt-master/projects/<project>/exports/`.
+
+Notes: v1 bounds decks at 5 pages per run (`[ppt] max_pages` in config.toml); same-conversation revisions re-export a new file (old links keep working); the `/exports` route is unauthenticated on the local-trust network, same posture as `/healthz`. Honest failure: a deck with pages that cannot pass the quality check is never exported — the agent reports the failing page instead.
+
+`[ppt]` config reference:
+
+| Key | Default | Purpose |
+|---|---|---|
+| `scripts_root` | `/opt/ppt-master/skills/ppt-master` | where the ppt-master clone is mounted (host path works when running locally) |
+| `projects_root` | `/opt/ppt-master/projects` | serving root for `/exports`; projects always live at `<ppt-master>/projects` (the toolchain hardcodes it), so keep these aligned |
+| `python` | `""` (= `sys.executable`) | interpreter for the ppt-master scripts — in the container the image bakes the deps, so the default works; host-side, point it at `ppt-master/.venv/bin/python` |
+| `max_pages` | `5` | v1 page bound (spec 009) |
+| `script_timeout_s` | `120` | per script invocation timeout |
+| `retention_days` | `0` | `0` = keep exports forever (v1) |
+
+**Completion pages & in-chat actions (spec 010)**: every export also returns an additive `page_url` — `GET /decks/<project>/<stem>/` on the same port serves a browser completion page (per-slide previews snapshotted at export time, download button, back-to-chat edit path; honest degraded state if preview generation failed). Slide assets: `GET /decks/<project>/<stem>/slides/<file>.svg`. The AI Chat UI renders deck links in answers as an action bar (Download / Preview-Edit icons) via its markdown interceptor — the Dify webapp shows the plain link (graceful degradation). Chat UI tests: `pnpm test` (vitest) inside `ai-chat-landing/`.
+
+## Step 10 — Deployment automation (spec 011)
+
+One command rebuilds, redeploys, updates the chatflow, and verifies the whole stack — no Dify UI actions, no prompts:
+
+```bash
+VENV=/home/administrator/.local/share/pipx/venvs/agentic-rag-mcp/bin/python
+
+# configure once (config.toml or env):
+#   [dify] console_email / console_password  (Dify console login; env: DIFY_CONSOLE_EMAIL/PASSWORD)
+#   [dify] api_key                            (chatflow service key; env: DIFY_API_KEY)
+
+$VENV -m agentic_rag_mcp.deploy verify --dry-run   # plan only, touches nothing
+$VENV -m agentic_rag_mcp.deploy redeploy            # build → recreate → health → register/re-sync tools
+$VENV -m agentic_rag_mcp.deploy chatflow            # draft-update or import + publish the DSL
+$VENV -m agentic_rag_mcp.deploy verify              # 7-scenario headless battery (self-cleaning)
+$VENV -m agentic_rag_mcp.deploy all                 # everything, aborting honestly on failure
+```
+
+Behavior: exit 0 = success · N = failed battery scenarios · 2 = configuration error. Tool-cache re-sync is version-gated (DB path for Dify 1.17.x — the console Update flow doesn't re-sync tools in that version; unknown versions are skipped with a notice). The chatflow command updates the app **in place** (draft + publish — app id and API key preserved) and only imports when no same-name app exists. Console credentials are never logged (masked). Tests: `pytest tests/unit/test_deploy_* tests/integration/test_deploy_console.py tests/contract/test_deploy_cli.py`.
 
 ## Troubleshooting
 

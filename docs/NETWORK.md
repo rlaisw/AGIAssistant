@@ -56,6 +56,7 @@ flowchart LR
 | ⑥ | You (terminal) | searxng | `localhost:28888` → aligned to 28080 | Host → published port only |
 | ⑦ | You (browser) | Chat UI | `localhost:3000` | Host → Next.js dev/prod server |
 | ⑧ | Chat UI | Dify nginx | `http://localhost/v1/chat-messages` (Bearer app key, server-side only) | Host → published port 80 — same entry door as ①, Service API path |
+| ⑨ | You (browser) | sidecar /exports | `http://localhost:28080/exports/<project>/<file>.pptx` | Host → published port — PPT-Master deck downloads (spec 009) |
 
 ## The two rules this encodes
 
@@ -77,6 +78,8 @@ flowchart LR
 | Host → SearXNG | `http://localhost:28888` | JSON API test: `/search?q=t&format=json` → 200 |
 | Browser → Chat UI | `http://localhost:3000` | Next.js (`ai-chat-landing/`) |
 | Chat UI → Dify Service API | `http://localhost/v1/chat-messages` | proxied server-side in `ai-chat-landing/app/api/chat/route.ts`; key in `.env.local` |
+| You → PPT-Master deck downloads | `http://localhost:28080/exports/<project>/<file>.pptx` | served by the sidecar wrapper; files under the ppt-master clone's `projects/<project>/exports/` |
+| You → deck completion pages | `http://localhost:28080/decks/<project>/<stem>/` | per-export preview + download page (spec 010); slide assets at `.../slides/<file>.svg` |
 
 ## Troubleshooting quick hits
 

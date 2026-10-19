@@ -1,0 +1,19 @@
+{
+  "tools": [
+    {
+      "name": "ask",
+      "description": "Answer a question with agentic retrieval and per-source citations.",
+      "inputSchema": {"type": "object", "properties": {"question": {"type": "string"}}}
+    },
+    {
+      "name": "ppt_project_init",
+      "description": "Create an isolated PPT generation workspace.",
+      "inputSchema": {"type": "object", "properties": {"name": {"type": "string"}}}
+    },
+    {
+      "name": "ppt_export",
+      "description": "Export the deck as a native editable .pptx.",
+      "inputSchema": {"type": "object", "properties": {"project_id": {"type": "string"}}}
+    }
+  ]
+}

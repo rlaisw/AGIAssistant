@@ -16,3 +16,8 @@ specs/*/fixtures/
 .DS_Store
 coverage/
 .coverage
+# never send these to the build daemon (the image COPYs none of them)
+ppt-master/
+ai-chat-landing/
+docs/
+graphify-out/

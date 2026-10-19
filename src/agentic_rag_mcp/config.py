@@ -69,6 +69,17 @@ graphify = false             # optional graph-search layer
 rotation_size_mb = 10.0       # rotate at this size (float — tests can shrink it)
 rotation_count = 5           # keep N generations; total cap = size × count
 
+[ppt]
+# ppt-master bridge (spec 009): scripts root of the ppt-master clone
+# (mounted into the container at /opt/ppt-master; a host path works locally)
+scripts_root = "/opt/ppt-master/skills/ppt-master"
+projects_root = "/opt/ppt-master/projects"
+exports_url_base = "http://localhost:28080/exports"
+python = ""                  # interpreter for ppt-master scripts; empty = sys.executable
+max_pages = 5                # v1 bound per spec 009
+script_timeout_s = 120.0      # per script invocation
+retention_days = 0           # 0 = keep exports forever (v1)
+
 [storage]
 # state_db / vector_dir default to ~/.config/agentic-rag-mcp/
 """
@@ -103,6 +114,13 @@ class Config:
     mcp_port: int = 8811
     state_db: Path = STATE_DB
     vector_dir: Path = VECTOR_DIR
+    ppt_scripts_root: Path = Path("/opt/ppt-master/skills/ppt-master")
+    ppt_projects_root: Path = Path("/opt/ppt-master/projects")
+    ppt_exports_url_base: str = "http://localhost:28080/exports"
+    ppt_python: str = ""
+    ppt_max_pages: int = 5
+    ppt_script_timeout_s: float = 120.0
+    ppt_retention_days: int = 0
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -154,6 +172,19 @@ def load_config(path: Path | None = None) -> Config:
     )
     cfg.state_db = Path(_get(raw, "storage", "state_db", default=str(STATE_DB))).expanduser()
     cfg.vector_dir = Path(_get(raw, "storage", "vector_dir", default=str(VECTOR_DIR))).expanduser()
+    cfg.ppt_scripts_root = Path(
+        str(_get(raw, "ppt", "scripts_root", default=str(cfg.ppt_scripts_root)))
+    ).expanduser()
+    cfg.ppt_projects_root = Path(
+        str(_get(raw, "ppt", "projects_root", default=str(cfg.ppt_projects_root)))
+    ).expanduser()
+    cfg.ppt_exports_url_base = str(
+        _get(raw, "ppt", "exports_url_base", default=cfg.ppt_exports_url_base)
+    )
+    cfg.ppt_python = str(_get(raw, "ppt", "python", default=""))
+    cfg.ppt_max_pages = int(_get(raw, "ppt", "max_pages", default=5))
+    cfg.ppt_script_timeout_s = float(_get(raw, "ppt", "script_timeout_s", default=120.0))
+    cfg.ppt_retention_days = int(_get(raw, "ppt", "retention_days", default=0))
     return cfg
 
 
