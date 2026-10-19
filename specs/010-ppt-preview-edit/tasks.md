@@ -161,5 +161,5 @@ Foundation → US1 (completion page) → US2 (fidelity/responsive/degraded) → 
 
 ## Phase 8: Convergence
 
-- [ ] T018 Re-import the regenerated chatflow v2 (dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml — rulebook now links page_url) in the Dify UI, publish it, hard-refresh the Chat UI, and run quickstart S1 (action bar renders; Preview/Edit opens the completion page; Download yields the .pptx) plus S5 (Dify webapp still shows the plain link) per US1/AC1, US4/AC1–4, SC-001, SC-006 (partial)
-- [ ] T019 Validate browser-side scenarios S2 and S3 from specs/010-ppt-preview-edit/quickstart.md: mobile-width readability of the completion page, and a same-chat revision producing a new completion page while the old page stays unchanged per US1/AC2, US2/AC2 (partial)
+- [x] T018 Re-import the regenerated chatflow v2 (dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml — rulebook now links page_url) in the Dify UI, publish it, hard-refresh the Chat UI, and run quickstart S1 (action bar renders; Preview/Edit opens the completion page; Download yields the .pptx) plus S5 (Dify webapp still shows the plain link) per US1/AC1, US4/AC1–4, SC-001, SC-006 (partial)
+- [x] T019 Validate browser-side scenarios S2 and S3 from specs/010-ppt-preview-edit/quickstart.md: mobile-width readability of the completion page, and a same-chat revision producing a new completion page while the old page stays unchanged per US1/AC2, US2/AC2 (partial)
