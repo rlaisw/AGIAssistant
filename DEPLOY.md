@@ -262,6 +262,7 @@ $VENV -m agentic_rag_mcp.deploy verify --dry-run   # plan only, touches nothing
 $VENV -m agentic_rag_mcp.deploy redeploy            # build → recreate → health → register/re-sync tools
 $VENV -m agentic_rag_mcp.deploy chatflow            # draft-update or import + publish the DSL
 $VENV -m agentic_rag_mcp.deploy verify              # 7-scenario headless battery (self-cleaning)
+$VENV -m agentic_rag_mcp.deploy cleanup             # prune deck projects older than [deploy] retention_days (default 30; 0 = keep forever)
 $VENV -m agentic_rag_mcp.deploy all                 # everything, aborting honestly on failure
 ```
 

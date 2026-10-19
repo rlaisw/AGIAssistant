@@ -103,11 +103,31 @@ def cmd_verify(dcfg: DeployConfig, dry: bool, skip_chat: bool = False) -> int:
     return len(failed)
 
 
+def cmd_cleanup(dcfg: DeployConfig, dry: bool, retention_days: int | None) -> int:
+    from .battery import prune_old_projects
+
+    days = retention_days if retention_days is not None else dcfg.retention_days
+    if dry:
+        would = prune_old_projects(days, dry=True)
+        print(f"dry-run plan (cleanup, retention {days}d): "
+              f"{len(would)} project(s) would be removed")
+        for name in would:
+            print(f"  - {name}")
+        return 0
+    removed = prune_old_projects(days)
+    print(f"cleanup: removed {len(removed)} project(s) older than {days} day(s)"
+          + (f": {', '.join(removed)}" if removed else ""))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="agentic-rag-deploy")
-    parser.add_argument("command", choices=["redeploy", "chatflow", "verify", "all"])
+    parser.add_argument("command",
+                         choices=["redeploy", "chatflow", "verify", "cleanup", "all"])
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--skip-chat", action="store_true")
+    parser.add_argument("--retention-days", type=int, default=None,
+                        help="override [deploy] retention_days for 'cleanup'")
     args = parser.parse_args(argv)
 
     from ..config import load_config
@@ -121,6 +141,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_chatflow(dcfg, args.dry_run)
     if args.command == "verify":
         return cmd_verify(dcfg, args.dry_run, args.skip_chat)
+    if args.command == "cleanup":
+        return cmd_cleanup(dcfg, args.dry_run, args.retention_days)
     # all: redeploy → chatflow → verify
     if args.dry_run:
         print("dry-run plan (all): redeploy → chatflow → verify")

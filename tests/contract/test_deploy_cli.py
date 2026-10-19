@@ -36,7 +36,7 @@ def run_cli(*args, env_extra=None):
 
 
 def test_dry_run_all_commands_touch_nothing():
-    for command in ("redeploy", "chatflow", "verify", "all"):
+    for command in ("redeploy", "chatflow", "verify", "cleanup", "all"):
         proc = run_cli(command, "--dry-run")
         assert proc.returncode == 0, (command, proc.stdout, proc.stderr)
         assert "dry-run plan" in proc.stdout
@@ -109,3 +109,49 @@ def test_config_error_exit_path(monkeypatch, tmp_path):
     for var in ("DIFY_CONSOLE_EMAIL", "DIFY_CONSOLE_PASSWORD"):
         os.environ.pop(var, None)
     assert main(["chatflow"]) == 2  # in-process; the subprocess test covers exit-code plumbing
+
+
+def test_cleanup_prunes_old_projects_keeps_recent(tmp_path, monkeypatch):
+    import os
+    import time
+
+    from agentic_rag_mcp.deploy import battery
+
+    root = tmp_path / "projects"
+    old = root / "deck_old"
+    recent = root / "deck_recent"
+    verify = root / "verify_123"
+    for d in (old, recent, verify):
+        d.mkdir(parents=True)
+        (d / "exports").mkdir()
+        (d / "exports" / "x.pptx").write_bytes(b"PK")
+    past = time.time() - 40 * 86400
+    os.utime(old / "exports" / "x.pptx", (past, past))
+    monkeypatch.setattr(battery, "projects_roots", lambda: [root])
+
+    removed = battery.prune_old_projects(30)
+    assert removed == ["deck_old"]
+    assert not old.exists()
+    assert recent.exists() and verify.exists()  # recent + battery projects untouched
+
+    dry = battery.prune_old_projects(30, dry=True)
+    assert dry == []  # nothing left to remove
+
+
+def test_cleanup_zero_retention_keeps_everything(tmp_path, monkeypatch):
+    from agentic_rag_mcp.deploy import battery
+
+    root = tmp_path / "projects"
+    d = root / "deck_forever"
+    (d / "exports").mkdir(parents=True)
+    (d / "exports" / "x.pptx").write_bytes(b"PK")
+    monkeypatch.setattr(battery, "projects_roots", lambda: [root])
+    assert battery.prune_old_projects(0) == []  # keep forever
+    assert d.exists()
+
+
+def test_cleanup_cli_dry_run(monkeypatch, tmp_path):
+    from agentic_rag_mcp.deploy.__main__ import main
+
+    out = main(["cleanup", "--dry-run", "--retention-days", "30"])
+    assert out == 0

@@ -81,6 +81,30 @@ def _sweep(report: list) -> None:
                 report.append(f"swept {p.name}")
 
 
+def prune_old_projects(retention_days: int, dry: bool = False) -> list[str]:
+    """Retention (spec 009 deferred item): remove project dirs whose newest
+    file is older than retention_days. Returns the removed (or would-remove) names."""
+    import time as _time
+
+    if retention_days <= 0:
+        return []  # keep forever
+    removed: list[str] = []
+    cutoff = _time.time() - retention_days * 86400
+    for root in projects_roots():
+        if not root.is_dir():
+            continue
+        for p in root.iterdir():
+            if not p.is_dir() or p.name == "README.md" or p.name.startswith("verify_"):
+                continue  # battery projects have their own sweep; README is not a deck
+            newest = max((f.stat().st_mtime for f in p.rglob("*") if f.is_file()),
+                         default=p.stat().st_mtime)
+            if newest < cutoff:
+                removed.append(p.name)
+                if not dry:
+                    shutil.rmtree(p, ignore_errors=True)
+    return removed
+
+
 def scenario_health(dcfg: DeployConfig) -> tuple[bool, str]:
     r = httpx.get("http://localhost:28080/healthz", timeout=10)
     return r.status_code == 200 and r.json().get("status") == "ok", f"healthz={r.status_code}"

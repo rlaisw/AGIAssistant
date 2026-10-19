@@ -8,7 +8,6 @@ import {
   BrainCircuit,
   Check,
   ChevronDown,
-  ChevronsUpDown,
   Code,
   Copy,
   FileText,
@@ -43,7 +42,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -69,13 +67,6 @@ type Conversation = {
   messages: Message[]
   difyId?: string
 }
-
-const models = [
-  { name: "GPT-5.2", description: "Best for complex reasoning" },
-  { name: "Claude Opus 4.5", description: "Strong writing and analysis" },
-  { name: "Gemini 3 Pro", description: "1M token context window" },
-  { name: "Llama 4 Maverick", description: "Open weights, fast" },
-]
 
 const sidebarGroups = ["Pinned", "Today", "Yesterday", "Previous 7 days"]
 
@@ -246,7 +237,6 @@ export default function Page() {
   const [conversations, setConversations] =
     React.useState<Conversation[]>(initialConversations)
   const [activeId, setActiveId] = React.useState("q3")
-  const [model, setModel] = React.useState(models[0].name)
   const [input, setInput] = React.useState("")
   const [sidebarOpen, setSidebarOpen] = React.useState(true)
   const [busy, setBusy] = React.useState(false)
@@ -592,29 +582,10 @@ export default function Page() {
           </Button>
           <span className="truncate text-sm font-medium">{active.title}</span>
           <div className="ml-auto flex items-center gap-1.5">
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={<Button variant="ghost" size="sm" />}
-              >
-                <Bot className="size-4" />
-                {model}
-                <ChevronsUpDown className="size-3.5 text-muted-foreground" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64">
-                <DropdownMenuLabel>Switch model</DropdownMenuLabel>
-                {models.map((m) => (
-                  <DropdownMenuItem key={m.name} onClick={() => setModel(m.name)}>
-                    <div className="flex flex-col">
-                      <span>{m.name}</span>
-                      <span className="text-xs font-normal text-muted-foreground">
-                        {m.description}
-                      </span>
-                    </div>
-                    {model === m.name && <Check className="ml-auto" />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Badge variant="secondary" className="gap-1.5 font-medium">
+              <Bot className="size-3.5" />
+              AgenticRAG
+            </Badge>
             <Button variant="outline" size="sm">
               <Share2 />
               Share
@@ -761,7 +732,7 @@ export default function Page() {
                       )}
                       {!m.streaming && (
                         <div className="flex items-center gap-1 text-muted-foreground">
-                          <span className="text-xs">{model}</span>
+                          <span className="text-xs">AgenticRAG</span>
                           <Button
                             variant="ghost"
                             size="icon-xs"
@@ -826,7 +797,7 @@ export default function Page() {
                 </Button>
                 <div className="ml-auto flex items-center gap-2">
                   <span className="hidden text-xs text-muted-foreground sm:inline">
-                    {model}
+                    AgenticRAG
                   </span>
                   <Button
                     size="icon-sm"

@@ -30,6 +30,7 @@ class DeployConfig:
     container: str = "agentic-rag"
     db_container: str = "docker-db_postgres-1"
     api_container: str = "docker-api-1"
+    retention_days: int = 30
     dsl_path: str = os.path.join(
         REPO_ROOT, "dify", "Chatflow Basic (AgenticRAG Agent + PPT-Master).yml"
     )
@@ -64,6 +65,7 @@ def resolve(cfg: Config) -> DeployConfig:
         container=str(deploy.get("container", "agentic-rag")),
         db_container=str(deploy.get("db_container", "docker-db_postgres-1")),
         api_container=str(deploy.get("api_container", "docker-api-1")),
+        retention_days=int(deploy.get("retention_days", 30)),
         dsl_path=str(dify.get("dsl_path")
                      or os.path.join(
                          REPO_ROOT, "dify", "Chatflow Basic (AgenticRAG Agent + PPT-Master).yml"

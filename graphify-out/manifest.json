@@ -132,10 +132,10 @@
     "semantic_hash": "923af067cd5c8c95f68283a563cc3bf7"
   },
   "dify/docker/mcp-server/server.py": {
-    "mtime": 1792224985.1486945,
-    "seen": 1792285896.032663,
-    "ast_hash": "b900ec42b971678dd782dab25f927e73",
-    "semantic_hash": "b900ec42b971678dd782dab25f927e73"
+    "mtime": 1792370946.5825565,
+    "seen": 1792402953.6635077,
+    "ast_hash": "ab9b38898b895201e098daa55a2027cd",
+    "semantic_hash": ""
   },
   "pyproject.toml": {
     "mtime": 1792224985.1506293,
@@ -216,10 +216,10 @@
     "semantic_hash": "366689124ca42b54b992cf8129db2ca6"
   },
   "src/agentic_rag_mcp/config.py": {
-    "mtime": 1792224985.159331,
-    "seen": 1792285896.0326722,
-    "ast_hash": "0a35b4efd5de1572a091d4367afe8298",
-    "semantic_hash": "0a35b4efd5de1572a091d4367afe8298"
+    "mtime": 1792292252.3757324,
+    "seen": 1792402953.6635187,
+    "ast_hash": "40754f0c8789e51ddaa5f0f424bf1901",
+    "semantic_hash": ""
   },
   "src/agentic_rag_mcp/errors.py": {
     "mtime": 1792224985.159331,
@@ -348,10 +348,10 @@
     "semantic_hash": "0351c98ec054f4bff086a5df3dcf735d"
   },
   "src/agentic_rag_mcp/server.py": {
-    "mtime": 1792224985.1601162,
-    "seen": 1792285896.0326877,
-    "ast_hash": "051bdfefb345bf7924198315e417a4b7",
-    "semantic_hash": "051bdfefb345bf7924198315e417a4b7"
+    "mtime": 1792292394.8220582,
+    "seen": 1792402953.6635492,
+    "ast_hash": "36761f22af27d4f6a855c8baf81dd355",
+    "semantic_hash": ""
   },
   "src/agentic_rag_mcp/sources/__init__.py": {
     "mtime": 1792224985.1601162,
@@ -714,9 +714,9 @@
     "semantic_hash": "b8ed482dd2103953e4f871e0ed12d4bd"
   },
   "README.md": {
-    "mtime": 1792224985.1483634,
-    "seen": 1792285896.0327384,
-    "ast_hash": "1caf8a0aec182b4eb798616c9b608466",
+    "mtime": 1792391152.6441252,
+    "seen": 1792402953.6636147,
+    "ast_hash": "7cd69f3938df7b25820ec7da651b5452",
     "semantic_hash": ""
   },
   "dify/Chatflow Basic (AgenticRAG Agent).yml": {
@@ -900,15 +900,15 @@
     "semantic_hash": "eba6943b2a2f6407162ae12e0218bdac"
   },
   "DEPLOY.md": {
-    "mtime": 1792224985.1483173,
-    "seen": 1792285896.0327377,
-    "ast_hash": "611d78ee2458917d4b5ede729cd7dddb",
+    "mtime": 1792391135.9159267,
+    "seen": 1792402953.6636143,
+    "ast_hash": "ebe9761427437fe22ed8bd91f3e728aa",
     "semantic_hash": ""
   },
   "docs/NETWORK.md": {
-    "mtime": 1792224985.1486945,
-    "seen": 1792285896.0327682,
-    "ast_hash": "4e0381fd48d05ac3d1db4615076126d1",
+    "mtime": 1792371109.3647304,
+    "seen": 1792402953.663658,
+    "ast_hash": "016a092fce3197376343449fb50f3210",
     "semantic_hash": ""
   },
   "specs/003-web-search-scrape/checklists/requirements.md": {
@@ -1122,9 +1122,9 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1792224985.148221,
-    "seen": 1792285896.0327373,
-    "ast_hash": "f36539ecc9af68f33ebd72770ce4a19e",
+    "mtime": 1792286513.1073544,
+    "seen": 1792402953.6636136,
+    "ast_hash": "677ab3e1c1d1ffb9ec3ee198c86bbcae",
     "semantic_hash": ""
   },
   "specs/003-web-search-scrape/tasks.md": {
@@ -1404,9 +1404,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/components/markdown.tsx": {
-    "mtime": 1792230084.3625495,
-    "seen": 1792285896.0326521,
-    "ast_hash": "508029c5964d13b38923155c0ca52f66",
+    "mtime": 1792371067.3601732,
+    "seen": 1792402953.663487,
+    "ast_hash": "b50504642666e9de7512e6ae925fd414",
     "semantic_hash": ""
   },
   "ai-chat-landing/components/theme-provider.tsx": {
@@ -1494,9 +1494,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/package.json": {
-    "mtime": 1792230038.3661432,
-    "seen": 1792285896.0326605,
-    "ast_hash": "4cb48bd9f6511936c5af3313403419bd",
+    "mtime": 1792370859.2982578,
+    "seen": 1792402953.6635044,
+    "ast_hash": "508295fc86bf0d3c6cfd30206835a661",
     "semantic_hash": ""
   },
   "ai-chat-landing/postcss.config.mjs": {
@@ -1662,9 +1662,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/AGENTS.md": {
-    "mtime": 1792225401.3109872,
-    "seen": 1792285896.0327518,
-    "ast_hash": "01e8142356e15c3404e0d84c48187cd0",
+    "mtime": 1792286513.9913647,
+    "seen": 1792402953.6636314,
+    "ast_hash": "ccc24fa8078ad64b72432e33d9a98b02",
     "semantic_hash": ""
   },
   "ai-chat-landing/CLAUDE.md": {
@@ -1674,9 +1674,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/README.md": {
-    "mtime": 1792225401.3109872,
-    "seen": 1792285896.032753,
-    "ast_hash": "a596f16c7397cd9c31b2c33bfcd1663a",
+    "mtime": 1792286243.3160143,
+    "seen": 1792402953.6636326,
+    "ast_hash": "f433eded436c88cd680817cb0552fe06",
     "semantic_hash": ""
   },
   "ai-chat-landing/agent/skills/migrate-radix-to-base/SKILL.md": {
@@ -1851,6 +1851,348 @@
     "mtime": 1792225426.3521452,
     "seen": 1792285896.0328102,
     "ast_hash": "cb56bf002d36bb860c3d320a23bd871a",
+    "semantic_hash": ""
+  },
+  "ai-chat-landing/components/deck-actions.tsx": {
+    "mtime": 1792371092.8325183,
+    "seen": 1792402953.6634855,
+    "ast_hash": "50c36d78f553c27537969071b18f0b31",
+    "semantic_hash": ""
+  },
+  "ai-chat-landing/lib/deck-url.test.ts": {
+    "mtime": 1792370923.9542482,
+    "seen": 1792402953.663501,
+    "ast_hash": "e66a6f29452bd84e1c9b4f9b4f7da4ac",
+    "semantic_hash": ""
+  },
+  "ai-chat-landing/lib/deck-url.ts": {
+    "mtime": 1792370947.4345658,
+    "seen": 1792402953.6635017,
+    "ast_hash": "eeb38975b06b956fd67348aef3893b60",
+    "semantic_hash": ""
+  },
+  "ai-chat-landing/vitest.config.ts": {
+    "mtime": 1792370859.077377,
+    "seen": 1792402953.663507,
+    "ast_hash": "9d37cdb59e6ba0f4e24d102e350faec5",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/deploy/__init__.py": {
+    "mtime": 1792384097.565692,
+    "seen": 1792402953.6635199,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/deploy/__main__.py": {
+    "mtime": 1792390417.3001132,
+    "seen": 1792402953.6635206,
+    "ast_hash": "18a69874761b3ad2af866ec91adce9cf",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/deploy/battery.py": {
+    "mtime": 1792393905.4601126,
+    "seen": 1792402953.663521,
+    "ast_hash": "c23e652a43639226ede4b77e38a43fb4",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/deploy/config.py": {
+    "mtime": 1792393516.047594,
+    "seen": 1792402953.6635218,
+    "ast_hash": "a9f3944a45be56b58a3eec09b58f7834",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/deploy/dify_console.py": {
+    "mtime": 1792394882.3235605,
+    "seen": 1792402953.6635222,
+    "ast_hash": "ff20e5b75b2c890ef630b4c30a8f96bf",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/deploy/docker_ops.py": {
+    "mtime": 1792390053.0750148,
+    "seen": 1792402953.6635227,
+    "ast_hash": "c239a9339954633197e869fe7d3b2bf7",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/deploy/report.py": {
+    "mtime": 1792390402.3371646,
+    "seen": 1792402953.6635237,
+    "ast_hash": "d276d9e1b38d686855b3653e9f8c5a81",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/deploy/tool_sync.py": {
+    "mtime": 1792384140.7863598,
+    "seen": 1792402953.663524,
+    "ast_hash": "98fd674d11847ceaa9e6308d3543257c",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/ppt/__init__.py": {
+    "mtime": 1792292323.1409202,
+    "seen": 1792402953.6635294,
+    "ast_hash": "dca4035a84c5b153ae5a1aff98083a03",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/ppt/bridge.py": {
+    "mtime": 1792370929.8623242,
+    "seen": 1792402953.6635303,
+    "ast_hash": "4cce85a7857dc76133720c54d449dfc8",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/ppt/completion.py": {
+    "mtime": 1792370887.78977,
+    "seen": 1792402953.6635308,
+    "ast_hash": "ed3145b1031d5ae4061bc368477916c4",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/ppt/errors.py": {
+    "mtime": 1792292299.1027343,
+    "seen": 1792402953.6635315,
+    "ast_hash": "a7b6b87461792401564726e1a20d4508",
+    "semantic_hash": ""
+  },
+  "src/agentic_rag_mcp/ppt/http_exports.py": {
+    "mtime": 1792292403.862199,
+    "seen": 1792402953.663532,
+    "ast_hash": "b26bc859c56b6197fd2e0ac8585c45bd",
+    "semantic_hash": ""
+  },
+  "tests/contract/test_deploy_cli.py": {
+    "mtime": 1792394432.1662283,
+    "seen": 1792402953.6635592,
+    "ast_hash": "91515356d96cdddf456d868713af83b3",
+    "semantic_hash": ""
+  },
+  "tests/contract/test_ppt_completion_contract.py": {
+    "mtime": 1792370906.9420235,
+    "seen": 1792402953.663563,
+    "ast_hash": "d25f5bc31cae543a284ced1e1b9f73cf",
+    "semantic_hash": ""
+  },
+  "tests/contract/test_ppt_contract.py": {
+    "mtime": 1792292878.2842243,
+    "seen": 1792402953.6635635,
+    "ast_hash": "6b6c80aad88c11c2787b3e8febca7513",
+    "semantic_hash": ""
+  },
+  "tests/fixtures/deploy/tools_list.json": {
+    "mtime": 1792384179.0349686,
+    "seen": 1792402953.6635664,
+    "ast_hash": "7242ebbbf89ba179015c1293348855af",
+    "semantic_hash": ""
+  },
+  "tests/integration/test_deploy_console.py": {
+    "mtime": 1792396311.5032613,
+    "seen": 1792402953.6635685,
+    "ast_hash": "8b6c8237290d6914cadd8f999fb60029",
+    "semantic_hash": ""
+  },
+  "tests/integration/test_ppt_completion_pipeline.py": {
+    "mtime": 1792371051.7279594,
+    "seen": 1792402953.6635716,
+    "ast_hash": "c82b082a975d5f5cb6c300fe1664c48a",
+    "semantic_hash": ""
+  },
+  "tests/integration/test_ppt_pipeline.py": {
+    "mtime": 1792292935.932476,
+    "seen": 1792402953.6635723,
+    "ast_hash": "064221a3eb925a97b502a00f9f914838",
+    "semantic_hash": ""
+  },
+  "tests/unit/test_deploy_config.py": {
+    "mtime": 1792384180.802996,
+    "seen": 1792402953.6635778,
+    "ast_hash": "960d4aa527ddea79c2fa1a6462596a6f",
+    "semantic_hash": ""
+  },
+  "tests/unit/test_deploy_sync_payload.py": {
+    "mtime": 1792384189.0831263,
+    "seen": 1792402953.6635785,
+    "ast_hash": "e21b7630c3737e662b3cd12d1eb62eb6",
+    "semantic_hash": ""
+  },
+  "tests/unit/test_ppt_bridge.py": {
+    "mtime": 1792292864.3814144,
+    "seen": 1792402953.6635861,
+    "ast_hash": "d3c497531782b725514ca9216bc186d4",
+    "semantic_hash": ""
+  },
+  "tests/unit/test_ppt_completion.py": {
+    "mtime": 1792370870.3295212,
+    "seen": 1792402953.6635866,
+    "ast_hash": "fe51cbf3337e85e5f13444a11a690a74",
+    "semantic_hash": ""
+  },
+  "dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml": {
+    "mtime": 1792371102.2919564,
+    "seen": 1792402953.6636486,
+    "ast_hash": "9d4521a264224c0942274280d83e0ab9",
+    "semantic_hash": ""
+  },
+  "dify/ppt-master-rulebook.md": {
+    "mtime": 1792371098.676596,
+    "seen": 1792402953.6636572,
+    "ast_hash": "e5974fe0b61cba7fad4211af9500d59b",
+    "semantic_hash": ""
+  },
+  "specs/009-ppt-master-mcp-tools/checklists/requirements.md": {
+    "mtime": 1792291198.925109,
+    "seen": 1792402953.6637092,
+    "ast_hash": "616912196078f915a44b17e60e653319",
+    "semantic_hash": ""
+  },
+  "specs/009-ppt-master-mcp-tools/contracts/ppt-tools.md": {
+    "mtime": 1792291966.2010567,
+    "seen": 1792402953.6637099,
+    "ast_hash": "46c8c1a1a69bf1fedcfe4b641f8258a5",
+    "semantic_hash": ""
+  },
+  "specs/009-ppt-master-mcp-tools/data-model.md": {
+    "mtime": 1792291951.2626805,
+    "seen": 1792402953.6637104,
+    "ast_hash": "20bff40292837fbdf922630a4639f2fc",
+    "semantic_hash": ""
+  },
+  "specs/009-ppt-master-mcp-tools/plan.md": {
+    "mtime": 1792291920.842159,
+    "seen": 1792402953.6637285,
+    "ast_hash": "4dccd2800b4207ba72f3caa2936bbb3f",
+    "semantic_hash": ""
+  },
+  "specs/009-ppt-master-mcp-tools/quickstart.md": {
+    "mtime": 1792291975.4430962,
+    "seen": 1792402953.6637292,
+    "ast_hash": "2c5131684792348fa43a956783ff7391",
+    "semantic_hash": ""
+  },
+  "specs/009-ppt-master-mcp-tools/research.md": {
+    "mtime": 1792291938.934476,
+    "seen": 1792402953.66373,
+    "ast_hash": "9d6e408530c89c7902709901f2c02d1d",
+    "semantic_hash": ""
+  },
+  "specs/009-ppt-master-mcp-tools/spec.md": {
+    "mtime": 1792291758.3153763,
+    "seen": 1792402953.6637304,
+    "ast_hash": "2080c75411b24051dde696e013e89985",
+    "semantic_hash": ""
+  },
+  "specs/009-ppt-master-mcp-tools/tasks.md": {
+    "mtime": 1792306092.480454,
+    "seen": 1792402953.6637309,
+    "ast_hash": "d76fcb9ebbf5a34f326bf3fdec19411b",
+    "semantic_hash": ""
+  },
+  "specs/010-ppt-preview-edit/checklists/requirements.md": {
+    "mtime": 1792370271.717209,
+    "seen": 1792402953.6637318,
+    "ast_hash": "bddedb80daa561b6e9609f2db70b18e6",
+    "semantic_hash": ""
+  },
+  "specs/010-ppt-preview-edit/contracts/completion-page.md": {
+    "mtime": 1792370740.6706269,
+    "seen": 1792402953.6637323,
+    "ast_hash": "5cf4ca74e6085f586da4b70928058244",
+    "semantic_hash": ""
+  },
+  "specs/010-ppt-preview-edit/data-model.md": {
+    "mtime": 1792370728.7436368,
+    "seen": 1792402953.6637328,
+    "ast_hash": "a87094cde109a42d95e3f371c9077597",
+    "semantic_hash": ""
+  },
+  "specs/010-ppt-preview-edit/plan.md": {
+    "mtime": 1792370705.1433122,
+    "seen": 1792402953.6637332,
+    "ast_hash": "0adf50890f3eca87d9df110ea974b8df",
+    "semantic_hash": ""
+  },
+  "specs/010-ppt-preview-edit/quickstart.md": {
+    "mtime": 1792370748.5919096,
+    "seen": 1792402953.6637337,
+    "ast_hash": "20c74f4fb9d84916124c1e897fc1f784",
+    "semantic_hash": ""
+  },
+  "specs/010-ppt-preview-edit/research.md": {
+    "mtime": 1792370720.4235225,
+    "seen": 1792402953.6637342,
+    "ast_hash": "f283643f09561bd4ec3ec1b58583bfb5",
+    "semantic_hash": ""
+  },
+  "specs/010-ppt-preview-edit/spec.md": {
+    "mtime": 1792370589.4937046,
+    "seen": 1792402953.6637347,
+    "ast_hash": "600c8dd2ee310cdb7904a78f1c8aed2b",
+    "semantic_hash": ""
+  },
+  "specs/010-ppt-preview-edit/tasks.md": {
+    "mtime": 1792372181.3736475,
+    "seen": 1792402953.6637354,
+    "ast_hash": "a5a5011a1266985ac99af09c69a09177",
+    "semantic_hash": ""
+  },
+  "specs/011-deploy-automation/checklists/requirements.md": {
+    "mtime": 1792383197.1906042,
+    "seen": 1792402953.6637359,
+    "ast_hash": "bde352606cb1fda8df197ad0fa4dfabc",
+    "semantic_hash": ""
+  },
+  "specs/011-deploy-automation/contracts/deploy-cli.md": {
+    "mtime": 1792383732.7185004,
+    "seen": 1792402953.6637363,
+    "ast_hash": "f588672a4eb1258f8601cd9c8374180a",
+    "semantic_hash": ""
+  },
+  "specs/011-deploy-automation/data-model.md": {
+    "mtime": 1792383721.0756583,
+    "seen": 1792402953.6637368,
+    "ast_hash": "728b25640aec34f4d3b9790e12fc0428",
+    "semantic_hash": ""
+  },
+  "specs/011-deploy-automation/plan.md": {
+    "mtime": 1792383695.6112454,
+    "seen": 1792402953.663737,
+    "ast_hash": "dd6249f3c8744eb39249f0e9f6e9d18f",
+    "semantic_hash": ""
+  },
+  "specs/011-deploy-automation/quickstart.md": {
+    "mtime": 1792383740.719975,
+    "seen": 1792402953.6637375,
+    "ast_hash": "d541c8fcdd69813c173bb81b4c01fffd",
+    "semantic_hash": ""
+  },
+  "specs/011-deploy-automation/research.md": {
+    "mtime": 1792383710.351484,
+    "seen": 1792402953.663738,
+    "ast_hash": "a296faa7e12bf199245954b5d42af545",
+    "semantic_hash": ""
+  },
+  "specs/011-deploy-automation/spec.md": {
+    "mtime": 1792383620.4700158,
+    "seen": 1792402953.6637387,
+    "ast_hash": "3e97b4c0bffa9045d5bc0e8c5bec5127",
+    "semantic_hash": ""
+  },
+  "specs/011-deploy-automation/tasks.md": {
+    "mtime": 1792394450.8331835,
+    "seen": 1792402953.6637392,
+    "ast_hash": "37ad6dd9981fc5224a25c61b32b5e3f9",
+    "semantic_hash": ""
+  },
+  "tests/fixtures/ppt/failing.svg": {
+    "mtime": 1792292680.3265932,
+    "seen": 1792402953.6637452,
+    "ast_hash": "ee6dc5103ba72770faf1908bb0d2ecc2",
+    "semantic_hash": ""
+  },
+  "tests/fixtures/ppt/passing.svg": {
+    "mtime": 1792292679.658583,
+    "seen": 1792402953.6637459,
+    "ast_hash": "0475c307fafb2ddda685d94f379965fe",
+    "semantic_hash": ""
+  },
+  "tests/fixtures/ppt/passing2.svg": {
+    "mtime": 1792370912.6781034,
+    "seen": 1792402953.6637464,
+    "ast_hash": "148457d5708d813368307d34ae39c52e",
     "semantic_hash": ""
   }
 }
