@@ -69,12 +69,26 @@ def _normalize_data(chart_type: str, data: list) -> list:
     return normalized
 
 
-def generate_chart(cfg: Config, chart_type: str, data: list, title: str = "") -> dict:
+def generate_chart(cfg: Config, chart_type: str, data: list, title: str = "",
+                   axis_x_title: str = "", axis_y_title: str = "",
+                   width: int = 0, height: int = 0) -> dict:
     _validate(chart_type, data, title)
+    if len(axis_x_title) > 60 or len(axis_y_title) > 60:
+        raise AntvInvalidInput("axis titles are capped at 60 chars")
+    if not (0 <= width <= 4000 and 0 <= height <= 4000):
+        raise AntvInvalidInput("width/height must be 0 (service default) or <= 4000")
     data = _normalize_data(chart_type, data)
     payload = {"type": chart_type, "data": data}
     if title:
         payload["title"] = title
+    if axis_x_title:
+        payload["axisXTitle"] = axis_x_title
+    if axis_y_title:
+        payload["axisYTitle"] = axis_y_title
+    if width:
+        payload["width"] = width
+    if height:
+        payload["height"] = height
     try:
         resp = httpx.post(cfg.antv_chart_service_url, json=payload,
                           timeout=cfg.antv_chart_timeout_s)

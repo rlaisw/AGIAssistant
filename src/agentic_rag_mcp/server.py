@@ -573,7 +573,9 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
             return _antv_envelope(exc)
 
     @mcp.tool()
-    def antv_chart(chart_type: str, data: list, title: str = "") -> dict:
+    def antv_chart(chart_type: str, data: list, title: str = "",
+                   axis_x_title: str = "", axis_y_title: str = "",
+                   width: int = 0, height: int = 0) -> dict:
         """Generate a chart image from data. Returns {chart_type, image_url, usage}.
 
         MANDATORY data format — normalize BEFORE calling, or the chart renders empty:
@@ -582,6 +584,11 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
         [{"category": "Peter", "value": 180}, {"category": "Mary", "value": 165}]
         Rename any source columns to these exact fields ("Student"->"category",
         "Height (cm)"->"value"); values must be numbers, not strings.
+        Any 2-field record shape is auto-normalized, but canonical fields are safest.
+
+        axis_x_title / axis_y_title set human axis labels (e.g. "Students",
+        "Height (cm)") — by default the axes are labeled with the raw field names.
+        width/height (px, <= 4000, 0 = service default) override the render size.
 
         Chart-type selection guide: trends over time -> line/area; comparisons ->
         bar/column; proportions -> pie/treemap; distributions -> histogram/boxplot;
@@ -591,7 +598,8 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
         Supported types: line, area, bar, column, pie, radar, scatter, histogram,
         funnel, treemap, sankey, dual-axes, word-cloud, boxplot, venn, liquid,
         flow, mind-map, fishbone, organization, network."""
-        return _antv(antv_charts_mod.generate_chart, chart_type, data, title)
+        return _antv(antv_charts_mod.generate_chart, chart_type, data, title,
+                     axis_x_title, axis_y_title, width, height)
 
     @mcp.tool()
     def antv_infographic(description: str) -> dict:
