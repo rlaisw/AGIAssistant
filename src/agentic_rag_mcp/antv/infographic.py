@@ -22,27 +22,28 @@ _PAGE_TEMPLATE = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Infographic</title>
 <style>
-body{{margin:0;background:#fafafa;font-family:system-ui,sans-serif}}
-#container{{max-width:960px;margin:0 auto;padding:24px 16px}}
-#error{{display:none;padding:48px 16px;text-align:center;color:#b3261e}}
+body{margin:0;background:#fafafa;font-family:system-ui,sans-serif}
+#container{max-width:960px;margin:0 auto;padding:24px 16px}
+#error{display:none;padding:48px 16px;text-align:center;color:#b3261e;white-space:pre-wrap}
 </style>
 </head>
 <body>
-<div id="container"><div id="error">The infographic engine could not be loaded (CDN unreachable).<br>
-Check the network and reload.</div></div>
-<script src="https://cdn.jsdelivr.net/npm/@antv/infographic@latest/dist/infographic.min.js"></script>
+<div id="container"><div id="error">loading…</div></div>
+<script src="https://cdn.jsdelivr.net/npm/@antv/infographic@latest/dist/infographic.min.js"><\/script>
 <script>
 const syntax = {syntax_json};
-const el = document.getElementById('error');
-try {{
-  const { {"Infographic": Infographic} } = window;
-  if (!Infographic) throw new Error('engine missing');
-  el.style.display = 'none';
-  const ig = new Infographic({{container: '#container', width: '100%', height: '100%'}});
+const errorEl = document.getElementById('error');
+try {
+  if (!window.Infographic) throw new Error('engine failed to load (CDN unreachable?)');
+  errorEl.style.display = 'none';
+  const ig = new window.Infographic({
+    container: '#container', width: '100%', height: '100%',
+  });
   ig.render(syntax);
-}} catch (e) {{
-  el.textContent = 'Infographic error: ' + (e && e.message ? e.message : 'unknown');
-}}
+} catch (e) {
+  errorEl.style.display = 'block';
+  errorEl.textContent = 'Infographic error: ' + (e && e.message ? e.message : 'unknown');
+}
 </script>
 </body>
 </html>
