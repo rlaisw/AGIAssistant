@@ -576,6 +576,13 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
     def antv_chart(chart_type: str, data: list, title: str = "") -> dict:
         """Generate a chart image from data. Returns {chart_type, image_url, usage}.
 
+        MANDATORY data format — normalize BEFORE calling, or the chart renders empty:
+        each item is an object with the canonical field names "category" and "value"
+        (use "time" instead of "category" for time-series types line/area):
+        [{"category": "Peter", "value": 180}, {"category": "Mary", "value": 165}]
+        Rename any source columns to these exact fields ("Student"->"category",
+        "Height (cm)"->"value"); values must be numbers, not strings.
+
         Chart-type selection guide: trends over time -> line/area; comparisons ->
         bar/column; proportions -> pie/treemap; distributions -> histogram/boxplot;
         relationships -> scatter/dual-axes; hierarchies -> treemap/organization;
