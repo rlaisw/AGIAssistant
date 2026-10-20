@@ -8,6 +8,7 @@ Page writing and SVG sanitization are native (no script involved).
 from __future__ import annotations
 
 import os
+import httpx
 import re
 import subprocess
 import sys
@@ -232,6 +233,60 @@ def icon_sync(cfg: Config, project_id: str, icons: list[str]) -> dict:
     return {"synced": synced, "missing": []}
 
 
+_REMOTE_IMAGE_RE = re.compile(r'href="(https://[^"]+)"')
+
+
+def _sniff_image_mime(content: bytes) -> str:
+    """Trust the bytes, not the header — the chart CDN mislabels PNG as JPEG."""
+    if content.startswith(b"\x89PNG"):
+        return "image/png"
+    if content.startswith(b"\xff\xd8\xff"):
+        return "image/jpeg"
+    if content.startswith(b"GIF8"):
+        return "image/gif"
+    if content.startswith(b"RIFF") and content[8:12] == b"WEBP":
+        return "image/webp"
+    if content[:6] in (b"II*\x00\x00\x00", b"MM\x00\x00\x00*"):
+        return "image/tiff"
+    if content.startswith(b"<svg") or content.startswith(b"<?xml"):
+        return "image/svg+xml"
+    return "image/png"
+
+
+def _inline_remote_images(cfg: Config, svg: str) -> str:
+    """Self-contained decks (spec 012, Clarification 2026-10-20 Option A):
+    fetch every remote <image href> and re-embed as a data: URI at write time.
+    A failed or oversized fetch is an honest named error; nothing is persisted."""
+    hrefs = _REMOTE_IMAGE_RE.findall(svg)
+    if not hrefs:
+        return svg
+    import base64
+
+    out = svg
+    for href in hrefs:
+        try:
+            resp = httpx.get(href, timeout=30, follow_redirects=True)
+        except httpx.HTTPError as exc:
+            raise InvalidInput(
+                f"image fetch failed for {href}: {exc.__class__.__name__} — "
+                "re-reference a reachable image or remove it"
+            ) from exc
+        if resp.status_code != 200:
+            raise InvalidInput(
+                f"image fetch failed for {href} (HTTP {resp.status_code}) — "
+                "re-reference a reachable image or remove it"
+            )
+        if len(resp.content) > cfg.antv_max_inline_image_bytes:
+            raise InvalidInput(
+                f"image at {href} is {len(resp.content)} bytes, over the "
+                f"{cfg.antv_max_inline_image_bytes} byte cap — use a smaller image"
+            )
+        mime = _sniff_image_mime(resp.content)
+        encoded = base64.b64encode(resp.content).decode()
+        out = out.replace(f'href="{href}"', f'href="data:{mime};base64,{encoded}"')
+    return out
+
+
 def write_page(cfg: Config, project_id: str, page_number: int, name: str, svg: str) -> dict:
     ws = _workspace(cfg, project_id)
     if not isinstance(page_number, int) or page_number < 1 or page_number > cfg.ppt_max_pages:
@@ -239,6 +294,7 @@ def write_page(cfg: Config, project_id: str, page_number: int, name: str, svg: s
     if not name or not _NAME_RE.match(name):
         raise InvalidInput("name must be a lowercase url-safe slug (a-z, 0-9, -, _)")
     sanitize_svg(svg)
+    svg = _inline_remote_images(cfg, svg)
     out_dir = ws / "svg_output"
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{page_number:02d}_{name}.svg"

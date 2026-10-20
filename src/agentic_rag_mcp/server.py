@@ -558,6 +558,46 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
         Returns {file, url} — the url is a clickable download link for the chat answer."""
         return _ppt(ppt_bridge.export_pptx, project_id)
 
+    # ---- AntV visualization tools (spec 012): charts + infographics ----
+
+    from .antv import charts as antv_charts_mod
+    from .antv import infographic as antv_infographic_mod
+    from .antv.errors import AntvError, envelope as _antv_envelope
+
+    def _antv(fn, *args):
+        """Run an antv tool body; AntvError -> honest envelope (FR-006)."""
+        try:
+            return fn(cfg, *args)
+        except AntvError as exc:
+            log.warning("antv tool error: %s", exc.code)
+            return _antv_envelope(exc)
+
+    @mcp.tool()
+    def antv_chart(chart_type: str, data: list, title: str = "") -> dict:
+        """Generate a chart image from data. Returns {chart_type, image_url, usage}.
+
+        Chart-type selection guide: trends over time -> line/area; comparisons ->
+        bar/column; proportions -> pie/treemap; distributions -> histogram/boxplot;
+        relationships -> scatter/dual-axes; hierarchies -> treemap/organization;
+        flows -> sankey/flow; funnels -> funnel; ranking -> sorted bar/column;
+        multi-dimensional -> radar; part-of-whole emphasis -> liquid/venn.
+        Supported types: line, area, bar, column, pie, radar, scatter, histogram,
+        funnel, treemap, sankey, dual-axes, word-cloud, boxplot, venn, liquid,
+        flow, mind-map, fishbone, organization, network."""
+        return _antv(antv_charts_mod.generate_chart, chart_type, data, title)
+
+    @mcp.tool()
+    def antv_infographic(description: str) -> dict:
+        """Render an infographic from declarative AntV infographic syntax.
+        Returns {id, url, usage} — the url opens the rendered infographic in a browser.
+
+        Syntax guide: first line is the template call, e.g.
+        'infographic list-row-simple-horizontal-arrow', followed by an indented
+        data block ('data' -> 'lists' -> '- label X' / 'desc Y' items). Keep the
+        syntax small and well-formed; ~200 built-in templates exist (lists,
+        steps, comparisons, timelines, hierarchies)."""
+        return _antv(antv_infographic_mod.create_infographic, description)
+
     return mcp
 
 

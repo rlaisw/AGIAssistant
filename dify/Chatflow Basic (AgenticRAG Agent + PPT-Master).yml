@@ -1,5 +1,5 @@
 app:
-  description: AgenticRAG agent + PPT-Master deck generator. Deck requests route to the PPT-Master agent (ppt_* MCP tools, spec 009/010); everything else goes to the AgenticRAG agent.
+  description: AgenticRAG agent + PPT-Master deck generator with AntV visualization (ppt_*/antv_* MCP tools, specs 009/010/012); deck requests route to PPT-Master.
   icon: 💬
   icon_background: '#FEF7C3'
   icon_type: emoji
@@ -168,86 +168,6 @@ workflow:
             value:
             - enabled: true
               extra:
-                description: Answer a question with agentic retrieval and per-source citations.
-              parameters: {}
-              provider_name: agentic-rag
-              settings: {}
-              tool_description: Answer a question with agentic retrieval and per-source citations.
-              tool_label: ask
-              tool_name: ask
-              type: mcp
-            - enabled: true
-              extra:
-                description: Direct vector search without synthesis.
-              parameters: {}
-              provider_name: agentic-rag
-              settings: {}
-              tool_description: Direct vector search without synthesis.
-              tool_label: search
-              tool_name: search
-              type: mcp
-            - enabled: true
-              extra:
-                description: Register a source. Types- local_folder, sqlite, onedrive.
-              parameters: {}
-              provider_name: agentic-rag
-              settings: {}
-              tool_description: Register a source. Types- local_folder, sqlite, onedrive.
-              tool_label: sources_add
-              tool_name: sources_add
-              type: mcp
-            - enabled: true
-              extra:
-                description: List sources with health and sync metadata.
-              parameters: {}
-              provider_name: agentic-rag
-              settings: {}
-              tool_description: List sources with health and sync metadata.
-              tool_label: sources_list
-              tool_name: sources_list
-              type: mcp
-            - enabled: true
-              extra:
-                description: Remove a source; drops documents whose last origin was this source.
-              parameters: {}
-              provider_name: agentic-rag
-              settings: {}
-              tool_description: Remove a source; drops documents whose last origin was this source.
-              tool_label: sources_remove
-              tool_name: sources_remove
-              type: mcp
-            - enabled: true
-              extra:
-                description: Manually trigger incremental sync.
-              parameters: {}
-              provider_name: agentic-rag
-              settings: {}
-              tool_description: Manually trigger incremental sync.
-              tool_label: sources_sync
-              tool_name: sources_sync
-              type: mcp
-            - enabled: true
-              extra:
-                description: Optional graph search (Graphify layer); disabled by default.
-              parameters: {}
-              provider_name: agentic-rag
-              settings: {}
-              tool_description: Optional graph search (Graphify layer); disabled by default.
-              tool_label: graph_query
-              tool_name: graph_query
-              type: mcp
-            - enabled: true
-              extra:
-                description: 'Server health: decision layer, per-source health, index counters.'
-              parameters: {}
-              provider_name: agentic-rag
-              settings: {}
-              tool_description: 'Server health: decision layer, per-source health, index counters.'
-              tool_label: status
-              tool_name: status
-              type: mcp
-            - enabled: true
-              extra:
                 description: Live web search via configured providers (SearXNG first; falls back to Tavily/Exa).
               parameters: {}
               provider_name: agentic-rag
@@ -278,53 +198,23 @@ workflow:
               type: mcp
             - enabled: true
               extra:
-                description: 'Domain-scoped web search: results only from the profile configured authoritative sites (site: hard filter + post-filter).'
+                description: Generate a chart image (bar/line/pie/…) from data; returns an embeddable image URL.
               parameters: {}
               provider_name: agentic-rag
               settings: {}
-              tool_description: 'Domain-scoped web search: results only from the profile configured authoritative sites (site: hard filter + post-filter).'
-              tool_label: specialty_search
-              tool_name: specialty_search
+              tool_description: Generate a chart image (bar/line/pie/…) from data; returns an embeddable image URL.
+              tool_label: antv_chart
+              tool_name: antv_chart
               type: mcp
             - enabled: true
               extra:
-                description: List available specialty search profiles with their sites and descriptions. Call this first to discover which profiles exist.
+                description: Render an infographic from declarative syntax; returns a browser-viewable URL.
               parameters: {}
               provider_name: agentic-rag
               settings: {}
-              tool_description: List available specialty search profiles with their sites and descriptions. Call this first to discover which profiles exist.
-              tool_label: specialty_profiles
-              tool_name: specialty_profiles
-              type: mcp
-            - enabled: true
-              extra:
-                description: Complete Microsoft sign-in for OneDrive sources (device code flow). Returns the sign-in URL and user code; relay both to the user.
-              parameters: {}
-              provider_name: agentic-rag
-              settings: {}
-              tool_description: Complete Microsoft sign-in for OneDrive sources (device code flow). Returns the sign-in URL and user code; relay both to the user.
-              tool_label: sources_auth
-              tool_name: sources_auth
-              type: mcp
-            - enabled: true
-              extra:
-                description: Browse OneDrive file metadata (path, name, size, modified) without downloading content. Optional name filter. Embed chosen files with onedrive_embed_files.
-              parameters: {}
-              provider_name: agentic-rag
-              settings: {}
-              tool_description: Browse OneDrive file metadata (path, name, size, modified) without downloading content. Optional name filter. Embed chosen files with onedrive_embed_files.
-              tool_label: onedrive_list_files
-              tool_name: onedrive_list_files
-              type: mcp
-            - enabled: true
-              extra:
-                description: Embed ONLY the named OneDrive files (paths and/or item ids), one-time. Per-file honest outcomes; never syncs the whole drive.
-              parameters: {}
-              provider_name: agentic-rag
-              settings: {}
-              tool_description: Embed ONLY the named OneDrive files (paths and/or item ids), one-time. Per-file honest outcomes; never syncs the whole drive.
-              tool_label: onedrive_embed_files
-              tool_name: onedrive_embed_files
+              tool_description: Render an infographic from declarative syntax; returns a browser-viewable URL.
+              tool_label: antv_infographic
+              tool_name: antv_infographic
               type: mcp
         agent_strategy_label: FunctionCalling
         agent_strategy_name: function_calling
@@ -478,6 +368,12 @@ workflow:
               **Sources rule (mandatory):** when any page carries facts that came from web research (web_search / web_research), the LAST page of the deck (or a footnote zone on each content page if the deck is one page) MUST list the sources as a footnote zone — one small line per source: `Source: <site/domain>` at footnote size (16, muted #5F6B7A) above the page bottom margin. A deck built purely from the user''s pasted text needs no sources zone. Never state a number, name, or date you did not get from research, the user''s material, or an earlier tool response in this conversation.
 
 
+              ## Charts in decks
+
+
+              When a page presents comparisons, trends, proportions, or rankings, generate a chart instead of tables of numbers: call `antv_chart(chart_type, data, title)` — it returns `image_url`; embed it as `<image href="..." x y width height/>` inside a properly grouped `<g>` zone (not top-level). Choose the type by intent: trends → line/area, comparisons → bar/column, proportions → pie/treemap, distributions → histogram/boxplot. Size charts within their zone (a common choice: 640×360 inside a 1280×720 page). The deck pipeline downloads and embeds the image bytes automatically — exported decks are self-contained; if the image fetch fails, fix or remove the image before retrying (the page will be rejected otherwise).
+
+
               ## Input modes
 
 
@@ -573,6 +469,16 @@ workflow:
               type: mcp
             - enabled: true
               extra:
+                description: Generate a chart image (bar/line/pie/…) from data; returns an embeddable image URL.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Generate a chart image (bar/line/pie/…) from data; returns an embeddable image URL.
+              tool_label: antv_chart
+              tool_name: antv_chart
+              type: mcp
+            - enabled: true
+              extra:
                 description: Live web search via configured providers (SearXNG first; falls back to Tavily/Exa).
               parameters: {}
               provider_name: agentic-rag
@@ -594,7 +500,7 @@ workflow:
         agent_strategy_label: FunctionCalling
         agent_strategy_name: function_calling
         agent_strategy_provider_name: langgenius/agent/agent
-        desc: Deck generator wired to the ppt_* MCP tools (spec 009/010).
+        desc: Deck generator wired to the ppt_* + antv_* MCP tools (specs 009/010/012).
         isInIteration: false
         isInLoop: false
         memory:

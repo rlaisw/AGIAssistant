@@ -111,6 +111,20 @@ async def completion_slide(request) -> Response:
     return FileResponse(path, media_type="image/svg+xml")
 
 
+async def infographic_page(request) -> Response:
+    """Serve a rendered infographic: GET /infographics/<id>/ (spec 012)."""
+    from agentic_rag_mcp.antv.errors import AntvInvalidInput
+    from agentic_rag_mcp.antv.infographic import render_infographic_page
+
+    try:
+        page = render_infographic_page(cfg, request.path_params["id"])
+    except AntvInvalidInput:
+        return Response("bad request", status_code=400)
+    except FileNotFoundError:
+        return Response("not found", status_code=404)
+    return HTMLResponse(page)
+
+
 async def mcp_get(request) -> Response:
     """Browsers/probes that GET /mcp get a clean 405 instead of a confusing
     JSON-RPC 406. Per MCP streamable-HTTP spec, servers without the optional
@@ -137,6 +151,7 @@ app = Starlette(
         Route("/decks/{project_id}/{stem}/", completion_page, methods=["GET"]),
         Route("/decks/{project_id}/{stem}/slides/{filename}", completion_slide,
               methods=["GET"]),
+        Route("/infographics/{id}/", infographic_page, methods=["GET"]),
         *streamable.routes,
         *sse.routes,
     ],

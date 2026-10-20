@@ -121,6 +121,11 @@ class Config:
     ppt_max_pages: int = 5
     ppt_script_timeout_s: float = 120.0
     ppt_retention_days: int = 0
+    antv_chart_service_url: str = "https://antv-studio.alipay.com/api/gpt-vis"
+    antv_chart_timeout_s: float = 30.0
+    antv_max_inline_image_bytes: int = 2_097_152
+    antv_infographic_max_syntax_bytes: int = 65_536
+    antv_infographic_served_root: Path = Path("/opt/ppt-master/projects/infographics")
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -185,6 +190,24 @@ def load_config(path: Path | None = None) -> Config:
     cfg.ppt_max_pages = int(_get(raw, "ppt", "max_pages", default=5))
     cfg.ppt_script_timeout_s = float(_get(raw, "ppt", "script_timeout_s", default=120.0))
     cfg.ppt_retention_days = int(_get(raw, "ppt", "retention_days", default=0))
+    cfg.antv_chart_service_url = str(
+        os.environ.get("ANTV_CHART_SERVICE_URL")
+        or _get(raw, "antv", "chart_service_url",
+                default=str(cfg.antv_chart_service_url))
+    )
+    cfg.antv_chart_timeout_s = float(_get(raw, "antv", "chart_timeout_s", default=30.0))
+    cfg.antv_max_inline_image_bytes = int(
+        _get(raw, "antv", "max_inline_image_bytes", default=2_097_152)
+    )
+    cfg.antv_infographic_max_syntax_bytes = int(
+        _get(raw, "antv", "infographic_max_syntax_bytes", default=65_536)
+    )
+    default_infographic_root = str(
+        Path(str(cfg.ppt_scripts_root)).parent.parent / "projects" / "infographics"
+    )
+    cfg.antv_infographic_served_root = Path(
+        str(_get(raw, "antv", "infographic_served_root", default=default_infographic_root))
+    ).expanduser()
     return cfg
 
 

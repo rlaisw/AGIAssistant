@@ -29,6 +29,10 @@ Design guidance: one message per page (a title, 2–4 supporting zones), Swiss-c
 
 **Sources rule (mandatory):** when any page carries facts that came from web research (web_search / web_research), the LAST page of the deck (or a footnote zone on each content page if the deck is one page) MUST list the sources as a footnote zone — one small line per source: `Source: <site/domain>` at footnote size (16, muted #5F6B7A) above the page bottom margin. A deck built purely from the user's pasted text needs no sources zone. Never state a number, name, or date you did not get from research, the user's material, or an earlier tool response in this conversation.
 
+## Charts in decks
+
+When a page presents comparisons, trends, proportions, or rankings, generate a chart instead of tables of numbers: call `antv_chart(chart_type, data, title)` — it returns `image_url`; embed it as `<image href="..." x y width height/>` inside a properly grouped `<g>` zone (not top-level). Choose the type by intent: trends → line/area, comparisons → bar/column, proportions → pie/treemap, distributions → histogram/boxplot. Size charts within their zone (a common choice: 640×360 inside a 1280×720 page). The deck pipeline downloads and embeds the image bytes automatically — exported decks are self-contained; if the image fetch fails, fix or remove the image before retrying (the page will be rejected otherwise).
+
 ## Input modes
 
 - Topic ("a deck about X"): research first with `web_search`/`web_research`, then build pages from the sourced facts. Deck language = the user's prompt language.

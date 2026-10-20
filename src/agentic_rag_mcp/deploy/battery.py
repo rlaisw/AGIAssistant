@@ -6,6 +6,7 @@ names; teardown sweep; exit code = failed-scenario count (FR-011 cleanup).
 
 from __future__ import annotations
 
+import io
 import json
 import pathlib
 import re
@@ -204,6 +205,75 @@ def scenario_chat_journey(dcfg: DeployConfig) -> tuple[bool, str]:
     return served, f"link={url} serves={target.status_code}"
 
 
+def scenario_antv_chart(dcfg: DeployConfig) -> tuple[bool, str]:
+    try:
+        result = mcp_call("antv_chart", {
+            "chart_type": "bar",
+            "data": [{"category": "S1", "value": 10}, {"category": "S2", "value": 20}],
+            "title": "battery",
+        })
+        if "error" in result:
+            return False, f"tool error: {result['error'].get('code')}"
+        img = httpx.get(result["image_url"], timeout=60, follow_redirects=True)
+        return (img.status_code == 200
+                and img.headers.get("Content-Type", "").startswith("image/"),
+                f"chart={result['chart_type']} image={img.status_code} bytes={len(img.content)}")
+    except Exception as exc:  # noqa: BLE001
+        return False, f"{exc.__class__.__name__}: {str(exc)[:120]}"
+
+
+def scenario_antv_infographic(dcfg: DeployConfig) -> tuple[bool, str]:
+    try:
+        result = mcp_call("antv_infographic", {
+            "description": "infographic list-row-simple\ndata\n  lists\n    - label A\n      desc B\n",
+        })
+        if "error" in result:
+            return False, f"tool error: {result['error'].get('code')}"
+        page = httpx.get(result["url"], timeout=30, follow_redirects=True)
+        ok = page.status_code == 200 and "cdn.jsdelivr.net" in page.text
+        return ok, f"route={page.status_code} id={result['id']}"
+    except Exception as exc:  # noqa: BLE001
+        return False, f"{exc.__class__.__name__}: {str(exc)[:120]}"
+
+
+def scenario_chart_in_deck(dcfg: DeployConfig) -> tuple[bool, str]:
+    import zipfile
+
+    try:
+        chart = mcp_call("antv_chart", {
+            "chart_type": "bar",
+            "data": [{"category": "A", "value": 1}, {"category": "B", "value": 2}],
+            "title": "battery deck",
+        })
+        if "error" in chart:
+            return False, f"chart tool error: {chart['error'].get('code')}"
+        svg = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" '
+            'font-family="Segoe UI, sans-serif" data-pptx-page-role="content">'
+            '<rect id="bg" data-pptx-role="background" x="0" y="0" width="1280" height="720" fill="#FAFAFA"/>'
+            '<g id="chart" data-pptx-bounds="64 64 640 400">'
+            f'<image href="{chart["image_url"]}" x="64" y="64" width="640" height="360"/>'
+            "</g></svg>"
+        )
+        pid = mcp_call("ppt_project_init",
+                       {"name": f"verify_chartdeck_{int(time.time())}"})["project_id"]
+        mcp_call("ppt_write_page", {"project_id": pid, "page_number": 1,
+                                    "name": "chart", "svg": svg})
+        check = mcp_call("ppt_check", {"project_id": pid})
+        if not check.get("passing"):
+            return False, f"check not passing: {str(check.get('details'))[:150]}"
+        exported = mcp_call("ppt_export", {"project_id": pid})
+        if "error" in exported:
+            return False, f"export error: {exported['error'].get('code')}"
+        # the deck round-trip fetches the pptx over HTTP (container-side root)
+        artifact = httpx.get(exported["url"], timeout=60).content
+        with zipfile.ZipFile(io.BytesIO(artifact)) as z:
+            media = [n for n in z.namelist() if n.startswith("ppt/media/")]
+        return bool(media), f"media_files={len(media)} exported={exported['file']}"
+    except Exception as exc:  # noqa: BLE001
+        return False, f"{exc.__class__.__name__}: {str(exc)[:120]}"
+
+
 def registry(skip_chat: bool = False) -> list[tuple[str, object]]:
     scenarios = [
         ("health", scenario_health),
@@ -212,6 +282,9 @@ def registry(skip_chat: bool = False) -> list[tuple[str, object]]:
         ("completion-page", scenario_completion_page),
         ("honest-errors", scenario_honest_errors),
         ("chat-ui-liveness", scenario_chat_ui_liveness),
+        ("antv-chart", scenario_antv_chart),
+        ("antv-infographic", scenario_antv_infographic),
+        ("chart-in-deck", scenario_chart_in_deck),
     ]
     if not skip_chat:
         scenarios.append(("chat-journey", scenario_chat_journey))

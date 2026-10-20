@@ -247,9 +247,7 @@ Notes: v1 bounds decks at 5 pages per run (`[ppt] max_pages` in config.toml); sa
 
 **Completion pages & in-chat actions (spec 010)**: every export also returns an additive `page_url` — `GET /decks/<project>/<stem>/` on the same port serves a browser completion page (per-slide previews snapshotted at export time, download button, back-to-chat edit path; honest degraded state if preview generation failed). Slide assets: `GET /decks/<project>/<stem>/slides/<file>.svg`. The AI Chat UI renders deck links in answers as an action bar (Download / Preview-Edit icons) via its markdown interceptor — the Dify webapp shows the plain link (graceful degradation). Chat UI tests: `pnpm test` (vitest) inside `ai-chat-landing/`.
 
-## Step 10 — Deployment automation (spec 011)
-
-One command rebuilds, redeploys, updates the chatflow, and verifies the whole stack — no Dify UI actions, no prompts:
+## Step 10 — Deployment automation (spec 011)One command rebuilds, redeploys, updates the chatflow, and verifies the whole stack — no Dify UI actions, no prompts:
 
 ```bash
 VENV=/home/administrator/.local/share/pipx/venvs/agentic-rag-mcp/bin/python
@@ -267,6 +265,12 @@ $VENV -m agentic_rag_mcp.deploy all                 # everything, aborting hones
 ```
 
 Behavior: exit 0 = success · N = failed battery scenarios · 2 = configuration error. Tool-cache re-sync is version-gated (DB path for Dify 1.17.x — the console Update flow doesn't re-sync tools in that version; unknown versions are skipped with a notice). The chatflow command updates the app **in place** (draft + publish — app id and API key preserved) and only imports when no same-name app exists. Console credentials are never logged (masked). Tests: `pytest tests/unit/test_deploy_* tests/integration/test_deploy_console.py tests/contract/test_deploy_cli.py`.
+
+## Step 11 — AntV visualization tools (spec 012)
+
+Two additive MCP tools on the sidecar: `antv_chart(chart_type, data, title)` — statistical charts (bar/line/pie/radar/sankey/…; geography types excluded) rendered by the GPT-Vis service, returning an embeddable image URL; `antv_infographic(description)` — declarative infographics rendered browser-side at `GET /infographics/<id>/` (engine loads from CDN; no server-side DOM). Deck pages referencing remote chart images are exported **self-contained** — the pipeline downloads and embeds image bytes at page-write time (misformat sniffed from bytes; fetch failure = honest gate error).
+
+**Data posture**: by default chart data travels to the AntV public rendering service (`https://antv-studio.alipay.com/api/gpt-vis`) and images are hosted on its CDN — outbound internet required, chart data leaves the network. For private rendering, deploy [GPT-Vis-SSR](https://github.com/antvis/GPT-Vis/tree/main/bindings/gpt-vis-ssr) and set `[antv] chart_service_url` in config.toml (geography chart types are not supported privately; they are excluded regardless). Infographic syntax stays local — only the rendering engine script loads from CDN in the browser. Config keys: `[antv] chart_service_url`, `chart_timeout_s`, `max_inline_image_bytes`, `infographic_max_syntax_bytes`.
 
 ## Troubleshooting
 
