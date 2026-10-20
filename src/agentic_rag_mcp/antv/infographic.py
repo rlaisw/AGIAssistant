@@ -25,41 +25,34 @@ _PAGE_TEMPLATE = """<!doctype html>
 html,body{margin:0;padding:0;height:100%}
 body{background:#fafafa;font-family:system-ui,sans-serif}
 #container{width:100%;min-height:100vh;box-sizing:border-box;padding:24px 16px}
-#error{display:none;padding:48px 16px;text-align:center;color:#b3261e;white-space:pre-wrap}
+#fallback{display:none;padding:48px 16px;text-align:center;color:#b3261e;white-space:pre-wrap}
 </style>
 </head>
 <body>
-<div id="container"><div id="error">loading…</div></div>
+<div id="container"><div id="fallback">loading…</div></div>
 <script src="https://cdn.jsdelivr.net/npm/@antv/infographic@0.2.20/dist/infographic.min.js"><\/script>
 <script>
 const syntax = {syntax_json};
-const errorEl = document.getElementById('error');
 const container = document.getElementById('container');
-function visible(el) {
-  const r = el.getBoundingClientRect();
-  return r.width > 10 && r.height > 10;
-}
+const fallback = document.getElementById('fallback');
 try {
   const Engine = window.AntVInfographic && window.AntVInfographic.Infographic
     ? window.AntVInfographic.Infographic
     : window.Infographic;
   if (!Engine) throw new Error('engine failed to load (CDN unreachable?)');
-  errorEl.remove();
-  const ig = new Engine({
-    container: container, width: '100%', height: '100%',
-  });
+  fallback.remove();
+  const width = Math.min(Math.max(container.clientWidth || 960, 480), 1200);
+  const height = Math.max(window.innerHeight - 48, 600);
+  const ig = new Engine({ container: container, width: width, height: height });
   ig.render(syntax);
   setTimeout(() => {
     const svg = container.querySelector('svg');
-    if (!svg) {
+    if (!svg || (svg.textContent || '').length < 20) {
       container.innerHTML = '<div style="padding:48px 16px;text-align:center;color:#b3261e">'
-        + 'Nothing rendered — the syntax may not be valid Infographic syntax. '
-        + 'Ask the agent to use a real template (e.g. infographic list-row-simple-horizontal-arrow).</div>';
-    } else if (!visible(svg)) {
-      svg.setAttribute('width', '100%');
-      svg.setAttribute('height', String(Math.max(window.innerHeight - 60, 600)));
+        + 'The engine produced no content for this syntax. '
+        + 'Ask the agent to regenerate with a standard template.</div>';
     }
-  }, 1500);
+  }, 2000);
 } catch (e) {
   container.innerHTML = '<div style="padding:48px 16px;text-align:center;color:#b3261e">'
     + 'Infographic error: ' + (e && e.message ? e.message : 'unknown') + '</div>';
@@ -67,6 +60,7 @@ try {
 </script>
 </body>
 </html>
+<!-- page-version: 4 -->
 """
 
 

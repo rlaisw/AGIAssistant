@@ -119,10 +119,12 @@ async def infographic_page(request) -> Response:
     try:
         page = render_infographic_page(cfg, request.path_params["id"])
     except AntvInvalidInput:
-        return Response("bad request", status_code=400)
+        return Response("bad request", status_code=400,
+                        headers={"Cache-Control": "no-store"})
     except FileNotFoundError:
-        return Response("not found", status_code=404)
-    return HTMLResponse(page)
+        return Response("not found", status_code=404,
+                        headers={"Cache-Control": "no-store"})
+    return HTMLResponse(page, headers={"Cache-Control": "no-store"})
 
 
 async def mcp_get(request) -> Response:
