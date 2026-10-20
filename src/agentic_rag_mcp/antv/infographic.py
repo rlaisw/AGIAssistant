@@ -22,8 +22,9 @@ _PAGE_TEMPLATE = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Infographic</title>
 <style>
-body{margin:0;background:#fafafa;font-family:system-ui,sans-serif}
-#container{max-width:960px;margin:0 auto;padding:24px 16px}
+html,body{margin:0;padding:0;height:100%}
+body{background:#fafafa;font-family:system-ui,sans-serif}
+#container{width:100%;min-height:100vh;box-sizing:border-box;padding:24px 16px}
 #error{display:none;padding:48px 16px;text-align:center;color:#b3261e;white-space:pre-wrap}
 </style>
 </head>
@@ -33,29 +34,35 @@ body{margin:0;background:#fafafa;font-family:system-ui,sans-serif}
 <script>
 const syntax = {syntax_json};
 const errorEl = document.getElementById('error');
+const container = document.getElementById('container');
+function visible(el) {
+  const r = el.getBoundingClientRect();
+  return r.width > 10 && r.height > 10;
+}
 try {
   const Engine = window.AntVInfographic && window.AntVInfographic.Infographic
     ? window.AntVInfographic.Infographic
     : window.Infographic;
   if (!Engine) throw new Error('engine failed to load (CDN unreachable?)');
-  errorEl.style.display = 'none';
+  errorEl.remove();
   const ig = new Engine({
-    container: '#container', width: '100%', height: '100%',
+    container: container, width: '100%', height: '100%',
   });
   ig.render(syntax);
-  if (document.querySelector('#container svg, #container canvas') === null
-      && errorEl.style.display !== 'none') {
-    setTimeout(() => {
-      if (document.querySelector('#container svg, #container canvas') === null) {
-        errorEl.style.display = 'block';
-        errorEl.textContent = 'Nothing rendered — the syntax may not be valid Infographic syntax. '
-          + 'Ask the agent to use a real template (e.g. infographic list-row-simple-horizontal-arrow).';
-      }
-    }, 1500);
-  }
+  setTimeout(() => {
+    const svg = container.querySelector('svg');
+    if (!svg) {
+      container.innerHTML = '<div style="padding:48px 16px;text-align:center;color:#b3261e">'
+        + 'Nothing rendered — the syntax may not be valid Infographic syntax. '
+        + 'Ask the agent to use a real template (e.g. infographic list-row-simple-horizontal-arrow).</div>';
+    } else if (!visible(svg)) {
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('height', String(Math.max(window.innerHeight - 60, 600)));
+    }
+  }, 1500);
 } catch (e) {
-  errorEl.style.display = 'block';
-  errorEl.textContent = 'Infographic error: ' + (e && e.message ? e.message : 'unknown');
+  container.innerHTML = '<div style="padding:48px 16px;text-align:center;color:#b3261e">'
+    + 'Infographic error: ' + (e && e.message ? e.message : 'unknown') + '</div>';
 }
 </script>
 </body>
