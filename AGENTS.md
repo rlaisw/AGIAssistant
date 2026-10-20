@@ -18,5 +18,10 @@ Next.js 16 + shadcn/ui (Base UI, luma preset) chat frontend for the Dify Agentic
 
 Rules:
 - Validate with `pnpm typecheck && pnpm lint` inside `ai-chat-landing/` — NEVER run `pnpm build` while `pnpm dev` is running in the same directory (they share `.next/`; a build mid-request silently kills in-flight streams).
+- `pnpm test` in `ai-chat-landing/` runs vitest (pure-logic unit tests, e.g. `lib/deck-url.ts` recognition).
 - The shadcn skill in `ai-chat-landing/.agents/skills/shadcn/` is CLI-managed (`pnpm dlx skills add shadcn/ui`); `skills-lock.json` tracks versions — do not hand-edit it.
 - Full docs: `ai-chat-landing/README.md`; deployment: `DEPLOY.md` Step 8; topology: `docs/NETWORK.md` ⑦⑧.
+
+## Deployment automation (spec 011)
+
+`python -m agentic_rag_mcp.deploy {redeploy|chatflow|verify|cleanup|all}` (run with the project venv's python) rebuilds the sidecar, updates + publishes the Dify chatflow in place, and runs the headless verification battery. Console credentials and the chatflow API key live in `~/.config/agentic-rag-mcp/config.toml` `[dify]` (or `DIFY_*` env vars) — NEVER commit them; the CLI redacts secrets in all output. After changing tool counts or the chatflow DSL, `all` is the one-command path. Runbook: `DEPLOY.md` Step 10.

@@ -93,13 +93,17 @@ docker run -d --name agentic-rag --network <dify_network> \
 
 Dify UI → Tools → MCP → URL `http://agentic-rag:28080/mcp` (container port aligned; the host also publishes **28080**, so host-side checks use `http://localhost:28080/healthz`). Edit MCP servers by delete + re-add (Dify 1.17's edit path has an identifier-vs-UUID bug).
 
+## PPT-Master deck generation (specs 009–010)
+
+Users can type "help to generate a powerpoint, introduce Dify software" in the chat and get a native editable `.pptx`. Five additive MCP tools (`ppt_project_init`, `ppt_icon_sync`, `ppt_write_page`, `ppt_check`, `ppt_export` — 16 → 21 tools) bridge the [ppt-master](https://github.com/hugohe3/ppt-master) toolchain; chatflow v2 (`dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml`) routes deck requests to a PPT-Master agent node (rulebook: `dify/ppt-master-rulebook.md`) and everything else to the AgenticRAG agent. Every export returns a completion page (`http://localhost:28080/decks/<project>/<stem>/`) with per-slide previews and a download control (`/exports/<project>/<file>.pptx`); the Chat UI renders deck links as an action bar (⬇ Download / 👁 Preview-Edit). Setup: mount the ppt-master clone at `/opt/ppt-master`, rebuild, refresh Dify's tool cache — full runbook in `DEPLOY.md` Step 9.
+
 ## Deployment automation (spec 011)
 
-One command rebuilds, redeploys, updates the Dify chatflow, and runs a headless verification battery — no Dify UI actions, no prompts: `python -m agentic_rag_mcp.deploy all` (also `redeploy` / `chatflow` / `verify`, each with `--dry-run`). Tool-cache re-sync is version-gated (Dify 1.17 workaround built in); credentials live in config/env, never in the repo. Runbook: `DEPLOY.md` Step 10.
+One command rebuilds, redeploys, updates the Dify chatflow, and runs a headless verification battery — no Dify UI actions, no prompts: `python -m agentic_rag_mcp.deploy all` (also `redeploy` / `chatflow` / `verify` / `cleanup`, each with `--dry-run`). Tool-cache re-sync is version-gated (Dify 1.17 workaround built in); credentials live in config/env, never in the repo. Runbook: `DEPLOY.md` Step 10.
 
-## PPT-Master deck generation (spec 009)Users can type "help to generate a powerpoint, introduce Dify software" in the chat and get a native editable `.pptx` download link. Five additive MCP tools (`ppt_project_init`, `ppt_icon_sync`, `ppt_write_page`, `ppt_check`, `ppt_export` — 16 → 21 tools) bridge the [ppt-master](https://github.com/hugohe3/ppt-master) toolchain; the sidecar serves decks at `http://localhost:28080/exports/<project>/<file>.pptx`. Chatflow v2 (`dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml`) routes deck requests to a PPT-Master agent node (rulebook: `dify/ppt-master-rulebook.md`) and everything else to the AgenticRAG agent. Setup: mount the ppt-master clone at `/opt/ppt-master`, rebuild, refresh Dify's tool cache — full runbook in `DEPLOY.md` Step 9.
+## Chat UI (optional frontend)
 
-## Chat UI (optional frontend)[`ai-chat-landing/`](ai-chat-landing/) is a Chatbot-UI-style Next.js frontend wired to the Dify chatflow's Service API: questions stream the AgenticRAG agent's answers with full markdown (tables, images), a reasoning panel, and source badges. One env var to go live — a Dify app API key in `ai-chat-landing/.env.local`. Run with `pnpm dev` (http://localhost:3000); without a key it falls back to demo replies. Details: [`ai-chat-landing/README.md`](ai-chat-landing/README.md).
+[`ai-chat-landing/`](ai-chat-landing/) is a Chatbot-UI-style Next.js frontend wired to the Dify chatflow's Service API: questions stream the AgenticRAG agent's answers with full markdown (tables, images), a reasoning panel, source badges, and deck action bars. One env var to go live — a Dify app API key in `ai-chat-landing/.env.local`. Run with `pnpm dev` (http://localhost:3000); without a key it falls back to demo replies. Details: [`ai-chat-landing/README.md`](ai-chat-landing/README.md).
 
 ## Configuration
 

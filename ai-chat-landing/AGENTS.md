@@ -13,7 +13,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 Chatbot-UI-style frontend for the Dify "AgenticRAG" chatflow. `app/api/chat/route.ts` proxies `POST /api/chat` → Dify `POST {DIFY_API_BASE_URL}/chat-messages` (streaming SSE re-emitted as line-delimited JSON: chunk · reasoning · replace · sources · ping · done). The API key lives in `.env.local` (git-ignored) and stays server-side.
 
 - `app/page.tsx` — the whole chat app (client component): sidebar, streaming bubbles, 100 ms throttled state flushes, `parseAnswer` think-tag stripping, 120 s connection watchdog, theme switcher
-- `components/markdown.tsx` — react-markdown (GFM + breaks) mapped to shadcn elements; images render inline
+- `components/markdown.tsx` — react-markdown (GFM + breaks) mapped to shadcn elements; images render inline; deck links (`/exports/…pptx` or `/decks/…/` URL families, via `lib/deck-url.ts`) render as the action bar (`components/deck-actions.tsx` — ⬇ Download / 👁 Preview-Edit)
 - No key / Dify down → canned demo replies (fallback mode)
 - Validation: `pnpm typecheck && pnpm lint` — NEVER `pnpm build` while `pnpm dev` runs (shared `.next/`)
 - Component conventions: follow the shadcn skill in `.agents/skills/shadcn/`
