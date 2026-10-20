@@ -1,23 +1,23 @@
-# Graph Report - AGIAssistant  (2026-10-19)
+# Graph Report - AGIAssistant  (2026-10-20)
 
 ## Corpus Check
-- 346 files · ~292,560 words
+- 346 files · ~292,839 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 18 file(s) not represented in the graph (top: (none) 12, .css 3, .code-workspace 2)
 
 ## Summary
-- 3704 nodes · 6364 edges · 264 communities (226 shown, 38 thin omitted)
-- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 904 edges (avg confidence: 0.93)
+- 3709 nodes · 6374 edges · 250 communities (218 shown, 32 thin omitted)
+- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 905 edges (avg confidence: 0.93)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `94c2e8a3`
+- Built from commit: `868598bf`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - json
-- SSRF Guarded Fetch
+- research.py
 - rl_common.py
 - Dual-System Workflow Contracts
 - Reflexion Graph Agent
@@ -31,7 +31,7 @@
 - Specialty Web Search
 - OneDrive Contract Tests
 - OneDrive Test Fakes
-- IngestionPipeline
+- build_server
 - Logging and Tool Models
 - State Store Methods
 - OneDrive On-Demand Tests
@@ -41,7 +41,7 @@
 - OneDrive Source Connector
 - Logging Integration Tests
 - One-Time Migration Tests
-- Server Transport Config
+- deploy/__main__.py
 - OneDrive Graph Auth
 - Answer Synthesis
 - Rule-Based Evaluator
@@ -59,9 +59,9 @@
 - Agentic RAG Architecture
 - Speckit Commands
 - Speckit Workflows
-- agentic_rag_mcp/server.py
+- NotFoundError
 - Web Research Contract
-- test_end_to_end.py
+- asyncio
 - Decision Routing Tests
 - Feature Specification: OneDrive Ingestion — Full Pipeline with Auto-Update
 - Port Alignment Spec
@@ -78,7 +78,7 @@
 - Port Alignment Tasks
 - OneDrive Ingestion Data Model
 - CocoIndex Code Settings
-- SQLite State Tools
+- agentic_rag_mcp/server.py
 - Deploy Script
 - Question Session Entities
 - FastMCP Stdio Server
@@ -106,7 +106,7 @@
 - Specialty Search Tasks
 - Provider Chain Tests
 - Logging Task Plan
-- Research Extraction Tests
+- layout.tsx
 - cn
 - HTTP Test Server
 - select
@@ -116,7 +116,7 @@
 - Feature Specification: Application Log File with Leveled Logging
 - Question Planner
 - page.tsx
-- SSRF Web Research
+- Component Composition
 - Per-component notes
 - Research Page Renderer
 - Component Composition
@@ -144,27 +144,29 @@
 - navigation-menu (Radix `NavigationMenu` → Base UI `NavigationMenu`)
 - Customization & Theming
 - navigation-menu (Radix `NavigationMenu` → Base UI `NavigationMenu`)
-- Customization & Theming
+- The Design System Page
 - dependencies
 - agent/skills/migrate-radix-to-base/disclosure.md
 - The Design System Page
 - Styling & Customization
-- The Design System Page
+- Phase 2: Foundational (Blocking Prerequisites)
 - Styling & Customization
 - alert-dialog
 - Config
 - Design Systems from DESIGN.md
 - Tools
-- .agents/skills/migrate-radix-to-base/form-controls.md
+- Specification Quality Checklist: Application Log File with Leveled Logging
 - alert-dialog
 - Design Systems from DESIGN.md
 - Tools
 - pytest
 - toast
 - popover
+- agent/skills/shadcn/SKILL.md
 - .url
 - DifyConsole
 - popover
+- .agents/skills/shadcn/SKILL.md
 - markdown.tsx
 - devDependencies
 - Quickstart: OneDrive On-Demand Embedding with Staleness Reminder
@@ -177,7 +179,7 @@
 - tooltip
 - dialog
 - Target wrapper shapes (golden-derived specifics)
-- test_decider_engine.py
+- logging.md
 - accordion
 - context-menu (Radix `ContextMenu` → Base UI `ContextMenu`)
 - hover-card → preview-card
@@ -185,17 +187,17 @@
 - hover-card → preview-card
 - Commands
 - tabs
-- Step 4: Map Tokens to the Theme
-- Foundations
+- scripts
+- test_web_providers.py
 - Registry Authoring and Addresses
 - Base vs Radix
 - agentic_rag_mcp/errors.py
-- Step 4: Map Tokens to the Theme
-- Foundations
+- Implementation Plan: OneDrive On-Demand Embedding with Staleness Reminder
+- agent/skills/shadcn/assets/showcase/color-pair.tsx
 - Registry Authoring and Addresses
 - PptError
 - Tasks: PPT-Master MCP Tools
-- heuristic_classify
+- Dependencies & Execution Order
 - Class-string rewrites (layer 2)
 - Tasks: PPT Completion Experience — Preview & Edit
 - slider
@@ -205,19 +207,13 @@
 - Radix UI -> Base UI migration
 - DeployConfig
 - deploy/__main__.py
-- radio-group
-- onedrive_freshness.py
-- shadcn CLI Reference
-- shadcn CLI Reference
 - Tasks: Deployment Automation — One-Command Stack Deploy & Verify
 - AI Chat — AgenticRAG Chat UI
-- Dependencies & Execution Order
 - agent/skills/migrate-radix-to-base/overlays.md
 - httpx
 - .agents/skills/migrate-radix-to-base/overlays.md
 - postcss.config.mjs
 - test_ppt_completion_contract.py
-- build_server
 - test_ppt_contract.py
 - sources_auth
 - ppt_write_page
@@ -225,12 +221,9 @@
 - Contract — Completion Page & In-Chat Deck Actions (Phase 1)
 - Feature Specification: PPT Completion Experience — Preview & Edit in the Browser
 - tool_sync.py
-- onedrive_embed_files
 - test_ppt_completion.py
 - docker_ops.py
-- agent/skills/migrate-radix-to-base/form-controls.md
-- Implementation Plan: OneDrive Ingestion — Full Pipeline with Auto-Update
-- test_decision_schema.py
+- Feature Specification: OneDrive Ingestion — Full Pipeline with Auto-Update
 - FakeConsole
 - ppt_export
 - test_ppt_pipeline.py
@@ -255,26 +248,21 @@
 - Quickstart — PPT Completion Experience Validation Guide
 - Consumer-side prop changes (call sites, not wrappers)
 - Progress.Indicator → Progress.Indicator
-- radio-group
 - Progress.Indicator → Progress.Indicator
-- PPT-Master Agent Rulebook (quick-generate, v1)
+- Data Model — PPT-Master MCP Tools (Phase 1)
 - test_reflexion_conditioning.py
 - Separator.Root → Separator
-- Icons
 - Separator.Root → Separator
-- Icons
-- _test_cfg
 - (new) Fieldset.Root and Fieldset.Legend
 - (new) Fieldset.Root and Fieldset.Legend
 - Project Structure
-- current_setup
 
 ## God Nodes (most connected - your core abstractions)
 1. `build_server()` - 90 edges
 2. `Config` - 65 edges
 3. `ProviderError` - 41 edges
 4. `StateStore` - 40 edges
-5. `DeployConfig` - 34 edges
+5. `DeployConfig` - 35 edges
 6. `SourceAuthError` - 33 edges
 7. `sources_auth()` - 30 edges
 8. `InvalidInput` - 28 edges
@@ -282,15 +270,15 @@
 10. `status()` - 26 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `4. Chat UI link recognition (deck-url helper)` --references--> `DeckActions()`  [INFERRED]
-  specs/010-ppt-preview-edit/contracts/completion-page.md → ai-chat-landing/components/deck-actions.tsx
-- `R5. In-chat action bar + URL derivation (Chat UI)` --references--> `DeckActions()`  [INFERRED]
-  specs/010-ppt-preview-edit/research.md → ai-chat-landing/components/deck-actions.tsx
 - `Implementation for User Story 4` --references--> `DeckActions()`  [INFERRED]
   specs/010-ppt-preview-edit/tasks.md → ai-chat-landing/components/deck-actions.tsx
 - `Per component` --references--> `loop()`  [INFERRED]
   ai-chat-landing/agent/skills/migrate-radix-to-base/consumer-props.md → src/agentic_rag_mcp/ingestion/watchers.py
 - `Tabs.List → Tabs.List` --references--> `loop()`  [INFERRED]
+  ai-chat-landing/agent/skills/migrate-radix-to-base/disclosure.md → src/agentic_rag_mcp/ingestion/watchers.py
+- `ToggleGroup.Root → ToggleGroup` --references--> `loop()`  [INFERRED]
+  ai-chat-landing/agent/skills/migrate-radix-to-base/disclosure.md → src/agentic_rag_mcp/ingestion/watchers.py
+- `Toolbar.Root → Toolbar.Root` --references--> `loop()`  [INFERRED]
   ai-chat-landing/agent/skills/migrate-radix-to-base/disclosure.md → src/agentic_rag_mcp/ingestion/watchers.py
 
 ## Import Cycles
@@ -303,15 +291,15 @@
 - **Incremental ingestion pipeline (CocoIndex change detection into LanceDB chunks with dedup by content hash)** — specs_001_agentic_rag_mcp_plan_cocoindex_pipeline, specs_001_agentic_rag_mcp_plan_lancedb_vector_store, specs_001_agentic_rag_mcp_data_model_document, specs_001_agentic_rag_mcp_data_model_chunk, specs_001_agentic_rag_mcp_data_model_source [INFERRED 0.95]
 - **System 1/System 2 question routing (Laya decision layer steering between fast retrieval and the LangGraph deliberative loop)** — specs_001_agentic_rag_mcp_research_d5_laya_routing, specs_001_agentic_rag_mcp_plan_langgraph_deliberative_loop [INFERRED 0.95]
 
-## Communities (264 total, 38 thin omitted)
+## Communities (250 total, 32 thin omitted)
 
 ### Community 0 - "json"
 Cohesion: 0.06
 Nodes (60): Args, _available_docs(), _check_dir(), _check_file(), _dir_has_entries(), _json_line(), main(), _parse_args() (+52 more)
 
-### Community 1 - "SSRF Guarded Fetch"
-Cohesion: 0.16
-Nodes (10): guarded_get(), ScrapeBlocked, _Resp, test_private_destinations_refused(), test_public_ip_allowed_and_returned(), fake_get(), test_redirect_chain_capped(), fake_get() (+2 more)
+### Community 1 - "research.py"
+Cohesion: 0.08
+Nodes (18): _assert_public_host(), extract_sections(), guarded_get(), research_page(), ScrapeBlocked, _html(), test_dirty_markup_noise_rules(), test_js_only_page_yields_no_sections_without_crashing() (+10 more)
 
 ### Community 2 - "rl_common.py"
 Cohesion: 0.05
@@ -330,20 +318,20 @@ Cohesion: 0.18
 Nodes (12): probe_cited(), FakeSource, _meta(), _state_with_origin(), test_budget_expiry_skips_reminder(), test_deleted_file_last_version_note(), test_probe_auth_failure_marks_degraded_no_reminder(), test_probe_identity_survives_rename() (+4 more)
 
 ### Community 6 - "decision.py"
-Cohesion: 0.24
-Nodes (6): decide(), DecisionResult, fallback_route(), map_model_output(), _questions(), route_question()
+Cohesion: 0.07
+Nodes (22): decide(), DecisionResult, fallback_route(), map_model_output(), _questions(), _test_cfg(), validate_output(), heuristic_classify() (+14 more)
 
 ### Community 7 - "Logging Setup Configuration"
-Cohesion: 0.14
-Nodes (16): _cfg(), _configure(), _emit(), _file_text(), test_console_mirror_parity(), test_disabled_level_lazy(), test_framework_logger_reaches_file(), test_health_transitions_logged() (+8 more)
+Cohesion: 0.13
+Nodes (17): _cfg(), _configure(), _emit(), _file_text(), test_console_mirror_parity(), test_current_setup_fallback_shape(), test_disabled_level_lazy(), test_framework_logger_reaches_file() (+9 more)
 
 ### Community 9 - "Agentic RAG MCP Server"
 Cohesion: 0.08
 Nodes (43): Spec-kit plan template, Spec-kit task list template, Specification Quality Checklist: Agentic RAG MCP Server, ask MCP Tool, fetch_url MCP Tool, graph.query MCP Tool (Graphify layer), MCP Tool Contracts: Agentic RAG MCP Server, search MCP Tool (+35 more)
 
 ### Community 10 - "pipeline.py"
-Cohesion: 0.13
-Nodes (8): content_hash(), normalize(), LocalFolderSource, test_changed_content_keeps_old_doc_while_other_origin_remains(), test_changed_content_repoints_origin_and_evicts_old_doc(), test_document_dropped_only_when_last_origin_removed(), test_normalized_hash_ignores_whitespace(), test_same_content_one_document()
+Cohesion: 0.22
+Nodes (7): content_hash(), normalize(), test_changed_content_keeps_old_doc_while_other_origin_remains(), test_changed_content_repoints_origin_and_evicts_old_doc(), test_document_dropped_only_when_last_origin_removed(), test_normalized_hash_ignores_whitespace(), test_same_content_one_document()
 
 ### Community 11 - "Spec-Kit Shell Helpers"
 Cohesion: 0.13
@@ -359,35 +347,35 @@ Nodes (15): _add_onedrive(), call(), _fake_graph(), _server(), test_ask_response
 
 ### Community 14 - "OneDrive Test Fakes"
 Cohesion: 0.06
-Nodes (29): FakeAuth, FakeSource, FakeVectors, _item(), _mock_graph(), fake_get(), _pipeline(), _resolved() (+21 more)
+Nodes (28): FakeAuth, FakeSource, FakeVectors, _item(), _mock_graph(), fake_get(), _pipeline(), _resolved() (+20 more)
 
-### Community 15 - "IngestionPipeline"
-Cohesion: 0.21
-Nodes (7): D7: Migration — snapshot-absence defines the pending set; idempotent by construction, Implementation for User Story 4, Phase 6: User Story 4 — One-command explicit refresh (Priority: P2), Phase 8: Cross-Cutting — One-Time Migration (FR-016), Tests for User Story 4, IngestionPipeline, _now()
+### Community 15 - "build_server"
+Cohesion: 0.08
+Nodes (24): Summary, D7: Migration — snapshot-absence defines the pending set; idempotent by construction, Implementation for User Story 2, Phase 4: User Story 2 — Browse files and embed only what the user picks, one-time (Priority: P1), Phase 8: Cross-Cutting — One-Time Migration (FR-016), Tests for User Story 2, make_vector_tool(), IngestionPipeline (+16 more)
 
 ### Community 16 - "Logging and Tool Models"
 Cohesion: 0.18
 Nodes (7): FeatureDisabledError, GraphifySearch, test_cli_failure_is_provider_error(), test_disabled_by_default(), test_enabled_but_graph_missing(), test_explain_shells_out(), test_stats_reads_graph()
 
 ### Community 17 - "State Store Methods"
-Cohesion: 0.12
-Nodes (8): StateStore — new/changed methods, D3: Freshness snapshot — per-origin column, not per-source sync_state, Phase 2: Foundational (Blocking Prerequisites), _now(), StateStore, test_watcher_isolates_bad_source(), test_watcher_sync_once_local(), test_local_origins_never_probed()
+Cohesion: 0.16
+Nodes (4): _now(), StateStore, test_auth_completion_never_ingests(), test_local_origins_never_probed()
 
 ### Community 18 - "OneDrive On-Demand Tests"
-Cohesion: 0.12
-Nodes (13): call(), _drive_graph(), fake_get(), _graph_spy(), _mutable_graph(), _server(), test_auth_completion_never_ingests(), test_connect_never_ingests_across_watcher_cycles() (+5 more)
+Cohesion: 0.13
+Nodes (12): call(), _drive_graph(), fake_get(), _graph_spy(), _mutable_graph(), _server(), test_connect_never_ingests_across_watcher_cycles(), test_embed_only_named_files_searchable() (+4 more)
 
 ### Community 19 - "Episodic Memory Records"
 Cohesion: 0.18
 Nodes (8): EpisodicMemory, _rec(), test_append_ordering_preserved(), test_memory_starts_empty_per_request(), test_no_cross_request_leakage(), test_record_serializes_all_fields(), test_union_deduplicates_terms_in_first_appearance_order(), test_union_missing_focus_is_full_history_not_latest()
 
 ### Community 20 - "Web Search Providers"
-Cohesion: 0.16
-Nodes (10): Error taxonomy (binding mapping), ProviderError, build_providers(), ExaProvider, SearxngProvider, TavilyProvider, test_exa_timeout_raises_provider_error(), test_searxng_respects_limit() (+2 more)
+Cohesion: 0.18
+Nodes (9): ProviderError, build_providers(), ExaProvider, SearxngProvider, TavilyProvider, test_web_tool_all_down_returns_empty(), search(), test_web_tool_fallback_order() (+1 more)
 
 ### Community 21 - "OneDrive On-Demand Spec"
-Cohesion: 0.09
-Nodes (21): Content Quality, Feature Readiness, Notes, Requirement Completeness, Specification Quality Checklist: OneDrive On-Demand Embedding with Staleness Reminder, Assumptions, Clarifications, Edge Cases (+13 more)
+Cohesion: 0.13
+Nodes (15): Assumptions, Clarifications, Edge Cases, Feature Specification: OneDrive On-Demand Embedding with Staleness Reminder, Functional Requirements, Key Entities, Measurable Outcomes, Requirements *(mandatory)* (+7 more)
 
 ### Community 23 - "Logging Integration Tests"
 Cohesion: 0.20
@@ -397,17 +385,13 @@ Nodes (11): call(), _flush(), _info_lines(), _server(), test_debug_trace_end_to_
 Cohesion: 0.16
 Nodes (9): FakeSource, FakeVectors, _legacy_state(), _pipeline(), _res(), test_migration_auth_expired_honest_and_retried(), test_migration_deleted_file_keeps_copy_and_retries(), test_migration_noop_without_legacy() (+1 more)
 
-### Community 25 - "Server Transport Config"
-Cohesion: 0.15
-Nodes (5): D3: Prints convert to log records (no stdout capture hacks), _get(), init_config(), load_config(), main()
+### Community 25 - "deploy/__main__.py"
+Cohesion: 0.17
+Nodes (10): _get(), load_config(), projects_roots(), prune_old_projects(), run_battery(), _sweep(), cmd_cleanup(), cmd_verify() (+2 more)
 
 ### Community 26 - "OneDrive Graph Auth"
-Cohesion: 0.15
-Nodes (7): D6 — Auth state machine, SourceAuthError, _onedrive_auth(), ClientCredentialsAuth, GraphAuth, test_expired_credential_marks_source_degraded(), token()
-
-### Community 27 - "Answer Synthesis"
-Cohesion: 0.33
-Nodes (3): citations(), synthesize(), SufficiencyExhausted
+Cohesion: 0.13
+Nodes (8): D6 — Auth state machine, SourceAuthError, ClientCredentialsAuth, GraphAuth, _parse(), _probe_one(), test_expired_credential_marks_source_degraded(), token()
 
 ### Community 28 - "Rule-Based Evaluator"
 Cohesion: 0.20
@@ -430,8 +414,12 @@ Cohesion: 0.24
 Nodes (10): call(), FakeProvider, _hits_by_url(), _server(), test_ask_live_web_evidence_uses_grouped_content(), test_every_hit_yields_content_mixed_paths(), test_forbidden_page_falls_back_marked_http_403(), test_normal_page_scraped_with_grouped_content() (+2 more)
 
 ### Community 33 - "Laya Runtime"
-Cohesion: 0.25
-Nodes (6): D3 — Non-blocking sources_auth flow, get_agent(), _model_dir(), system_one(), _try_load(), warm_up()
+Cohesion: 0.29
+Nodes (5): get_agent(), _model_dir(), system_one(), _try_load(), warm_up()
+
+### Community 34 - "Dify Sidecar Server"
+Cohesion: 0.13
+Nodes (3): completion_slide(), healthz(), mcp_get()
 
 ### Community 35 - "Spec-Kit PowerShell Helpers"
 Cohesion: 0.17
@@ -465,33 +453,33 @@ Nodes (12): speckit.analyze Command, speckit.checklist Command, speckit.clarify 
 Cohesion: 0.32
 Nodes (12): Speckit Analyze Workflow, Speckit Checklist Workflow, Speckit Clarify Workflow, Speckit Constitution Workflow, Speckit Converge Workflow, Speckit Implement Workflow, Speckit Plan Workflow, Speckit Specify Workflow (+4 more)
 
-### Community 43 - "agentic_rag_mcp/server.py"
-Cohesion: 0.13
-Nodes (4): NotFoundError, Watcher, Embedder, SqliteSource
+### Community 43 - "NotFoundError"
+Cohesion: 0.20
+Nodes (4): Error taxonomy (binding mapping), NotFoundError, LocalFolderSource, SqliteSource
 
 ### Community 44 - "Web Research Contract"
 Cohesion: 0.35
 Nodes (7): call(), FakeProvider, _server(), test_web_research_all_engines_down_honest_empty(), test_web_research_limit_capped_at_max_pages(), test_web_research_schema_v2(), test_web_search_stays_byte_identical_without_engine_field()
 
-### Community 45 - "test_end_to_end.py"
-Cohesion: 0.48
-Nodes (5): call(), test_deep_path_budget_exhaustion_marks_low_confidence(), test_deep_path_multi_tool_trace(), test_full_flow_ingest_and_ask(), test_incremental_add_update_delete()
+### Community 45 - "asyncio"
+Cohesion: 0.17
+Nodes (8): call(), test_tools_list_grows_16_to_21(), call(), server(), test_deep_path_budget_exhaustion_marks_low_confidence(), test_deep_path_multi_tool_trace(), test_full_flow_ingest_and_ask(), test_incremental_add_update_delete()
 
 ### Community 46 - "Decision Routing Tests"
 Cohesion: 0.29
 Nodes (7): call(), direct_output(), server(), test_decision_contains_only_structured_values(), test_direct_route_served_in_one_step(), test_forced_mode_still_records_decision(), test_source_management_route_gives_guidance_without_operations()
 
 ### Community 47 - "Feature Specification: OneDrive Ingestion — Full Pipeline with Auto-Update"
-Cohesion: 0.13
-Nodes (12): Constitution Compliance (ratified 2026-10-08), Content Quality, Feature Readiness, Notes, Requirement Completeness, Specification Quality Checklist: OneDrive Ingestion — Full Pipeline with Auto-Update, Assumptions, Feature Specification: OneDrive Ingestion — Full Pipeline with Auto-Update (+4 more)
+Cohesion: 0.12
+Nodes (13): Constitution Compliance (ratified 2026-10-08), Content Quality, Feature Readiness, Notes, Requirement Completeness, Specification Quality Checklist: OneDrive Ingestion — Full Pipeline with Auto-Update, Complexity Tracking, Constitution Check (+5 more)
 
 ### Community 48 - "Port Alignment Spec"
 Cohesion: 0.08
 Nodes (24): Aligned Port Convention (28080:28080, 28888:28888), Sidecar Compose (28080:28080), Dify Sidecar Server (aligned port 28080), Network Topology (Dify ↔ AgenticRAG ↔ Host), Constitution Compliance (ratified 2026-10-08), Content Quality, Feature Readiness, Notes (+16 more)
 
 ### Community 49 - "MCP Contract Tests"
-Cohesion: 0.20
-Nodes (8): call(), call(), test_ask_no_documents_returns_no_fabrication(), test_bad_source_type_raises_not_found(), test_graph_query_disabled_by_default(), test_status_shape(), test_unknown_source_remove_is_graceful(), test_tools_list_grows_16_to_21()
+Cohesion: 0.31
+Nodes (7): call(), server(), test_ask_no_documents_returns_no_fabrication(), test_bad_source_type_raises_not_found(), test_graph_query_disabled_by_default(), test_status_shape(), test_unknown_source_remove_is_graceful()
 
 ### Community 50 - "State Snapshot Tests"
 Cohesion: 0.38
@@ -506,16 +494,16 @@ Cohesion: 0.09
 Nodes (21): accordion, Accordion.Content → Accordion.Panel, Accordion.Header → Accordion.Header, Accordion.Item → Accordion.Item, Accordion.Root → Accordion.Root, Accordion.Trigger → Accordion.Trigger, Base UI only props worth knowing, Base UI only props worth knowing (+13 more)
 
 ### Community 53 - "ask"
-Cohesion: 0.18
-Nodes (14): Error-response matrix (single source of truth), Tool: `ask` (EXISTING — additive field), D4: Staleness probe — bounded parallel, identity by item id, honest outcomes, D8: `sources_auth` — keep non-blocking device flow, drop the sync trigger, D9: Error handling — one honest per-file outcome model everywhere, Research: OneDrive On-Demand Embedding with Staleness Reminder, Implementation for User Story 3, Phase 5: User Story 3 — Staleness reminder when cited files changed in the cloud (Priority: P1) (+6 more)
+Cohesion: 0.15
+Nodes (17): Contract: OneDrive On-Demand Tools & Staleness Reminder, Error-response matrix (single source of truth), Tool: `ask` (EXISTING — additive field), Tool: `onedrive_embed_files` (NEW), Tool: `onedrive_list_files` (NEW), Tool: `sources_add(type:"onedrive")` (EXISTING — message values change), Tool: `sources_auth` (EXISTING — no-sync semantics), Tool: `sources_sync` (EXISTING — onedrive notice) (+9 more)
 
 ### Community 54 - "Success Criteria Tests"
 Cohesion: 0.36
 Nodes (4): call(), server(), test_sc001_002_003_over_100_questions(), test_sc005_budget_exhausted_always_flagged_low()
 
 ### Community 55 - "Implementation Task Plan"
-Cohesion: 0.12
-Nodes (17): Dependencies & Execution Order, Format: `[ID] [P?] [Story] Description`, Implementation Strategy, Incremental Delivery, MVP First (US1 + US2), Notes, Parallel Example: User Story 2, Parallel Opportunities (+9 more)
+Cohesion: 0.10
+Nodes (21): Dependencies & Execution Order, Format: `[ID] [P?] [Story] Description`, Implementation for User Story 4, Implementation Strategy, Incremental Delivery, MVP First (US1 + US2), Notes, Parallel Example: User Story 2 (+13 more)
 
 ### Community 56 - "AgenticRAG Constitution"
 Cohesion: 0.29
@@ -526,24 +514,24 @@ Cohesion: 0.29
 Nodes (6): broken.pdf fixture (corrupt file, skip-with-reason path), Test fixture corpus (PDF/DOCX/XLSX/PPTX/SQLite/audio), notes.sqlite3 fixture (SQLite source connector), audio/silence.wav fixture (no-speech path), faster-whisper local audio transcription, Scenario 5 - Error handling assertions
 
 ### Community 58 - "Ask Response Contract"
-Cohesion: 0.47
-Nodes (3): call(), test_all_fields_present_on_every_response(), test_decision_invariants_on_both_provenances()
+Cohesion: 0.32
+Nodes (4): call(), server(), test_all_fields_present_on_every_response(), test_decision_invariants_on_both_provenances()
 
 ### Community 59 - "Port Alignment Tasks"
 Cohesion: 0.11
 Nodes (18): Dependencies & Execution Order, Format: `[ID] [P?] [Story] Description`, Implementation for User Story 1, Implementation for User Story 2, Implementation for User Story 3, Implementation Strategy, Incremental Delivery, MVP First (User Story 1 only) (+10 more)
 
 ### Community 60 - "OneDrive Ingestion Data Model"
-Cohesion: 0.11
-Nodes (16): Data Model: OneDrive Ingestion, Entities, File format filtering (same as local_folder), GraphFileItem, OneDriveSourceConfig, OneDriveSyncState, Request lifecycle, TokenCache (+8 more)
+Cohesion: 0.10
+Nodes (17): Data Model: OneDrive Ingestion, Entities, File format filtering (same as local_folder), GraphFileItem, OneDriveSourceConfig, OneDriveSyncState, Request lifecycle, TokenCache (+9 more)
 
 ### Community 61 - "CocoIndex Code Settings"
 Cohesion: 0.67
 Nodes (3): CocoIndex Code Settings, graphify Command, graphify Skill
 
-### Community 62 - "SQLite State Tools"
-Cohesion: 0.13
-Nodes (10): make_sql_tool(), make_web_tool(), web_search(), corpus(), test_sql_tool_no_text_column(), test_sql_tool_reads_rows(), test_web_tool_all_down_returns_empty(), search() (+2 more)
+### Community 62 - "agentic_rag_mcp/server.py"
+Cohesion: 0.09
+Nodes (7): D3: Prints convert to log records (no stdout capture hacks), make_sql_tool(), make_web_tool(), main(), corpus(), test_sql_tool_no_text_column(), test_sql_tool_reads_rows()
 
 ### Community 71 - "shadcn/ui"
 Cohesion: 0.18
@@ -554,20 +542,20 @@ Cohesion: 0.20
 Nodes (9): ReflectionRecord, _actor(), _after_evaluator(), _after_memory(), _build_graph(), _evaluator(), _memory_node(), _self_reflector() (+1 more)
 
 ### Community 75 - "Web Search Scrape Tasks"
-Cohesion: 0.10
-Nodes (21): Format: `[ID] [P?] [Story] Description`, Implementation for User Story 1, Implementation for User Story 2, Implementation for User Story 3, Implementation Strategy, Incremental Delivery, MVP First (User Story 1 only), Notes (+13 more)
+Cohesion: 0.08
+Nodes (23): Dependencies & Execution Order, Format: `[ID] [P?] [Story] Description`, Implementation for User Story 1, Implementation for User Story 2, Implementation for User Story 3, Implementation Strategy, Incremental Delivery, MVP First (User Story 1 only) (+15 more)
 
 ### Community 76 - "Data Model — Deployment Automation (Phase 1)"
-Cohesion: 0.13
-Nodes (13): EmbedOutcome (onedrive_embed_files per-file results), FileListingEntry (onedrive_list_files items), FreshnessSnapshot (origins.snapshot JSON), StalenessReminder (ask response `freshness_warnings[]` + answer-text suffix), Tool-level value shapes, D5: Staleness reminder content — timestamps + actionable identifier, Console Credential (config-resolved, never persisted by the CLI), Data Model — Deployment Automation (Phase 1) (+5 more)
+Cohesion: 0.14
+Nodes (12): EmbedOutcome (onedrive_embed_files per-file results), FileListingEntry (onedrive_list_files items), FreshnessSnapshot (origins.snapshot JSON), StalenessReminder (ask response `freshness_warnings[]` + answer-text suffix), Tool-level value shapes, Console Credential (config-resolved, never persisted by the CLI), Data Model — Deployment Automation (Phase 1), Deliberately NOT modeled (+4 more)
 
 ### Community 77 - "Port Alignment Quickstart"
 Cohesion: 0.13
 Nodes (13): Before → After, Contract: Port Alignment, Invariants, What does NOT change, Notes, Prerequisites, Quickstart: Port Alignment Validation, S1 — Sidecar aligned port (FR-001 / SC-001) (+5 more)
 
 ### Community 84 - "OneDrive Auth Contract"
-Cohesion: 0.12
-Nodes (18): Contract: OneDrive Source + `sources_auth` MCP Tools, Invariants, Request, Request, Response (already authenticated), Response (existing token, immediate sync), Response (no token, needs sign-in), Response (sign-in completed — checked after user returns) (+10 more)
+Cohesion: 0.14
+Nodes (15): Contract: OneDrive Source + `sources_auth` MCP Tools, Invariants, Request, Request, Response (already authenticated), Response (existing token, immediate sync), Response (no token, needs sign-in), Response (sign-in completed — checked after user returns) (+7 more)
 
 ### Community 91 - "Edge Case Tests"
 Cohesion: 0.19
@@ -594,40 +582,40 @@ Cohesion: 0.14
 Nodes (13): Dependencies & Execution Order, Format: `[ID] [P?] [Story] Description`, Implementation for User Story 2, Implementation Strategy, Incremental Delivery, MVP First (User Story 1 only), Notes, Parallel Opportunities (+5 more)
 
 ### Community 97 - "Provider Chain Tests"
-Cohesion: 0.29
-Nodes (9): search_all(), FakeProvider, _hit(), test_all_engines_down_honest_empty_with_error(), test_duplicate_urls_across_engines_dedup_keeps_first_ranking(), test_engine_down_next_engine_serves(), test_healthy_engine_zero_hits_is_honest_empty_not_error(), test_no_providers_configured_is_error_state() (+1 more)
+Cohesion: 0.18
+Nodes (13): search_all(), research_pages(), sections_to_text(), _web_evidence(), web_research(), FakeProvider, _hit(), test_all_engines_down_honest_empty_with_error() (+5 more)
 
 ### Community 98 - "Logging Task Plan"
-Cohesion: 0.11
-Nodes (18): Dependencies & Execution Order, Format: `[ID] [P?] [Story] Description`, Implementation for User Story 1, Implementation Strategy, Incremental Delivery, MVP First (User Story 1 Only), Notes, Parallel Example: User Story 1 (+10 more)
+Cohesion: 0.15
+Nodes (13): Format: `[ID] [P?] [Story] Description`, Implementation for User Story 1, Implementation Strategy, Incremental Delivery, MVP First (User Story 1 Only), Notes, Parallel Example: User Story 1, Parallel Team Strategy (+5 more)
 
-### Community 99 - "Research Extraction Tests"
-Cohesion: 0.24
-Nodes (6): extract_sections(), _html(), test_dirty_markup_noise_rules(), test_js_only_page_yields_no_sections_without_crashing(), test_ordered_page_sections_preserve_document_order(), test_oversized_page_truncated_at_bound_and_flagged()
+### Community 99 - "layout.tsx"
+Cohesion: 0.15
+Nodes (13): Slider.Thumb → Slider.Thumb, Slider.Thumb → Slider.Thumb, fontMono, inter, metadata, RootLayout(), isTypingTarget(), ThemeHotkey() (+5 more)
 
 ### Community 100 - "cn"
-Cohesion: 0.14
-Nodes (7): DeckActions(), badgeVariants, buttonVariants, @base-ui/react, class-variance-authority, cn, lucide-react
+Cohesion: 0.19
+Nodes (6): badgeVariants, buttonVariants, @base-ui/react, class-variance-authority, cn, lucide-react
 
 ### Community 102 - "select"
-Cohesion: 0.11
-Nodes (19): Base UI only props worth knowing (select), CSS variable mapping (select), Data-attribute mapping (select), select, Select.Arrow → Select.Arrow, Select.Content → Select.Portal > Select.Positioner > Select.Popup (moved/split), Select.Group → Select.Group, Select.Icon → Select.Icon (+11 more)
+Cohesion: 0.05
+Nodes (36): Base UI only props worth knowing (checkbox), Base UI only props worth knowing (radio-group), Base UI only props worth knowing (select), Base UI only props worth knowing (switch), checkbox, Checkbox.Indicator → Checkbox.Indicator, Checkbox.Root → Checkbox.Root, CSS variable mapping (select) (+28 more)
 
 ### Community 103 - "Button"
 Cohesion: 0.16
 Nodes (28): Step 5: Map Component Recipes to Variants, Buttons inside inputs use InputGroup + InputGroupAddon, Contents, Field validation and disabled states, FieldSet + FieldLegend for grouping related fields, Forms & Inputs, Forms use FieldGroup + Field, InputGroup requires InputGroupInput/InputGroupTextarea (+20 more)
 
 ### Community 104 - "status"
-Cohesion: 0.11
-Nodes (19): Configuration surface, Contract: Logging Setup, Status Field & Error Handling, Error-response matrix (single source of truth), Test matrix (contract + unit + integration — every row is a named test), Tool: `status` (EXISTING — additive field), Complexity Tracking, Constitution Check, Implementation Plan: Application Log File with Leveled Logging (+11 more)
+Cohesion: 0.20
+Nodes (14): Configuration surface, Contract: Logging Setup, Status Field & Error Handling, Error-response matrix (single source of truth), Test matrix (contract + unit + integration — every row is a named test), Tool: `status` (EXISTING — additive field), Complexity Tracking, Constitution Check, Implementation Plan: Application Log File with Leveled Logging (+6 more)
 
 ### Community 105 - "Per-component notes"
 Cohesion: 0.08
 Nodes (24): accordion, asChild -> render, breadcrumb / marker (Slot users), Coverage matrix, CSS custom properties, Data attributes / class hooks, dialog / alert-dialog / sheet, Doc-validation TODOs (before specs are final) (+16 more)
 
 ### Community 106 - "Feature Specification: Application Log File with Leveled Logging"
-Cohesion: 0.10
-Nodes (19): Content Quality, Feature Readiness, Notes, Requirement Completeness, Specification Quality Checklist: Application Log File with Leveled Logging, Assumptions, Clarifications, Edge Cases (+11 more)
+Cohesion: 0.14
+Nodes (14): Assumptions, Clarifications, Edge Cases, Feature Specification: Application Log File with Leveled Logging, Functional Requirements, Key Entities, Measurable Outcomes, Requirements *(mandatory)* (+6 more)
 
 ### Community 107 - "Question Planner"
 Cohesion: 0.31
@@ -635,11 +623,11 @@ Nodes (4): decompose(), test_planner_default_vector(), test_planner_multi_part()
 
 ### Community 108 - "page.tsx"
 Cohesion: 0.09
-Nodes (26): Items always inside their Group component, No manual z-index on overlay components, Project — AI Chat (AgenticRAG Chat UI), Items always inside their Group component, No manual z-index on overlay components, This is NOT the Next.js you know, cannedReplies, Conversation (+18 more)
+Nodes (22): Composition: asChild (radix) vs render (base), No manual z-index on overlay components, Project — AI Chat (AgenticRAG Chat UI), Composition: asChild (radix) vs render (base), No manual z-index on overlay components, This is NOT the Next.js you know, cannedReplies, Conversation (+14 more)
 
-### Community 109 - "SSRF Web Research"
-Cohesion: 0.21
-Nodes (5): _assert_public_host(), research_page(), research_pages(), sections_to_text(), _web_evidence()
+### Community 109 - "Component Composition"
+Cohesion: 0.18
+Nodes (11): Button has no isPending or isLoading prop, Callouts use Alert, Card structure, Choosing between overlay components, Component Composition, Contents, Dialog, Sheet, and Drawer always need a Title, Empty states use Empty component (+3 more)
 
 ### Community 110 - "Per-component notes"
 Cohesion: 0.08
@@ -650,8 +638,8 @@ Cohesion: 0.38
 Nodes (4): render_page(), test_render_fallback_default_marker_when_no_snippet(), test_render_fallback_shows_snippet_with_visible_marker(), test_render_mirrors_grouped_structure_in_order()
 
 ### Community 112 - "Component Composition"
-Cohesion: 0.08
-Nodes (33): Avatar always needs AvatarFallback, Button has no isPending or isLoading prop, Callouts use Alert, Card structure, Choosing between overlay components, Component Composition, Contents, Dialog, Sheet, and Drawer always need a Title (+25 more)
+Cohesion: 0.09
+Nodes (28): Avatar always needs AvatarFallback, Button has no isPending or isLoading prop, Callouts use Alert, Card structure, Choosing between overlay components, Component Composition, Contents, Dialog, Sheet, and Drawer always need a Title (+20 more)
 
 ### Community 113 - "Separator"
 Cohesion: 0.07
@@ -666,8 +654,8 @@ Cohesion: 0.40
 Nodes (4): Dify Chatflow with 13 MCP Tools, 13 MCP Tools, specialty_profiles MCP tool, specialty_search MCP tool
 
 ### Community 116 - "package.json"
-Cohesion: 0.07
-Nodes (29): eslintConfig, name, private, scripts, build, dev, format, lint (+21 more)
+Cohesion: 0.09
+Nodes (21): eslintConfig, name, private, type, version, eslint, eslint-config-next, prettier (+13 more)
 
 ### Community 117 - "components.json"
 Cohesion: 0.09
@@ -678,8 +666,8 @@ Cohesion: 0.05
 Nodes (33): Content Quality, Feature Readiness, Notes, Requirement Completeness, Specification Quality Checklist: Deployment Automation, Battery scenario registry (fixed order), Commands, Config contract (env overrides config file) (+25 more)
 
 ### Community 119 - "select"
-Cohesion: 0.11
-Nodes (19): Base UI only props worth knowing (select), CSS variable mapping (select), Data-attribute mapping (select), select, Select.Arrow → Select.Arrow, Select.Content → Select.Portal > Select.Positioner > Select.Popup (moved/split), Select.Group → Select.Group, Select.Icon → Select.Icon (+11 more)
+Cohesion: 0.05
+Nodes (36): Base UI only props worth knowing (checkbox), Base UI only props worth knowing (radio-group), Base UI only props worth knowing (select), Base UI only props worth knowing (switch), checkbox, Checkbox.Indicator → Checkbox.Indicator, Checkbox.Root → Checkbox.Root, CSS variable mapping (select) (+28 more)
 
 ### Community 120 - "compilerOptions"
 Cohesion: 0.11
@@ -702,16 +690,16 @@ Cohesion: 0.11
 Nodes (18): Arrow → Menu.Arrow, Base UI only props worth knowing (Menu), CheckboxItem → Menu.CheckboxItem, CSS variable mapping (per menu flavor: `dropdown-menu` / `context-menu` / `menubar`), Data-attribute mapping (dropdown/context/menubar menus), dropdown-menu (Radix `DropdownMenu` → Base UI `Menu`), Group → Menu.Group, Item → Menu.Item (+10 more)
 
 ### Community 127 - "logging_setup.py"
-Cohesion: 0.12
-Nodes (15): D10: Error handling — one binding matrix (first-class deliverable), D11: Test strategy — RED first, tmp-isolated, no network, D1: Programmatic setup, not dictConfig, D2: Framework logs via root propagation — uvicorn must not self-configure, D4: Default log path derives from `state_db`'s directory — test isolation for free, D5: Redaction filter + DEBUG-only discipline at call sites, D6: Rotation + startup writability probe, D7: `status` additive field from a module-level `LoggingSetup` (+7 more)
+Cohesion: 0.10
+Nodes (16): D10: Error handling — one binding matrix (first-class deliverable), D11: Test strategy — RED first, tmp-isolated, no network, D1: Programmatic setup, not dictConfig, D2: Framework logs via root propagation — uvicorn must not self-configure, D4: Default log path derives from `state_db`'s directory — test isolation for free, D5: Redaction filter + DEBUG-only discipline at call sites, D6: Rotation + startup writability probe, D7: `status` additive field from a module-level `LoggingSetup` (+8 more)
 
 ### Community 128 - "loop"
 Cohesion: 0.09
 Nodes (22): Content → Menu.Portal > Menu.Positioner > Menu.Popup, Data attributes / CSS variables, Menu → Menu.Root, menubar (Radix `Menubar` → Base UI `Menubar` + `Menu`), Portal / Content / Arrow / Item / Group / Label / CheckboxItem / RadioGroup / RadioItem / ItemIndicator / Separator / Sub / SubTrigger / SubContent, Root → Menubar, SubContent → Menu.Portal > Menu.Positioner > Menu.Popup (inside SubmenuRoot), Trigger → Menu.Trigger (+14 more)
 
 ### Community 129 - "react"
-Cohesion: 0.08
-Nodes (22): ColorPair(), contrast(), luminance(), toHex(), toRgb(), defaultStates, ColorPair(), contrast() (+14 more)
+Cohesion: 0.16
+Nodes (8): defaultStates, ColorPair(), contrast(), luminance(), toHex(), toRgb(), defaultStates, react
 
 ### Community 130 - "agent/skills/shadcn/scripts/showcase-coverage.mjs"
 Cohesion: 0.13
@@ -722,8 +710,8 @@ Cohesion: 0.06
 Nodes (30): Content Quality, Feature Readiness, Notes, Requirement Completeness, Specification Quality Checklist: PPT-Master MCP Tools, Contract — PPT-Master MCP Tools (Phase 1), HTTP route (sidecar wrapper server), Test-case matrix (Constitution II — defined before implementation) (+22 more)
 
 ### Community 132 - "InvalidInput"
-Cohesion: 0.11
-Nodes (16): completion_page(), completion_slide(), export_file(), artifact_exists(), projects_root(), render_completion_page(), resolve_slide(), _slides_for() (+8 more)
+Cohesion: 0.16
+Nodes (8): export_file(), sanitize_svg(), write_page(), InvalidInput, ExportNotFound, resolve_export(), test_exports_route(), handler()
 
 ### Community 133 - "context-menu (Radix `ContextMenu` → Base UI `ContextMenu`)"
 Cohesion: 0.22
@@ -741,9 +729,9 @@ Nodes (14): 1. Built-in variants, 2. Tailwind classes via `className`, 3. Add a 
 Cohesion: 0.14
 Nodes (14): Base UI only props worth knowing (NavigationMenu), Content → NavigationMenu.Content, CSS variable mapping (navigation-menu), Data-attribute mapping (navigation-menu), Gaps / caveats, Indicator → NavigationMenu.Icon (per wrapper ground truth), Item → NavigationMenu.Item, Link → NavigationMenu.Link (+6 more)
 
-### Community 137 - "Customization & Theming"
-Cohesion: 0.14
-Nodes (14): 1. Built-in variants, 2. Tailwind classes via `className`, 3. Add a new variant, 4. Wrapper components, Adding Custom Colors, Border Radius, Changing the Theme, Checking for Updates (+6 more)
+### Community 137 - "The Design System Page"
+Cohesion: 0.06
+Nodes (35): 1. Built-in variants, 2. Tailwind classes via `className`, 3. Add a new variant, 4. Wrapper components, Adding Custom Colors, Border Radius, Changing the Theme, Checking for Updates (+27 more)
 
 ### Community 138 - "dependencies"
 Cohesion: 0.14
@@ -754,16 +742,16 @@ Cohesion: 0.10
 Nodes (19): Base UI only props worth knowing, Base UI only props worth knowing, Base UI only props worth knowing, collapsible, Collapsible.Content → Collapsible.Panel, Collapsible.Root → Collapsible.Root, Collapsible.Trigger → Collapsible.Trigger, CSS var mapping (+11 more)
 
 ### Community 140 - "The Design System Page"
-Cohesion: 0.15
-Nodes (13): Block anatomy, Checklist, Components: Tiers and Block Anatomy, Contents, Do and Don't, Edge Cases, Helpers, Page Outline (+5 more)
+Cohesion: 0.10
+Nodes (21): Block anatomy, Checklist, Color roles, Components: Tiers and Block Anatomy, Contents, Do and Don't, Edge Cases, Elevation (+13 more)
 
 ### Community 141 - "Styling & Customization"
 Cohesion: 0.17
 Nodes (12): Built-in variants first, className for layout only, Contents, No manual dark: color overrides, No raw color values for status/state indicators, No space-x-* / space-y-*, Prefer size-* over w-* h-* when equal, Prefer truncate shorthand (+4 more)
 
-### Community 142 - "The Design System Page"
-Cohesion: 0.15
-Nodes (13): Block anatomy, Checklist, Components: Tiers and Block Anatomy, Contents, Do and Don't, Edge Cases, Helpers, Page Outline (+5 more)
+### Community 142 - "Phase 2: Foundational (Blocking Prerequisites)"
+Cohesion: 0.33
+Nodes (3): StateStore — new/changed methods, D3: Freshness snapshot — per-origin column, not per-source sync_state, Phase 2: Foundational (Blocking Prerequisites)
 
 ### Community 143 - "Styling & Customization"
 Cohesion: 0.17
@@ -774,28 +762,28 @@ Cohesion: 0.17
 Nodes (12): Action → (no primitive), alert-dialog, Base UI only props worth knowing (alert-dialog), Cancel → Close, Content → Popup, CSS variables (alert-dialog), Data attributes (alert-dialog), Overlay → Backdrop (+4 more)
 
 ### Community 145 - "Config"
-Cohesion: 0.15
-Nodes (20): Implementation for User Story 1, Config, check(), _ensure_spec_lock(), export_pptx(), icon_sync(), project_init(), projects_root() (+12 more)
+Cohesion: 0.11
+Nodes (26): completion_page(), Implementation for User Story 1, Config, check(), _ensure_spec_lock(), export_pptx(), icon_sync(), project_init() (+18 more)
 
 ### Community 146 - "Design Systems from DESIGN.md"
-Cohesion: 0.17
-Nodes (12): Contents, Coverage check, Design Systems from DESIGN.md, Inputs to Confirm, Known traps, Picking a style, Report Back, Step 1: Scaffold (+4 more)
+Cohesion: 0.10
+Nodes (20): Contents, Coverage check, Dark mode, Design Systems from DESIGN.md, Elevation, Focus, Fonts, Inputs to Confirm (+12 more)
 
 ### Community 147 - "Tools"
 Cohesion: 0.17
 Nodes (11): Configuring Registries, Setup, `shadcn:get_add_command_for_items`, `shadcn:get_audit_checklist`, `shadcn:get_item_examples_from_registries`, `shadcn:get_project_registries`, `shadcn:list_items_in_registries`, shadcn MCP Server (+3 more)
 
-### Community 148 - ".agents/skills/migrate-radix-to-base/form-controls.md"
-Cohesion: 0.17
-Nodes (11): Base UI only props worth knowing (checkbox), Base UI only props worth knowing (switch), checkbox, Checkbox.Indicator → Checkbox.Indicator, Checkbox.Root → Checkbox.Root, Data-attribute mapping (checkbox), Data-attribute mapping (switch), Radix UI to Base UI props mapping: form controls (+3 more)
+### Community 148 - "Specification Quality Checklist: Application Log File with Leveled Logging"
+Cohesion: 0.22
+Nodes (5): Content Quality, Feature Readiness, Notes, Requirement Completeness, Specification Quality Checklist: Application Log File with Leveled Logging
 
 ### Community 149 - "alert-dialog"
 Cohesion: 0.17
 Nodes (12): Action → (no primitive), alert-dialog, Base UI only props worth knowing (alert-dialog), Cancel → Close, Content → Popup, CSS variables (alert-dialog), Data attributes (alert-dialog), Overlay → Backdrop (+4 more)
 
 ### Community 150 - "Design Systems from DESIGN.md"
-Cohesion: 0.17
-Nodes (12): Contents, Coverage check, Design Systems from DESIGN.md, Inputs to Confirm, Known traps, Picking a style, Report Back, Step 1: Scaffold (+4 more)
+Cohesion: 0.10
+Nodes (20): Contents, Coverage check, Dark mode, Design Systems from DESIGN.md, Elevation, Focus, Fonts, Inputs to Confirm (+12 more)
 
 ### Community 151 - "Tools"
 Cohesion: 0.17
@@ -813,29 +801,37 @@ Nodes (11): Base UI only props worth knowing, CSS variables, Data attributes, to
 Cohesion: 0.18
 Nodes (11): Anchor → Positioner `anchor` prop, Arrow → Arrow, Base UI only props worth knowing (popover), Close → Close, Content → Positioner + Popup, CSS variables (popover), Data attributes (popover), popover (+3 more)
 
+### Community 155 - "agent/skills/shadcn/SKILL.md"
+Cohesion: 0.20
+Nodes (4): Icons, Icons in Button use data-icon attribute, No sizing classes on icons inside components, Pass icons as component objects, not string keys
+
 ### Community 156 - ".url"
-Cohesion: 0.08
-Nodes (23): Agent Rulebook, Data Model — PPT-Master MCP Tools (Phase 1), Export Artifact, PPT Project, Relationships, Slide Page, State that is deliberately NOT modeled, Completion Page (served, not stored) (+15 more)
+Cohesion: 0.10
+Nodes (20): 1. `ppt_export` result (additive), 2. Sidecar HTTP routes (wrapper server), 3. Preview snapshot layout (filesystem contract), 5. Test-case matrix (Constitution II — defined before implementation), Contract — Completion Page & In-Chat Deck Actions (Phase 1), Completion Page (served, not stored), Data Model — PPT Completion Experience (Phase 1), Deck Link (Chat UI concept) (+12 more)
 
 ### Community 157 - "DifyConsole"
-Cohesion: 0.20
+Cohesion: 0.19
 Nodes (9): ConsoleError, DifyConsole, sync_provider(), dcfg_for(), test_app_absent_imports_and_publishes(), test_app_exists_draft_updates_no_import(), test_login_success_and_401(), test_provider_absent_creates_with_documented_fields() (+1 more)
 
 ### Community 158 - "popover"
 Cohesion: 0.18
 Nodes (11): Anchor → Positioner `anchor` prop, Arrow → Arrow, Base UI only props worth knowing (popover), Close → Close, Content → Positioner + Popup, CSS variables (popover), Data attributes (popover), popover (+3 more)
 
+### Community 159 - ".agents/skills/shadcn/SKILL.md"
+Cohesion: 0.12
+Nodes (12): Accordion, Base vs Radix, Button / trigger as non-button element (base only), Contents, Select, Select — multiple selection and object values (base only), Slider, ToggleGroup (+4 more)
+
 ### Community 160 - "markdown.tsx"
-Cohesion: 0.19
-Nodes (12): Markdown(), Table(), TableBody(), TableCell(), TableHead(), TableHeader(), TableRow(), DeckLink (+4 more)
+Cohesion: 0.16
+Nodes (15): DeckActions(), Markdown(), Table(), TableBody(), TableCell(), TableHead(), TableHeader(), TableRow() (+7 more)
 
 ### Community 161 - "devDependencies"
 Cohesion: 0.17
 Nodes (12): devDependencies, eslint, eslint-config-next, prettier, prettier-plugin-tailwindcss, tailwindcss, @tailwindcss/postcss, @types/node (+4 more)
 
 ### Community 162 - "Quickstart: OneDrive On-Demand Embedding with Staleness Reminder"
-Cohesion: 0.11
-Nodes (14): Complexity Tracking, Constitution Check, Documentation (this feature), Implementation Plan: OneDrive On-Demand Embedding with Staleness Reminder, Project Structure, Source Code (repository root), Summary, User-managed files (not committed) (+6 more)
+Cohesion: 0.12
+Nodes (11): Content Quality, Feature Readiness, Notes, Requirement Completeness, Specification Quality Checklist: OneDrive On-Demand Embedding with Staleness Reminder, 1. Automated validation (CI-grade, no network), 2. Live on-demand flow (real OneDrive), 3. Chat-level check (Dify) (+3 more)
 
 ### Community 163 - "toolbar"
 Cohesion: 0.20
@@ -873,6 +869,10 @@ Nodes (10): Base UI only props worth knowing (dialog), Content → Popup, CSS va
 Cohesion: 0.20
 Nodes (9): Accordion animation placement, Button, Conventions, DropdownMenu / ContextMenu SubContent, Select, SubTrigger open styling, Tabs, Target wrapper shapes (golden-derived specifics) (+1 more)
 
+### Community 172 - "logging.md"
+Cohesion: 0.22
+Nodes (5): 1. Automated validation (CI-grade), 2. Live check (running sidecar), Expected outcomes summary, Prerequisites, Quickstart: Application Log File with Leveled Logging
+
 ### Community 173 - "accordion"
 Cohesion: 0.22
 Nodes (9): accordion, Accordion.Content → Accordion.Panel, Accordion.Header → Accordion.Header, Accordion.Item → Accordion.Item, Accordion.Root → Accordion.Root, Accordion.Trigger → Accordion.Trigger, Base UI only props worth knowing, CSS var mapping (+1 more)
@@ -886,48 +886,48 @@ Cohesion: 0.22
 Nodes (9): Arrow → Arrow, Base UI only props worth knowing (preview-card), Content → Positioner + Popup, CSS variables (preview-card), Data attributes (preview-card), hover-card → preview-card, Portal → Portal, Root → Root (+1 more)
 
 ### Community 176 - "Commands"
-Cohesion: 0.17
-Nodes (12): `add` — Add components, `apply` — Apply a preset to an existing project, `build` — Build a custom registry, Commands, `diff` — Check for updates, `docs` — Get component documentation URLs, Dry-Run Mode, `info` — Project information (+4 more)
+Cohesion: 0.12
+Nodes (17): `add` — Add components, `apply` — Apply a preset to an existing project, `build` — Build a custom registry, Commands, Contents, `diff` — Check for updates, `docs` — Get component documentation URLs, Dry-Run Mode (+9 more)
 
 ### Community 177 - "hover-card → preview-card"
 Cohesion: 0.22
 Nodes (9): Arrow → Arrow, Base UI only props worth knowing (preview-card), Content → Positioner + Popup, CSS variables (preview-card), Data attributes (preview-card), hover-card → preview-card, Portal → Portal, Root → Root (+1 more)
 
 ### Community 178 - "Commands"
-Cohesion: 0.17
-Nodes (12): `add` — Add components, `apply` — Apply a preset to an existing project, `build` — Build a custom registry, Commands, `diff` — Check for updates, `docs` — Get component documentation URLs, Dry-Run Mode, `info` — Project information (+4 more)
+Cohesion: 0.12
+Nodes (17): `add` — Add components, `apply` — Apply a preset to an existing project, `build` — Build a custom registry, Commands, Contents, `diff` — Check for updates, `docs` — Get component documentation URLs, Dry-Run Mode (+9 more)
 
 ### Community 179 - "tabs"
 Cohesion: 0.25
 Nodes (8): Base UI only props worth knowing, CSS var mapping, Data-attribute mapping, tabs, Tabs.Content → Tabs.Panel, Tabs.List → Tabs.List, Tabs.Root → Tabs.Root, Tabs.Trigger → Tabs.Tab
 
-### Community 180 - "Step 4: Map Tokens to the Theme"
+### Community 180 - "scripts"
 Cohesion: 0.25
-Nodes (8): Dark mode, Elevation, Focus, Fonts, Radius, Role mapping, Step 4: Map Tokens to the Theme, Type scale
+Nodes (8): scripts, build, dev, format, lint, start, test, typecheck
 
-### Community 181 - "Foundations"
-Cohesion: 0.25
-Nodes (8): Color roles, Elevation, Foundations, Motion and icons, Palette, Radius, Spacing, Typography
+### Community 181 - "test_web_providers.py"
+Cohesion: 0.43
+Nodes (4): test_exa_timeout_raises_provider_error(), test_searxng_respects_limit(), test_tavily_normalizes_results(), test_unconfigured_provider_raises()
 
 ### Community 182 - "Registry Authoring and Addresses"
 Cohesion: 0.17
 Nodes (11): Address Schemes, Build and Verify, GitHub Registries, Include, Item Definitions, Mental Model, Registry Authoring and Addresses, Registry Dependencies (+3 more)
 
 ### Community 183 - "Base vs Radix"
-Cohesion: 0.11
-Nodes (19): Accordion, Base vs Radix, Button / trigger as non-button element (base only), Composition: asChild (radix) vs render (base), Contents, Select, Select — multiple selection and object values (base only), Slider (+11 more)
+Cohesion: 0.25
+Nodes (8): Accordion, Base vs Radix, Button / trigger as non-button element (base only), Contents, Select, Select — multiple selection and object values (base only), Slider, ToggleGroup
 
 ### Community 184 - "agentic_rag_mcp/errors.py"
-Cohesion: 0.13
-Nodes (10): Code and tool output use CodeBlock, Code and tool output use CodeBlock, DecisionLayerUnavailable, Err, ErrorCode, Ok, RagError, wrap() (+2 more)
+Cohesion: 0.12
+Nodes (12): Code and tool output use CodeBlock, Code and tool output use CodeBlock, D9: Error handling — one honest per-file outcome model everywhere, DecisionLayerUnavailable, Err, ErrorCode, Ok, RagError (+4 more)
 
-### Community 185 - "Step 4: Map Tokens to the Theme"
-Cohesion: 0.25
-Nodes (8): Dark mode, Elevation, Focus, Fonts, Radius, Role mapping, Step 4: Map Tokens to the Theme, Type scale
+### Community 185 - "Implementation Plan: OneDrive On-Demand Embedding with Staleness Reminder"
+Cohesion: 0.29
+Nodes (7): Complexity Tracking, Constitution Check, Documentation (this feature), Implementation Plan: OneDrive On-Demand Embedding with Staleness Reminder, Project Structure, Source Code (repository root), User-managed files (not committed)
 
-### Community 186 - "Foundations"
-Cohesion: 0.25
-Nodes (8): Color roles, Elevation, Foundations, Motion and icons, Palette, Radius, Spacing, Typography
+### Community 186 - "agent/skills/shadcn/assets/showcase/color-pair.tsx"
+Cohesion: 0.60
+Nodes (5): ColorPair(), contrast(), luminance(), toHex(), toRgb()
 
 ### Community 187 - "Registry Authoring and Addresses"
 Cohesion: 0.25
@@ -941,9 +941,9 @@ Nodes (9): Phase 2: Foundational (Blocking Prerequisites), CheckFailed, ExportBl
 Cohesion: 0.09
 Nodes (21): Dependencies & Execution Order, Format: `[ID] [P?] [Story] Description`, Implementation for User Story 1, Implementation for User Story 3, Implementation for User Story 4, Implementation Strategy, Incremental Delivery, MVP First (through User Story 1) (+13 more)
 
-### Community 190 - "heuristic_classify"
-Cohesion: 0.36
-Nodes (4): heuristic_classify(), test_default_is_deliberative(), test_multi_part_question_deliberative(), test_simple_question_fast()
+### Community 190 - "Dependencies & Execution Order"
+Cohesion: 0.40
+Nodes (5): Dependencies & Execution Order, Parallel Opportunities, Phase Dependencies, User Story Independent Tests, Within Each User Story
 
 ### Community 191 - "Class-string rewrites (layer 2)"
 Cohesion: 0.29
@@ -954,8 +954,8 @@ Cohesion: 0.09
 Nodes (21): Dependencies & Execution Order, Format: `[ID] [P?] [Story] Description`, Implementation for User Story 2, Implementation for User Story 4, Implementation Strategy, Incremental Delivery, MVP First (User Story 1), Notes (+13 more)
 
 ### Community 193 - "slider"
-Cohesion: 0.18
-Nodes (11): Base UI only props worth knowing (slider), Data-attribute mapping (slider), (new part) Slider.Control, slider, Slider.Range → Slider.Indicator (renamed), Slider.Root → Slider.Root, Slider.Thumb → Slider.Thumb, Slider.Track → Slider.Track (moved inside Control) (+3 more)
+Cohesion: 0.29
+Nodes (7): Base UI only props worth knowing (slider), Data-attribute mapping (slider), (new part) Slider.Control, slider, Slider.Range → Slider.Indicator (renamed), Slider.Root → Slider.Root, Slider.Track → Slider.Track (moved inside Control)
 
 ### Community 194 - "Radix UI -> Base UI migration"
 Cohesion: 0.29
@@ -974,24 +974,12 @@ Cohesion: 0.29
 Nodes (6): Hard rules, Modes, Preflight (always), Radix UI -> Base UI migration, Strategy: golden pair first, transformation engine second, Verify and report
 
 ### Community 198 - "DeployConfig"
-Cohesion: 0.22
+Cohesion: 0.23
 Nodes (9): Deployment Run, ConfigError, DeployConfig, cmd_chatflow(), cmd_redeploy(), RunReport, Step, test_redaction_masks_secrets() (+1 more)
 
 ### Community 199 - "deploy/__main__.py"
-Cohesion: 0.17
-Nodes (10): run_battery(), redact(), resolve(), cmd_verify(), echo_config(), main(), test_config_file_section(), test_defaults() (+2 more)
-
-### Community 200 - "radio-group"
-Cohesion: 0.33
-Nodes (6): Base UI only props worth knowing (radio-group), Data-attribute mapping (radio-group), radio-group, RadioGroup.Indicator → Radio.Indicator (moved to Radio namespace), RadioGroup.Item → Radio.Root (moved to Radio namespace), RadioGroup.Root → RadioGroup
-
-### Community 202 - "shadcn CLI Reference"
-Cohesion: 0.40
-Nodes (5): Contents, Presets, shadcn CLI Reference, Switching Presets, Templates
-
-### Community 203 - "shadcn CLI Reference"
-Cohesion: 0.40
-Nodes (5): Contents, Presets, shadcn CLI Reference, Switching Presets, Templates
+Cohesion: 0.12
+Nodes (7): init_config(), redact(), resolve(), test_config_file_section(), test_defaults(), test_env_overrides_file(), test_redaction_ignores_empty_secrets()
 
 ### Community 204 - "Tasks: Deployment Automation — One-Command Stack Deploy & Verify"
 Cohesion: 0.05
@@ -1001,41 +989,33 @@ Nodes (37): POST(), runtime, StreamEvent, R1. CLI shape, R2. Chatflow update str
 Cohesion: 0.29
 Nodes (6): AI Chat — AgenticRAG Chat UI, Dify configuration, How it works, Notes, Quickstart, Stack
 
-### Community 206 - "Dependencies & Execution Order"
-Cohesion: 0.50
-Nodes (4): Dependencies & Execution Order, Parallel Opportunities, Phase Dependencies, Within Each User Story
-
 ### Community 208 - "httpx"
-Cohesion: 0.22
-Nodes (13): mcp_call(), projects_roots(), registry(), scenario_chat_journey(), scenario_chat_ui_liveness(), scenario_completion_page(), scenario_deck_roundtrip(), scenario_health() (+5 more)
+Cohesion: 0.32
+Nodes (11): mcp_call(), registry(), scenario_chat_journey(), scenario_chat_ui_liveness(), scenario_completion_page(), scenario_deck_roundtrip(), scenario_health(), scenario_honest_errors() (+3 more)
 
 ### Community 212 - "test_ppt_completion_contract.py"
-Cohesion: 0.27
-Nodes (15): build_app(), call(), _client(), env(), fake_scripts(), make_deck(), _page(), test_completion_page_served() (+7 more)
-
-### Community 213 - "build_server"
-Cohesion: 0.12
-Nodes (10): make_vector_tool(), build_server(), fetch_url(), graph_query(), search(), _fetch_url(), server(), server() (+2 more)
+Cohesion: 0.25
+Nodes (16): build_app(), slide(), call(), _client(), env(), fake_scripts(), make_deck(), _page() (+8 more)
 
 ### Community 214 - "test_ppt_contract.py"
 Cohesion: 0.20
 Nodes (14): call(), fake_scripts(), server(), test_check_reports_details(), test_concurrent_projects_isolated(), test_export_blocked_on_failing_pages(), test_full_round_trip(), test_init_rejects_bad_name() (+6 more)
 
 ### Community 215 - "sources_auth"
-Cohesion: 0.27
-Nodes (16): Summary, Functional Requirements, Superseded behaviors (removed — spec 006, Constitution V), Test matrix (contract + unit + integration — every row is a named test), Technical Context, D10: Test strategy — supersede in place, pin the invariants, D6: Watcher — onedrive branch deleted, not skipped, Implementation for User Story 1 (+8 more)
+Cohesion: 0.22
+Nodes (18): Summary, Functional Requirements, Test matrix (contract + unit + integration — every row is a named test), Technical Context, D10: Test strategy — supersede in place, pin the invariants, D5: Staleness reminder content — timestamps + actionable identifier, D6: Watcher — onedrive branch deleted, not skipped, D8: `sources_auth` — keep non-blocking device flow, drop the sync trigger (+10 more)
 
 ### Community 216 - "ppt_write_page"
-Cohesion: 0.26
-Nodes (16): 1. `ppt_project_init`, 2. `ppt_icon_sync`, 3. `ppt_write_page`, 4. `ppt_check`, 5. `ppt_export`, Tool schemas, Summary, R3. Tool granularity and the agent repair loop (+8 more)
+Cohesion: 0.20
+Nodes (19): 1. `ppt_project_init`, 2. `ppt_icon_sync`, 3. `ppt_write_page`, 4. `ppt_check`, 5. `ppt_export`, Tool schemas, PPT Project, Slide Page (+11 more)
 
 ### Community 217 - "parsers.py"
-Cohesion: 0.33
-Nodes (10): IngestionError, _extract_docx(), _extract_pdf(), _extract_pptx(), extract_text(), _extract_xlsx(), media_type_for(), ParseSkipped (+2 more)
+Cohesion: 0.29
+Nodes (11): IngestionError, _extract_docx(), _extract_pdf(), _extract_pptx(), extract_text(), _extract_xlsx(), media_type_for(), ParseSkipped (+3 more)
 
 ### Community 218 - "Contract — Completion Page & In-Chat Deck Actions (Phase 1)"
-Cohesion: 0.13
-Nodes (11): Content Quality, Feature Readiness, Notes, Requirement Completeness, Specification Quality Checklist: PPT Completion Experience — Preview & Edit, 1. `ppt_export` result (additive), 2. Sidecar HTTP routes (wrapper server), 3. Preview snapshot layout (filesystem contract) (+3 more)
+Cohesion: 0.22
+Nodes (5): Content Quality, Feature Readiness, Notes, Requirement Completeness, Specification Quality Checklist: PPT Completion Experience — Preview & Edit
 
 ### Community 219 - "Feature Specification: PPT Completion Experience — Preview & Edit in the Browser"
 Cohesion: 0.13
@@ -1045,10 +1025,6 @@ Nodes (15): Assumptions, Clarifications, Edge Cases, Feature Specification: PPT 
 Cohesion: 0.18
 Nodes (7): build_payload(), resync_path(), _live(), test_payload_defaults_missing_fields(), test_payload_shape_and_count(), test_version_gate_supported(), test_version_gate_unknown_or_missing()
 
-### Community 221 - "onedrive_embed_files"
-Cohesion: 0.21
-Nodes (14): Contract: OneDrive On-Demand Tools & Staleness Reminder, Tool: `onedrive_embed_files` (NEW), Tool: `onedrive_list_files` (NEW), Tool: `sources_add(type:"onedrive")` (EXISTING — message values change), Tool: `sources_auth` (EXISTING — no-sync semantics), Tool: `sources_sync` (EXISTING — onedrive notice), Implementation for User Story 2, Phase 4: User Story 2 — Browse files and embed only what the user picks, one-time (Priority: P1) (+6 more)
-
 ### Community 222 - "test_ppt_completion.py"
 Cohesion: 0.37
 Nodes (12): fake_finalize(), make_cfg(), project(), test_render_degraded_page_honest(), test_render_page_contains_download_edit_slides(), test_resolve_slide_traversal_rejected(), test_resolve_slide_unknown_project(), test_resolve_slide_valid() (+4 more)
@@ -1057,17 +1033,9 @@ Nodes (12): fake_finalize(), make_cfg(), project(), test_render_degraded_page_ho
 Cohesion: 0.24
 Nodes (7): build_image(), cached_tools(), db_query(), dify_version(), recreate_container(), _run(), update_cached_tools()
 
-### Community 224 - "agent/skills/migrate-radix-to-base/form-controls.md"
-Cohesion: 0.17
-Nodes (11): Base UI only props worth knowing (checkbox), Base UI only props worth knowing (switch), checkbox, Checkbox.Indicator → Checkbox.Indicator, Checkbox.Root → Checkbox.Root, Data-attribute mapping (checkbox), Data-attribute mapping (switch), Radix UI to Base UI props mapping: form controls (+3 more)
-
-### Community 225 - "Implementation Plan: OneDrive Ingestion — Full Pipeline with Auto-Update"
-Cohesion: 0.17
-Nodes (11): Complexity Tracking, Constitution Check, Documentation (this feature), Implementation Plan: OneDrive Ingestion — Full Pipeline with Auto-Update, Project Structure, Source Code (repository root), Technical Context, User-managed files (not committed) (+3 more)
-
-### Community 226 - "test_decision_schema.py"
-Cohesion: 0.30
-Nodes (8): validate_output(), _result(), test_complexity_must_be_integer(), test_complexity_out_of_range_is_invalid(), test_decider_mapping_from_model_output(), test_out_of_set_route_is_invalid(), test_provenance_only_two_values(), test_valid_result_passes()
+### Community 225 - "Feature Specification: OneDrive Ingestion — Full Pipeline with Auto-Update"
+Cohesion: 0.12
+Nodes (15): Technical Context, Assumptions, Clarifications, Edge Cases, Feature Specification: OneDrive Ingestion — Full Pipeline with Auto-Update, Key Entities, Measurable Outcomes, Requirements *(mandatory)* (+7 more)
 
 ### Community 227 - "FakeConsole"
 Cohesion: 0.26
@@ -1086,8 +1054,8 @@ Cohesion: 0.20
 Nodes (10): Base UI only props worth knowing, CSS var mapping, Data-attribute mapping, toolbar, Toolbar.Button → Toolbar.Button, Toolbar.Link → Toolbar.Link, Toolbar.Root → Toolbar.Root, Toolbar.Separator → Toolbar.Separator (+2 more)
 
 ### Community 231 - "test_deploy_cli.py"
-Cohesion: 0.24
-Nodes (5): run_cli(), test_battery_exit_code_counts_failures(), test_chat_journey_skips_honestly_without_key(), test_dry_run_all_commands_touch_nothing(), test_missing_console_credentials_exit_2()
+Cohesion: 0.18
+Nodes (6): run_cli(), test_battery_exit_code_counts_failures(), test_chat_journey_skips_honestly_without_key(), test_cleanup_cli_dry_run(), test_dry_run_all_commands_touch_nothing(), test_missing_console_credentials_exit_2()
 
 ### Community 232 - "test_ppt_completion_pipeline.py"
 Cohesion: 0.29
@@ -1095,11 +1063,11 @@ Nodes (6): cfg(), root(), test_degraded_export_still_delivers(), test_export_sna
 
 ### Community 233 - "Research: OneDrive Ingestion"
 Cohesion: 0.22
-Nodes (8): D1 — Delta queries for incremental sync (decided in Clarifications), D2 — Recursive folder traversal (initial sync), D4 — File download, D5 — File size cap, D7 — Error handling matrix, D8 — Test strategy, D9 — Config surface, Research: OneDrive Ingestion
+Nodes (8): D1 — Delta queries for incremental sync (decided in Clarifications), D2 — Recursive folder traversal (initial sync), D3 — Non-blocking sources_auth flow, D4 — File download, D5 — File size cap, D7 — Error handling matrix, D9 — Config surface, Research: OneDrive Ingestion
 
 ### Community 234 - "Research — PPT-Master MCP Tools (Phase 0)"
-Cohesion: 0.22
-Nodes (8): R1. How the sidecar executes ppt-master (runtime integration), R2. File delivery (download URL), R4. Agent rulebook (distilled instructions), R5. Concurrency and project isolation, R6. Error handling design (per user directive), R7. Test strategy (per user directive), R8. Config surface, Research — PPT-Master MCP Tools (Phase 0)
+Cohesion: 0.25
+Nodes (7): R1. How the sidecar executes ppt-master (runtime integration), R2. File delivery (download URL), R4. Agent rulebook (distilled instructions), R6. Error handling design (per user directive), R7. Test strategy (per user directive), R8. Config surface, Research — PPT-Master MCP Tools (Phase 0)
 
 ### Community 235 - "form"
 Cohesion: 0.25
@@ -1128,6 +1096,10 @@ Nodes (7): 1. Deploy the updated sidecar, 2. Run the automated battery, 3. Verif
 ### Community 241 - "Quickstart — Deployment Automation Validation Guide"
 Cohesion: 0.25
 Nodes (7): 1. Configure credentials (once), 2. Run the automated battery, 3. Full automation pass, 4. Automated test battery (developer), 5. Fresh-host proof (optional), 6. Honest-failure spot checks, Quickstart — Deployment Automation Validation Guide
+
+### Community 242 - "onedrive.py"
+Cohesion: 0.23
+Nodes (3): D1: Metadata-only listing — recursive `children` traversal, not delta-as-listing, GraphBase, SharePointSource
 
 ### Community 243 - "agent/skills/migrate-radix-to-base/display-misc.md"
 Cohesion: 0.29
@@ -1161,41 +1133,25 @@ Nodes (5): Callback signature rule, Consumer-side prop changes (call sites, not 
 Cohesion: 0.33
 Nodes (6): Base UI only props worth knowing, CSS variables, Data attributes, progress, Progress.Indicator → Progress.Indicator, Progress.Root → Progress.Root
 
-### Community 251 - "radio-group"
-Cohesion: 0.33
-Nodes (6): Base UI only props worth knowing (radio-group), Data-attribute mapping (radio-group), radio-group, RadioGroup.Indicator → Radio.Indicator (moved to Radio namespace), RadioGroup.Item → Radio.Root (moved to Radio namespace), RadioGroup.Root → RadioGroup
-
 ### Community 252 - "Progress.Indicator → Progress.Indicator"
 Cohesion: 0.33
 Nodes (6): Base UI only props worth knowing, CSS variables, Data attributes, progress, Progress.Indicator → Progress.Indicator, Progress.Root → Progress.Root
 
-### Community 253 - "PPT-Master Agent Rulebook (quick-generate, v1)"
-Cohesion: 0.33
-Nodes (5): Behavior rules, Input modes, Page authoring contract (SVG), PPT-Master Agent Rulebook (quick-generate, v1), Tool protocol (exact order)
+### Community 253 - "Data Model — PPT-Master MCP Tools (Phase 1)"
+Cohesion: 0.15
+Nodes (10): Behavior rules, Input modes, Page authoring contract (SVG), PPT-Master Agent Rulebook (quick-generate, v1), Tool protocol (exact order), Agent Rulebook, Data Model — PPT-Master MCP Tools (Phase 1), Export Artifact (+2 more)
 
 ### Community 254 - "test_reflexion_conditioning.py"
-Cohesion: 0.47
-Nodes (3): call(), test_live_web_route_leads_with_web_tools(), test_multi_part_question_covers_all_parts_with_reflections()
+Cohesion: 0.32
+Nodes (4): call(), server(), test_live_web_route_leads_with_web_tools(), test_multi_part_question_covers_all_parts_with_reflections()
 
 ### Community 255 - "Separator.Root → Separator"
 Cohesion: 0.40
 Nodes (5): Base UI only props worth knowing, CSS variables, Data attributes, separator, Separator.Root → Separator
 
-### Community 256 - "Icons"
-Cohesion: 0.40
-Nodes (4): Icons, Icons in Button use data-icon attribute, No sizing classes on icons inside components, Pass icons as component objects, not string keys
-
 ### Community 257 - "Separator.Root → Separator"
 Cohesion: 0.40
 Nodes (5): Base UI only props worth knowing, CSS variables, Data attributes, separator, Separator.Root → Separator
-
-### Community 258 - "Icons"
-Cohesion: 0.40
-Nodes (4): Icons, Icons in Button use data-icon attribute, No sizing classes on icons inside components, Pass icons as component objects, not string keys
-
-### Community 259 - "_test_cfg"
-Cohesion: 0.40
-Nodes (3): _test_cfg(), test_decider_timeout_yields_invalid(), test_malformed_model_output_yields_invalid()
 
 ### Community 260 - "(new) Fieldset.Root and Fieldset.Legend"
 Cohesion: 0.50
@@ -1211,23 +1167,23 @@ Nodes (4): Documentation (this feature), Project Structure, Source Code (reposit
 
 ## Knowledge Gaps
 - **65 isolated node(s):** `react-dom`, `shadcn`, `tw-animate-css`, `@tailwindcss/postcss`, `@types/node` (+60 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1829 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **38 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1831 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **32 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `build_server()` connect `build_server` to `Reflexion Graph Agent`, `OneDrive Freshness Probe`, `decision.py`, `current_setup`, `Vector Store Wrapper`, `Specialty Web Search`, `OneDrive Contract Tests`, `IngestionPipeline`, `Logging and Tool Models`, `Config`, `State Store Methods`, `OneDrive On-Demand Tests`, `Web Search Providers`, `Logging Integration Tests`, `pytest`, `Server Transport Config`, `OneDrive Graph Auth`, `Specialty Search Integration`, `Fallback Provenance Tests`, `Web Research Integration`, `Laya Runtime`, `Specialty Search Contract`, `agentic_rag_mcp/server.py`, `Web Research Contract`, `Decision Routing Tests`, `Logging Contract Tests`, `ask`, `Success Criteria Tests`, `PptError`, `SQLite State Tools`, `Web Search Scrape Tasks`, `OneDrive Auth Contract`, `test_ppt_completion_contract.py`, `test_ppt_contract.py`, `sources_auth`, `ppt_write_page`, `Edge Case Tests`, `onedrive_embed_files`, `Specialty Search Plan`, `Provider Chain Tests`, `ppt_export`, `status`, `SSRF Web Research`, `Research Page Renderer`, `Domain Filtering`, `Site-Scoped Query Builder`, `logging_setup.py`?**
-  _High betweenness centrality (0.259) - this node is a cross-community bridge._
+- **Why does `build_server()` connect `build_server` to `Reflexion Graph Agent`, `OneDrive Freshness Probe`, `decision.py`, `Vector Store Wrapper`, `Specialty Web Search`, `OneDrive Contract Tests`, `Logging and Tool Models`, `Config`, `State Store Methods`, `OneDrive On-Demand Tests`, `Web Search Providers`, `Logging Integration Tests`, `pytest`, `deploy/__main__.py`, `OneDrive Graph Auth`, `Specialty Search Integration`, `Fallback Provenance Tests`, `Web Research Integration`, `Laya Runtime`, `Specialty Search Contract`, `NotFoundError`, `Web Research Contract`, `asyncio`, `Decision Routing Tests`, `MCP Contract Tests`, `Logging Contract Tests`, `ask`, `Success Criteria Tests`, `Ask Response Contract`, `PptError`, `agentic_rag_mcp/server.py`, `OneDrive Auth Contract`, `test_ppt_completion_contract.py`, `test_ppt_contract.py`, `sources_auth`, `ppt_write_page`, `Edge Case Tests`, `Specialty Search Plan`, `Provider Chain Tests`, `ppt_export`, `status`, `Research Page Renderer`, `Domain Filtering`, `Site-Scoped Query Builder`, `test_reflexion_conditioning.py`, `logging_setup.py`?**
+  _High betweenness centrality (0.289) - this node is a cross-community bridge._
 - **Are the 14 inferred relationships involving `build_server()` (e.g. with `D7: Migration — snapshot-absence defines the pending set; idempotent by construction` and `Phase 8: Cross-Cutting — One-Time Migration (FR-016)`) actually correct?**
   _`build_server()` has 14 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `react-dom`, `shadcn`, `tw-animate-css` to the rest of the system?**
   _65 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `json` be split into smaller, more focused modules?**
-  _Cohesion score 0.057782754759238525 - nodes in this community are weakly interconnected._
-- **Why does `status()` connect `status` to `Quickstart: OneDrive On-Demand Embedding with Staleness Reminder`, `Logging Task Plan`, `decision.py`, `current_setup`, `Feature Specification: Application Log File with Leveled Logging`, `Data Model — Deployment Automation (Phase 1)`, `Separator`, `OneDrive Auth Contract`, `build_server`, `logging_setup.py`?**
-  _High betweenness centrality (0.173) - this node is a cross-community bridge._
+  _Cohesion score 0.06153846153846154 - nodes in this community are weakly interconnected._
+- **Why does `status()` connect `status` to `Quickstart: OneDrive On-Demand Embedding with Staleness Reminder`, `Logging Task Plan`, `decision.py`, `Feature Specification: Application Log File with Leveled Logging`, `logging.md`, `Data Model — Deployment Automation (Phase 1)`, `build_server`, `Separator`, `OneDrive Auth Contract`, `logging_setup.py`?**
+  _High betweenness centrality (0.191) - this node is a cross-community bridge._
 - **Are the 56 inferred relationships involving `Config` (e.g. with `Technical Context` and `Phase 2: Foundational (Blocking Prerequisites)`) actually correct?**
   _`Config` has 56 INFERRED edges - model-reasoned connections that need verification._
-- **Should `rl_common.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.05023796932839767 - nodes in this community are weakly interconnected._
+- **Should `research.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.08170731707317073 - nodes in this community are weakly interconnected._
