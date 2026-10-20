@@ -72,6 +72,32 @@ def fake_service(monkeypatch, *, success=True, status=200, sleep=None, url="http
 
 # ---------------------------------------------------------------- chart tool (A02-A05)
 
+def test_auto_normalizes_raw_column_names():
+    """Empirically driven: raw field names render an EMPTY chart; the tool must
+    auto-normalize 2-field records so this can never happen."""
+    from agentic_rag_mcp.antv import charts
+
+    raw = charts._normalize_data("bar", [
+        {"Student": "Peter", "Height (cm)": 180},
+        {"Student": "John", "Height (cm)": 175},
+    ])
+    assert raw == [{"category": "Peter", "value": 180}, {"category": "John", "value": 175}]
+
+    time_series = charts._normalize_data("line", [{"Month": "Jan", "Sales": 10}])
+    assert time_series == [{"time": "Jan", "value": 10}]
+
+    passthrough = charts._normalize_data("bar", [{"category": "A", "value": 1}])
+    assert passthrough == [{"category": "A", "value": 1}]
+
+    with pytest.raises(charts.AntvInvalidInput):
+        charts._normalize_data("bar", [{"a": "x", "b": 1, "c": 2}])  # 3 non-canonical fields
+
+    # canonical + extra passes through (service tolerates extras)
+    assert charts._normalize_data("bar", [{"category": "A", "value": 1, "note": "x"}]) == [
+        {"category": "A", "value": 1, "note": "x"}
+    ]
+
+
 def test_unsupported_type_names_supported_set(tmp_path, monkeypatch):
     from agentic_rag_mcp.antv import charts
     from agentic_rag_mcp.antv.errors import AntvError, AntvInvalidType

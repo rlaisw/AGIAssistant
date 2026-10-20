@@ -42,8 +42,36 @@ def _validate(chart_type: str, data: list, title: str) -> None:
         raise AntvInvalidInput(f"title longer than {MAX_TITLE} chars")
 
 
+def _normalize_data(chart_type: str, data: list) -> list:
+    """Auto-normalize 2-field records to the canonical shape the rendering
+    service plots (arbitrary field names render an EMPTY chart — verified
+    empirically 2026-10-20). Records with the canonical fields pass through."""
+    key_field = "time" if chart_type in ("line", "area") else "category"
+    if all(key_field in d and "value" in d for d in data):
+        return data
+    # exactly two fields: one string-ish -> category/time, one numeric -> value
+    normalized = []
+    for d in data:
+        if len(d) != 2:
+            raise AntvInvalidInput(
+                "data records must be {\"category\": <name>, \"value\": <number>} "
+                f"(or \"time\" for line/area); got fields {list(d.keys())!r}"
+            )
+        string_key = next((k for k, v in d.items() if isinstance(v, str)), None)
+        number_key = next((k for k, v in d.items() if isinstance(v, (int, float))
+                           and not isinstance(v, bool)), None)
+        if string_key is None or number_key is None:
+            raise AntvInvalidInput(
+                "data records need one string field (name) and one numeric "
+                f"field (value); got {d!r}"
+            )
+        normalized.append({key_field: d[string_key], "value": d[number_key]})
+    return normalized
+
+
 def generate_chart(cfg: Config, chart_type: str, data: list, title: str = "") -> dict:
     _validate(chart_type, data, title)
+    data = _normalize_data(chart_type, data)
     payload = {"type": chart_type, "data": data}
     if title:
         payload["title"] = title
