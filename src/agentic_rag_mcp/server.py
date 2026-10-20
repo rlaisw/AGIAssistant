@@ -603,14 +603,32 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
 
     @mcp.tool()
     def antv_infographic(description: str) -> dict:
-        """Render an infographic from declarative AntV infographic syntax.
+        """Render an infographic from declarative AntV Infographic syntax.
         Returns {id, url, usage} — the url opens the rendered infographic in a browser.
 
-        Syntax guide: first line is the template call, e.g.
-        'infographic list-row-simple-horizontal-arrow', followed by an indented
-        data block ('data' -> 'lists' -> '- label X' / 'desc Y' items). Keep the
-        syntax small and well-formed; ~200 built-in templates exist (lists,
-        steps, comparisons, timelines, hierarchies)."""
+        CRITICAL: `description` must be actual Infographic SYNTAX, NOT a prose design
+        brief. The engine cannot render prose — write the template call and data
+        directly. Complete working example:
+
+        infographic list-row-simple-horizontal-arrow
+        data
+          lists
+            - label Step 1
+              desc Prepare accounts
+            - label Step 2
+              desc Team introduction
+            - label Step 3
+              desc Tool setup
+            - label Step 4
+              desc First sprint
+
+        Structure: first line = "infographic <template-name>", then an indented
+        "data" block with template-specific fields (commonly "lists" of
+        "- label X / desc Y" items). ~200 built-in templates exist (lists, steps,
+        comparisons, timelines, hierarchies). NEVER write "Title:", "Layout:",
+        "Step 1 —", bullets, or any English description of the design — only the
+        syntax. Choose the closest template to the user's intent and put their
+        content into the data fields."""
         return _antv(antv_infographic_mod.create_infographic, description)
 
     return mcp

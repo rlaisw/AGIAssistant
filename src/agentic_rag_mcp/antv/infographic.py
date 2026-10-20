@@ -29,17 +29,30 @@ body{margin:0;background:#fafafa;font-family:system-ui,sans-serif}
 </head>
 <body>
 <div id="container"><div id="error">loading…</div></div>
-<script src="https://cdn.jsdelivr.net/npm/@antv/infographic@latest/dist/infographic.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/@antv/infographic@0.2.20/dist/infographic.min.js"><\/script>
 <script>
 const syntax = {syntax_json};
 const errorEl = document.getElementById('error');
 try {
-  if (!window.Infographic) throw new Error('engine failed to load (CDN unreachable?)');
+  const Engine = window.AntVInfographic && window.AntVInfographic.Infographic
+    ? window.AntVInfographic.Infographic
+    : window.Infographic;
+  if (!Engine) throw new Error('engine failed to load (CDN unreachable?)');
   errorEl.style.display = 'none';
-  const ig = new window.Infographic({
+  const ig = new Engine({
     container: '#container', width: '100%', height: '100%',
   });
   ig.render(syntax);
+  if (document.querySelector('#container svg, #container canvas') === null
+      && errorEl.style.display !== 'none') {
+    setTimeout(() => {
+      if (document.querySelector('#container svg, #container canvas') === null) {
+        errorEl.style.display = 'block';
+        errorEl.textContent = 'Nothing rendered — the syntax may not be valid Infographic syntax. '
+          + 'Ask the agent to use a real template (e.g. infographic list-row-simple-horizontal-arrow).';
+      }
+    }, 1500);
+  }
 } catch (e) {
   errorEl.style.display = 'block';
   errorEl.textContent = 'Infographic error: ' + (e && e.message ? e.message : 'unknown');

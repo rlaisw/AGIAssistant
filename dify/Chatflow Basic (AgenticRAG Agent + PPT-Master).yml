@@ -208,11 +208,11 @@ workflow:
               type: mcp
             - enabled: true
               extra:
-                description: Render an infographic from declarative syntax; returns a browser-viewable URL.
+                description: "Render an infographic from declarative AntV Infographic syntax. Returns {id, url, usage} — the url opens the rendered infographic in a browser. CRITICAL: description must be actual Infographic SYNTAX, NOT a prose design brief — the engine cannot render prose. Complete working example:\ninfographic list-row-simple-horizontal-arrow\ndata\n  lists\n    - label Step 1\n      desc Prepare accounts\n    - label Step 2\n      desc Team introduction\n    - label Step 3\n      desc Tool setup\n    - label Step 4\n      desc First sprint\nStructure: first line = 'infographic <template-name>', then an indented 'data' block with template-specific fields (commonly 'lists' of '- label X / desc Y' items). ~200 built-in templates. NEVER write 'Title:', 'Layout:', 'Step 1 —', bullets, or English descriptions of the design — ONLY the syntax. Choose the closest template and put the user's content in the data fields."
               parameters: {}
               provider_name: agentic-rag
               settings: {}
-              tool_description: Render an infographic from declarative syntax; returns a browser-viewable URL.
+              tool_description: "Render an infographic from declarative AntV Infographic syntax. Returns {id, url, usage} — the url opens the rendered infographic in a browser. CRITICAL: description must be actual Infographic SYNTAX, NOT a prose design brief — the engine cannot render prose. Complete working example:\ninfographic list-row-simple-horizontal-arrow\ndata\n  lists\n    - label Step 1\n      desc Prepare accounts\n    - label Step 2\n      desc Team introduction\n    - label Step 3\n      desc Tool setup\n    - label Step 4\n      desc First sprint\nStructure: first line = 'infographic <template-name>', then an indented 'data' block with template-specific fields (commonly 'lists' of '- label X / desc Y' items). ~200 built-in templates. NEVER write 'Title:', 'Layout:', 'Step 1 —', bullets, or English descriptions of the design — ONLY the syntax. Choose the closest template and put the user's content in the data fields."
               tool_label: antv_infographic
               tool_name: antv_infographic
               type: mcp
