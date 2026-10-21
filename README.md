@@ -1,6 +1,6 @@
 # Agentic RAG MCP Server
 
-Agentic retrieval-augmented generation as an MCP server, with a **dual-system workflow**: an embedded structured **decision node** (System 1) routes every request, and a **LangGraph reflexion graph** (System 2) handles complex questions with self-correcting, memory-conditioned retries. 228 tests, contract-preserved responses, provenance on every decision.
+Agentic retrieval-augmented generation as an MCP server, with a **dual-system workflow**: an embedded structured **decision node** (System 1) routes every request, and a **LangGraph reflexion graph** (System 2) handles complex questions with self-correcting, memory-conditioned retries. 344 tests, contract-preserved responses, provenance on every decision.
 
 Specs: [`specs/001-agentic-rag-mcp/`](specs/001-agentic-rag-mcp/) (server, ingestion, contracts) · [`specs/002-laya-reflexion-nodes/`](specs/002-laya-reflexion-nodes/) (dual-system replacement — supersedes 001's routing/loop design).
 
@@ -20,7 +20,7 @@ question ──► System 1: embedded Laya decision model (one pass, no text gen
 
 Outage behavior: if the decision node is unavailable/invalid/timed-out, the keyword heuristic routes and responses are marked `provenance: "fallback"` (FR-003 of spec 002).
 
-## MCP tools (16)
+## MCP tools — 23 total (16 core below + 5 `ppt_*` spec 009 + 2 `antv_*` spec 012)
 
 | Tool | Purpose |
 |---|---|
@@ -81,7 +81,7 @@ agentic-rag-mcp --init   # writes ~/.config/agentic-rag-mcp/config.toml
 
 ## Dify integration
 
-A stateless-HTTP sidecar for Dify ships in [`dify/`](dify/): Dockerfile, compose fragments (Dify networks + HF-cache mount), and a ready-to-import 14-tool chatflow DSL (`dify/Chatflow Basic (AgenticRAG Agent).yml`). Build and run:
+A stateless-HTTP sidecar for Dify ships in [`dify/`](dify/): Dockerfile, compose fragments (Dify networks + HF-cache mount), and a ready-to-import chatflow DSL (`dify/Chatflow Basic (AgenticRAG Agent).yml`). Build and run:
 
 ```bash
 docker build -f dify/docker/mcp-server/Dockerfile -t agentic-rag-mcp:latest .
@@ -95,7 +95,11 @@ Dify UI → Tools → MCP → URL `http://agentic-rag:28080/mcp` (container port
 
 ## PPT-Master deck generation (specs 009–010)
 
-Users can type "help to generate a powerpoint, introduce Dify software" in the chat and get a native editable `.pptx`. Five additive MCP tools (`ppt_project_init`, `ppt_icon_sync`, `ppt_write_page`, `ppt_check`, `ppt_export` — 16 → 21 tools) bridge the [ppt-master](https://github.com/hugohe3/ppt-master) toolchain; chatflow v2 (`dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml`) routes deck requests to a PPT-Master agent node (rulebook: `dify/ppt-master-rulebook.md`) and everything else to the AgenticRAG agent. Every export returns a completion page (`http://localhost:28080/decks/<project>/<stem>/`) with per-slide previews and a download control (`/exports/<project>/<file>.pptx`); the Chat UI renders deck links as an action bar (⬇ Download / 👁 Preview-Edit). Setup: mount the ppt-master clone at `/opt/ppt-master`, rebuild, refresh Dify's tool cache — full runbook in `DEPLOY.md` Step 9.
+Users can type "help to generate a powerpoint, introduce Dify software" in the chat and get a native editable `.pptx`. Five additive MCP tools (`ppt_project_init`, `ppt_icon_sync`, `ppt_write_page`, `ppt_check`, `ppt_export` — 16 → 21 tools; spec 012 adds two AntV tools → 23 total) bridge the [ppt-master](https://github.com/hugohe3/ppt-master) toolchain; chatflow v2 (`dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml`) routes deck requests to a PPT-Master agent node (rulebook: `dify/ppt-master-rulebook.md`) and everything else to the AgenticRAG agent. Every export returns a completion page (`http://localhost:28080/decks/<project>/<stem>/`) with per-slide previews and a download control (`/exports/<project>/<file>.pptx`); the Chat UI renders deck links as an action bar (⬇ Download / 👁 Preview-Edit). Setup: mount the ppt-master clone at `/opt/ppt-master`, rebuild, refresh Dify's tool cache — full runbook in `DEPLOY.md` Step 9.
+
+## AntV charts & infographics (spec 012)
+
+Two additive MCP tools: `antv_chart(chart_type, data, title, …)` renders statistical charts (bar/line/pie/radar/sankey/…; geography types excluded) via the GPT-Vis service and returns an embeddable image URL; `antv_infographic(description)` stores declarative AntV Infographic syntax on the sidecar and serves it at `http://localhost:28080/infographics/<id>/` — the browser loads `@antv/infographic@0.2.20` from jsDelivr and renders client-side (~276 templates across 8 families: chart, sequence, sequence-interaction, list, hierarchy, relation, compare, quadrant). The chatflow agent picks templates from the DSL's `tool_description` — after editing the server docstring, sync the DSL and run `python -m agentic_rag_mcp.deploy chatflow` or the model keeps using stale template names. Deck pages referencing remote chart images export self-contained. Data posture and private-rendering config: `DEPLOY.md` Step 11.
 
 ## Deployment automation (spec 011)
 
@@ -137,6 +141,13 @@ max_concurrent = 4           # parallel page fetches
 
 [features]
 graphify = false            # optional graph-search layer over graphify-out/graph.json
+
+[antv]                      # spec 012 visualization tools
+chart_service_url = "https://antv-studio.alipay.com/api/gpt-vis"  # GPT-Vis renderer
+                             # (private: deploy GPT-Vis-SSR and point here)
+chart_timeout_s = 30.0
+max_inline_image_bytes = 2_097_152    # deck self-containment cap
+infographic_max_syntax_bytes = 65_536
 ```
 
 ### System 1 decision node

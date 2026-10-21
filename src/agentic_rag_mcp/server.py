@@ -623,12 +623,39 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
               desc First sprint
 
         Structure: first line = "infographic <template-name>", then an indented
-        "data" block with template-specific fields (commonly "lists" of
-        "- label X / desc Y" items). ~200 built-in templates exist (lists, steps,
-        comparisons, timelines, hierarchies). NEVER write "Title:", "Layout:",
-        "Step 1 —", bullets, or any English description of the design — only the
-        syntax. Choose the closest template to the user's intent and put their
-        content into the data fields."""
+        "data" block whose list key depends on the template family. Items are
+        "- label X / desc Y" lines ("value N" for charts). ~276 built-in
+        presets across 8 families — VARY the choice to match the user's
+        intent. Verified template names per family (data key in parentheses):
+        - chart (values): chart-column-simple, chart-bar-plain-text,
+          chart-pie-compact-card, chart-line-plain-text, chart-wordcloud
+        - sequence (sequences): sequence-steps, sequence-timeline-done-list,
+          sequence-snake-steps, sequence-roadmap-vertical-pill-badge,
+          sequence-pyramid-simple (TRUE triangle pyramid — use when the user
+          asks for a pyramid), sequence-funnel-simple,
+          sequence-ascending-stairs-3d-simple (3D ascending steps)
+        - sequence-interaction (UML message flows, template
+          sequence-interaction-default-compact-card): participants = top-level
+          items of "sequences" (lanes); each child message needs "id X" and
+          "step N" (row order across all lanes); "relations" reference those
+          MESSAGE ids: "- from m1 / to m2 / label call" — arrows only draw
+          between messages that have ids
+        - list (lists): list-row, list-grid, list-zigzag-up,
+          list-sector-plain-text, list-pyramid-badge-card (stacked badge
+          rows, NOT a triangle — prefer sequence-pyramid-simple for pyramids)
+        - hierarchy (root with nested children): hierarchy-mindmap,
+          hierarchy-structure, hierarchy-tree-tech-style-capsule-item
+          (org charts)
+        - relation (nodes plus relations from/to): relation-network-icon-badge,
+          relation-circle-icon-badge, relation-dagre-flow-tb-capsule
+          (flowcharts)
+        - compare (compares): compare-binary-horizontal-simple-vs,
+          compare-swot
+        - quadrant (lists): quadrant-quarter-circular (2x2 grids)
+        NEVER write "Title:", "Layout:", "Step 1 —", bullets, or any English
+        description of the design — only the syntax. Choose the closest
+        template to the user's intent and put their content into the data
+        fields."""
         return _antv(antv_infographic_mod.create_infographic, description)
 
     return mcp

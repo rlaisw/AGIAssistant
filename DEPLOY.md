@@ -203,7 +203,7 @@ first to discover available topics, then picks the right profile for the questio
 curl -s localhost:28080/healthz                                  # {"status": "ok"}
 curl -s -X POST localhost:28080/mcp -H 'Content-Type: application/json' \
   -H 'Accept: application/json, text/event-stream' \
-  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'   # 21 tools (16 + 5 ppt_*)
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'   # 23 tools (16 + 5 ppt_* + 2 antv_*)
 # then exercise: status, search, ask, sources_list, sources_add/sync/remove,
 # web_search (live), fetch_url (live), graph_query (honest disabled error)
 ```
@@ -227,7 +227,7 @@ The API key stays server-side — the Next.js route handler `app/api/chat/route.
 
 Lets users type "help to generate a powerpoint, introduce Dify software" in the chat and receive a native editable `.pptx` download link. Requires the ppt-master clone (Step 0 of its own README: `git clone https://github.com/hugohe3/ppt-master.git` into the repo root, `python3 -m venv ppt-master/.venv`, install its requirements) plus the sidecar rebuilt with the ppt mount (Step 3 above includes `-v .../ppt-master:/opt/ppt-master`; the image bakes the export-path deps).
 
-1. Rebuild + recreate the sidecar (Step 3), verify 21 tools: `tools/list` shows `ppt_project_init`, `ppt_icon_sync`, `ppt_write_page`, `ppt_check`, `ppt_export`.
+1. Rebuild + recreate the sidecar (Step 3), verify 23 tools: `tools/list` shows `ppt_project_init`, `ppt_icon_sync`, `ppt_write_page`, `ppt_check`, `ppt_export`, plus `antv_chart` and `antv_infographic` (spec 012, Step 11).
 2. Dify UI → Tools → MCP → the server → **Update** (cache refresh; new tools appear).
 3. Import the chatflow v2 DSL: `dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml` — adds an intent router (deck requests → PPT-Master agent, everything else → the existing AgenticRAG agent). Publish.
 4. Verify: ask for a one-page deck on a known topic; expect progress narration, then a `[Download the deck](http://localhost:28080/exports/<project>/<file>.pptx)` link that downloads a valid PowerPoint. Exported decks land under `ppt-master/projects/<project>/exports/`.
@@ -247,7 +247,9 @@ Notes: v1 bounds decks at 5 pages per run (`[ppt] max_pages` in config.toml); sa
 
 **Completion pages & in-chat actions (spec 010)**: every export also returns an additive `page_url` — `GET /decks/<project>/<stem>/` on the same port serves a browser completion page (per-slide previews snapshotted at export time, download button, back-to-chat edit path; honest degraded state if preview generation failed). Slide assets: `GET /decks/<project>/<stem>/slides/<file>.svg`. The AI Chat UI renders deck links in answers as an action bar (Download / Preview-Edit icons) via its markdown interceptor — the Dify webapp shows the plain link (graceful degradation). Chat UI tests: `pnpm test` (vitest) inside `ai-chat-landing/`.
 
-## Step 10 — Deployment automation (spec 011)One command rebuilds, redeploys, updates the chatflow, and verifies the whole stack — no Dify UI actions, no prompts:
+## Step 10 — Deployment automation (spec 011)
+
+One command rebuilds, redeploys, updates the chatflow, and verifies the whole stack — no Dify UI actions, no prompts:
 
 ```bash
 VENV=/home/administrator/.local/share/pipx/venvs/agentic-rag-mcp/bin/python
@@ -259,7 +261,7 @@ VENV=/home/administrator/.local/share/pipx/venvs/agentic-rag-mcp/bin/python
 $VENV -m agentic_rag_mcp.deploy verify --dry-run   # plan only, touches nothing
 $VENV -m agentic_rag_mcp.deploy redeploy            # build → recreate → health → register/re-sync tools
 $VENV -m agentic_rag_mcp.deploy chatflow            # draft-update or import + publish the DSL
-$VENV -m agentic_rag_mcp.deploy verify              # 7-scenario headless battery (self-cleaning)
+$VENV -m agentic_rag_mcp.deploy verify              # 10-scenario headless battery (self-cleaning)
 $VENV -m agentic_rag_mcp.deploy cleanup             # prune deck projects older than [deploy] retention_days (default 30; 0 = keep forever)
 $VENV -m agentic_rag_mcp.deploy all                 # everything, aborting honestly on failure
 ```
@@ -271,6 +273,12 @@ Behavior: exit 0 = success · N = failed battery scenarios · 2 = configuration 
 Two additive MCP tools on the sidecar: `antv_chart(chart_type, data, title)` — statistical charts (bar/line/pie/radar/sankey/…; geography types excluded) rendered by the GPT-Vis service, returning an embeddable image URL; `antv_infographic(description)` — declarative infographics rendered browser-side at `GET /infographics/<id>/` (engine loads from CDN; no server-side DOM). Deck pages referencing remote chart images are exported **self-contained** — the pipeline downloads and embeds image bytes at page-write time (misformat sniffed from bytes; fetch failure = honest gate error).
 
 **Data posture**: by default chart data travels to the AntV public rendering service (`https://antv-studio.alipay.com/api/gpt-vis`) and images are hosted on its CDN — outbound internet required, chart data leaves the network. For private rendering, deploy [GPT-Vis-SSR](https://github.com/antvis/GPT-Vis/tree/main/bindings/gpt-vis-ssr) and set `[antv] chart_service_url` in config.toml (geography chart types are not supported privately; they are excluded regardless). Infographic syntax stays local — only the rendering engine script loads from CDN in the browser. Config keys: `[antv] chart_service_url`, `chart_timeout_s`, `max_inline_image_bytes`, `infographic_max_syntax_bytes`.
+
+**Operator notes**:
+
+- The chatflow agent is driven by the DSL's `tool_description`, not the server docstring. After changing the `antv_infographic` docstring: update both description fields in the chatflow DSL YAML, then `python -m agentic_rag_mcp.deploy chatflow`. A stale description makes the model anchor on one template (every infographic comes out the same style).
+- Template menu: ~276 presets across 8 families (chart, sequence, sequence-interaction, list, hierarchy, relation, compare, quadrant). Key picks: true triangle pyramid = `sequence-pyramid-simple` (`list-pyramid-*` renders stacked badge rows, NOT a triangle); org charts = `hierarchy-structure` / `hierarchy-tree-*`; UML flows = `sequence-interaction-default-compact-card` — message children need `id` + `step` fields and `relations` reference those MESSAGE ids, or arrows don't draw.
+- Page gotchas: the served page must close the CDN script tag with a literal `</script>` (an escaped `<\/script>` makes the browser swallow the inline render script → blank page, no errors). Don't add "svg has ≥ 20 chars of text" health checks — sparse-but-valid charts get nuked by them. The page is served with `Cache-Control: no-store` + a `page-version` marker.
 
 ## Troubleshooting
 
@@ -289,3 +297,6 @@ Two additive MCP tools on the sidecar: `antv_chart(chart_type, data, title)` —
 | OneDrive device flow fails to start | Single-tenant app + `common` authority, or a reserved scope passed explicitly | Pass the real `tenant_id` at `sources_add`; never include `offline_access`/`profile`/`openid` in scopes — MSAL adds them internally |
 | Device sign-in stays "pending" forever | Browser flow not completed (or code expired after 15 min) | Re-run `sources_auth`, complete ALL browser steps to "You may now close this window" — the background thread completes the same flow whose code you entered |
 | No DEBUG detail in the log file | Level is INFO | `-e LOG_LEVEL=DEBUG` + recreate; confirm via `status` → `logging.level` |
+| Infographic page blank in browser, no errors | Page served by a pre-fix image (escaped `<\/script>` swallowed the inline script), or stale chatflow | Rebuild the sidecar from current source (`deploy redeploy`); page serves `Cache-Control: no-store`, so a plain refresh suffices |
+| Agent always renders the same infographic style | Chatflow DSL `tool_description` is stale (model never sees new template names) | Update both description fields in the DSL YAML + `deploy chatflow` |
+| UML sequence diagram renders without arrows | Messages lack `id`/`step` fields, or relations point at participant labels instead of message ids | Give each message `id X` + `step N`; relations `- from m1 / to m2 / label …` |

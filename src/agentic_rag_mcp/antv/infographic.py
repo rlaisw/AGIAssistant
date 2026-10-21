@@ -30,7 +30,7 @@ body{background:#fafafa;font-family:system-ui,sans-serif}
 </head>
 <body>
 <div id="container"><div id="fallback">loading…</div></div>
-<script src="https://cdn.jsdelivr.net/npm/@antv/infographic@0.2.20/dist/infographic.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/@antv/infographic@0.2.20/dist/infographic.min.js"></script>
 <script>
 const syntax = {syntax_json};
 const container = document.getElementById('container');
@@ -47,7 +47,7 @@ try {
   ig.render(syntax);
   setTimeout(() => {
     const svg = container.querySelector('svg');
-    if (!svg || (svg.textContent || '').length < 20) {
+    if (!svg) {
       container.innerHTML = '<div style="padding:48px 16px;text-align:center;color:#b3261e">'
         + 'The engine produced no content for this syntax. '
         + 'Ask the agent to regenerate with a standard template.</div>';
@@ -60,7 +60,7 @@ try {
 </script>
 </body>
 </html>
-<!-- page-version: 4 -->
+<!-- page-version: 6 -->
 """
 
 

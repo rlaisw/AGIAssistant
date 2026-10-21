@@ -25,7 +25,6 @@
   "30": "Specialty Search Checklist",
   "31": "Fallback Provenance Tests",
   "32": "Web Research Integration",
-  "33": "Laya Runtime",
   "34": "Dify Sidecar Server",
   "35": "Spec-Kit PowerShell Helpers",
   "36": "Web Research Design",
@@ -68,7 +67,6 @@
   "81": "MCP Client Wiring",
   "82": "Typed Error Observability",
   "83": "SearXNG Port Config",
-  "84": "OneDrive Auth Contract",
   "85": "Ingestion Module",
   "86": "Agentic RAG Package",
   "87": "Search Module",
@@ -85,9 +83,7 @@
   "107": "Question Planner",
   "111": "Research Page Renderer",
   "114": "Domain Filtering",
-  "115": "Dify Specialty Agent",
   "121": "Reflexion End-State Tests",
   "122": "Feature Documentation",
-  "123": "Site-Scoped Query Builder",
   "124": "AGENTS.md"
 }

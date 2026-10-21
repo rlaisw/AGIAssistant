@@ -146,7 +146,7 @@ workflow:
         agent_parameters:
           instruction:
             type: constant
-            value: "You are a test assistant for the AgenticRAG MCP server. You have 16 tools\nfrom the \"Agentic RAG\" (provider id: agentic-rag) MCP provider:\n\n- ask: full agentic Q&A over the knowledge base; returns answer + citations\n  (optional args: mode \"auto|fast|deep\", max_iterations)\n- search: raw vector search (args: query, limit)\n- web_search: LIVE web search via SearXNG (args: query, limit).\n  Use it for current events, live data (time, weather, news),\n  or anything the knowledge base can't contain. Note: search\n  snippets are CACHED — never trust them for exact time/date.\n              - web_research: DEEP web research (args: query, limit). Multi-engine\n                search then scrapes each page into grouped sections (text +\n                belonging images in document order), bounded, with honest\n                fallbacks, plus a rendered HTML artifact per page. Prefer it\n                over web_search when you need real page content (guides,\n                how-tos, documentation steps), not just snippets.\n- fetch_url: fetch a live web page (args: url, max_chars).\n  For current time/date questions: call fetch_url on any URL\n  and use the returned `date_utc` header as the live UTC clock,\n  then convert to the target timezone (e.g. Hong Kong = UTC+8,\n  no DST). This is accurate; search snippets are not.\n- status: server health, decision layer, source health, index counters\n- sources_list: list registered sources with health\n- sources_add: register a source (type \"local_folder\" needs config.path;\n  type \"sqlite\" needs config.db_path/table/template; type \"onedrive\" needs\n  config.client_id — registering NEVER ingests anything)\n- sources_sync: manual incremental sync for local sources (optional source_id);\n  onedrive sources are on-demand and are never synced by it\n- sources_remove: remove a source by id (destructive — ask the user to\n  confirm, and call sources_list first to get the source_id)\n- sources_auth: complete Microsoft sign-in for a onedrive source (device\n  code flow); relay the sign-in URL and user code to the user verbatim\n- graph_query: optional graph search layer; if it returns FeatureDisabled,\n  say so honestly instead of guessing\n\nONEDRIVE (ON-DEMAND — never embed the whole drive):\n- To add a file from OneDrive: sources_add (if not connected), then\n  onedrive_list_files (args: source_id, optional search/folder/limit) to\n  browse file names, SHOW the matches, and ask the user to confirm which\n  files to embed. Only then call onedrive_embed_files (args: source_id,\n  files: list of paths/ids) for EXACTLY the confirmed files.\n- NEVER embed more files than the user confirmed. NEVER list-and-embed\n  everything. Connection and sign-in ingest ZERO files automatically.\n- onedrive_embed_files returns per-file outcomes; report skipped/failed\n  files with their reasons honestly.\n- When an answer carries a staleness warning (freshness_warnings, also\n  appended to the answer text), relay the reminder verbatim and offer the\n  one-command update: re-embed that file via onedrive_embed_files using the\n  path or item id from the warning. The system never re-downloads on its own.\n\nPick the tool that matches the request, call it, then summarize the result\nfor the user. When a tool returns citations, list them. Never invent facts.\n\nANSWER FORMAT — IMAGES:\n- When research content contains [image: URL] lines that illustrate the steps\n  or facts you are answering with, include the relevant images INLINE in your\n  answer as markdown — ![what it shows](URL) — grouped with the text they\n  belong to, in document order. Dify renders them in the chat. Prefer images\n  that illustrate the specific steps you describe; skip logos and avatars.\n\n\nSPECIALTY SEARCH:\n- For domain-specific questions (product docs, security standards, vendor-specific), call\n  specialty_profiles() first to see available profiles, then call BOTH specialty_search\n  (with the matching profile) AND web_search in the same turn.\n- Combine results: specialty_search results are the PRIMARY authority (from official docs),\n  web_search results are SUPPLEMENTARY (community, blogs, broader context).\n- If specialty_search returns no results, rely on web_search and tell the user the\n  authoritative source had no match."
+            value: "You are a test assistant for the AgenticRAG MCP server. You have 18 tools\nfrom the \"Agentic RAG\" (provider id: agentic-rag) MCP provider:\n\n- ask: full agentic Q&A over the knowledge base; returns answer + citations\n  (optional args: mode \"auto|fast|deep\", max_iterations)\n- search: raw vector search (args: query, limit)\n- web_search: LIVE web search via SearXNG (args: query, limit).\n  Use it for current events, live data (time, weather, news),\n  or anything the knowledge base can't contain. Note: search\n  snippets are CACHED — never trust them for exact time/date.\n              - web_research: DEEP web research (args: query, limit). Multi-engine\n                search then scrapes each page into grouped sections (text +\n                belonging images in document order), bounded, with honest\n                fallbacks, plus a rendered HTML artifact per page. Prefer it\n                over web_search when you need real page content (guides,\n                how-tos, documentation steps), not just snippets.\n- fetch_url: fetch a live web page (args: url, max_chars).\n  For current time/date questions: call fetch_url on any URL\n  and use the returned `date_utc` header as the live UTC clock,\n  then convert to the target timezone (e.g. Hong Kong = UTC+8,\n  no DST). This is accurate; search snippets are not.\n- status: server health, decision layer, source health, index counters\n- sources_list: list registered sources with health\n- sources_add: register a source (type \"local_folder\" needs config.path;\n  type \"sqlite\" needs config.db_path/table/template; type \"onedrive\" needs\n  config.client_id — registering NEVER ingests anything)\n- sources_sync: manual incremental sync for local sources (optional source_id);\n  onedrive sources are on-demand and are never synced by it\n- sources_remove: remove a source by id (destructive — ask the user to\n  confirm, and call sources_list first to get the source_id)\n- sources_auth: complete Microsoft sign-in for a onedrive source (device\n  code flow); relay the sign-in URL and user code to the user verbatim\n- graph_query: optional graph search layer; if it returns FeatureDisabled,\n  say so honestly instead of guessing\n- antv_chart: statistical charts (bar/column/line/pie/radar/sankey/word-cloud/...) from data; returns an embeddable image URL\n- antv_infographic: declarative infographics (276 templates, 8 families - chart/sequence/list/hierarchy/relation/compare/quadrant); returns a page URL that renders in the browser\n\nONEDRIVE (ON-DEMAND — never embed the whole drive):\n- To add a file from OneDrive: sources_add (if not connected), then\n  onedrive_list_files (args: source_id, optional search/folder/limit) to\n  browse file names, SHOW the matches, and ask the user to confirm which\n  files to embed. Only then call onedrive_embed_files (args: source_id,\n  files: list of paths/ids) for EXACTLY the confirmed files.\n- NEVER embed more files than the user confirmed. NEVER list-and-embed\n  everything. Connection and sign-in ingest ZERO files automatically.\n- onedrive_embed_files returns per-file outcomes; report skipped/failed\n  files with their reasons honestly.\n- When an answer carries a staleness warning (freshness_warnings, also\n  appended to the answer text), relay the reminder verbatim and offer the\n  one-command update: re-embed that file via onedrive_embed_files using the\n  path or item id from the warning. The system never re-downloads on its own.\n\nPick the tool that matches the request, call it, then summarize the result\nfor the user. When a tool returns citations, list them. Never invent facts.\n\nANSWER FORMAT — IMAGES:\n- When research content contains [image: URL] lines that illustrate the steps\n  or facts you are answering with, include the relevant images INLINE in your\n  answer as markdown — ![what it shows](URL) — grouped with the text they\n  belong to, in document order. Dify renders them in the chat. Prefer images\n  that illustrate the specific steps you describe; skip logos and avatars.\n\n\nSPECIALTY SEARCH:\n- For domain-specific questions (product docs, security standards, vendor-specific), call\n  specialty_profiles() first to see available profiles, then call BOTH specialty_search\n  (with the matching profile) AND web_search in the same turn.\n- Combine results: specialty_search results are the PRIMARY authority (from official docs),\n  web_search results are SUPPLEMENTARY (community, blogs, broader context).\n- If specialty_search returns no results, rely on web_search and tell the user the\n  authoritative source had no match."
           maximum_iterations:
             type: constant
             value: 10
@@ -166,6 +166,136 @@ workflow:
           tools:
             type: constant
             value:
+            - enabled: true
+              extra:
+                description: Answer a question with agentic retrieval and per-source citations.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Answer a question with agentic retrieval and per-source citations.
+              tool_label: ask
+              tool_name: ask
+              type: mcp
+            - enabled: true
+              extra:
+                description: Direct vector search without synthesis.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Direct vector search without synthesis.
+              tool_label: search
+              tool_name: search
+              type: mcp
+            - enabled: true
+              extra:
+                description: Register a source. Types- local_folder, sqlite, onedrive.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Register a source. Types- local_folder, sqlite, onedrive.
+              tool_label: sources_add
+              tool_name: sources_add
+              type: mcp
+            - enabled: true
+              extra:
+                description: List sources with health and sync metadata.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: List sources with health and sync metadata.
+              tool_label: sources_list
+              tool_name: sources_list
+              type: mcp
+            - enabled: true
+              extra:
+                description: Remove a source; drops documents whose last origin was this source.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Remove a source; drops documents whose last origin was this source.
+              tool_label: sources_remove
+              tool_name: sources_remove
+              type: mcp
+            - enabled: true
+              extra:
+                description: Manually trigger incremental sync.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Manually trigger incremental sync.
+              tool_label: sources_sync
+              tool_name: sources_sync
+              type: mcp
+            - enabled: true
+              extra:
+                description: Optional graph search (Graphify layer); disabled by default.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Optional graph search (Graphify layer); disabled by default.
+              tool_label: graph_query
+              tool_name: graph_query
+              type: mcp
+            - enabled: true
+              extra:
+                description: 'Server health: decision layer, per-source health, index counters.'
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: 'Server health: decision layer, per-source health, index counters.'
+              tool_label: status
+              tool_name: status
+              type: mcp
+            - enabled: true
+              extra:
+                description: 'Domain-scoped web search: results only from the profile configured authoritative sites (site: hard filter + post-filter).'
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: 'Domain-scoped web search: results only from the profile configured authoritative sites (site: hard filter + post-filter).'
+              tool_label: specialty_search
+              tool_name: specialty_search
+              type: mcp
+            - enabled: true
+              extra:
+                description: List available specialty search profiles with their sites and descriptions. Call this first to discover which profiles exist.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: List available specialty search profiles with their sites and descriptions. Call this first to discover which profiles exist.
+              tool_label: specialty_profiles
+              tool_name: specialty_profiles
+              type: mcp
+            - enabled: true
+              extra:
+                description: Complete Microsoft sign-in for OneDrive sources (device code flow). Returns the sign-in URL and user code; relay both to the user.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Complete Microsoft sign-in for OneDrive sources (device code flow). Returns the sign-in URL and user code; relay both to the user.
+              tool_label: sources_auth
+              tool_name: sources_auth
+              type: mcp
+            - enabled: true
+              extra:
+                description: Browse OneDrive file metadata (path, name, size, modified) without downloading content. Optional name filter. Embed chosen files with onedrive_embed_files.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Browse OneDrive file metadata (path, name, size, modified) without downloading content. Optional name filter. Embed chosen files with onedrive_embed_files.
+              tool_label: onedrive_list_files
+              tool_name: onedrive_list_files
+              type: mcp
+            - enabled: true
+              extra:
+                description: Embed ONLY the named OneDrive files (paths and/or item ids), one-time. Per-file honest outcomes; never syncs the whole drive.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Embed ONLY the named OneDrive files (paths and/or item ids), one-time. Per-file honest outcomes; never syncs the whole drive.
+              tool_label: onedrive_embed_files
+              tool_name: onedrive_embed_files
+              type: mcp
             - enabled: true
               extra:
                 description: Live web search via configured providers (SearXNG first; falls back to Tavily/Exa).
@@ -208,18 +338,18 @@ workflow:
               type: mcp
             - enabled: true
               extra:
-                description: "Render an infographic from declarative AntV Infographic syntax. Returns {id, url, usage} — the url opens the rendered infographic in a browser. CRITICAL: description must be actual Infographic SYNTAX, NOT a prose design brief — the engine cannot render prose. Complete working example:\ninfographic list-row-simple-horizontal-arrow\ndata\n  lists\n    - label Step 1\n      desc Prepare accounts\n    - label Step 2\n      desc Team introduction\n    - label Step 3\n      desc Tool setup\n    - label Step 4\n      desc First sprint\nStructure: first line = 'infographic <template-name>', then an indented 'data' block with template-specific fields (commonly 'lists' of '- label X / desc Y' items). ~200 built-in templates. NEVER write 'Title:', 'Layout:', 'Step 1 —', bullets, or English descriptions of the design — ONLY the syntax. Choose the closest template and put the user's content in the data fields."
+                description: "Render an infographic from declarative AntV Infographic syntax.\nReturns {id, url, usage} — the url opens the rendered infographic in a browser.\n\nCRITICAL: `description` must be actual Infographic SYNTAX, NOT a prose design\nbrief. The engine cannot render prose — write the template call and data\ndirectly. Complete working example:\n\ninfographic list-row-simple-horizontal-arrow\ndata\n  lists\n    - label Step 1\n      desc Prepare accounts\n    - label Step 2\n      desc Team introduction\n    - label Step 3\n      desc Tool setup\n    - label Step 4\n      desc First sprint\n\nStructure: first line = \"infographic <template-name>\", then an indented\n\"data\" block whose list key depends on the template family. Items are\n\"- label X / desc Y\" lines (\"value N\" for charts). ~276 built-in\npresets across 8 families — VARY the choice to match the user's\nintent. Verified template names per family (data key in parentheses):\n- chart (values): chart-column-simple, chart-bar-plain-text,\n  chart-pie-compact-card, chart-line-plain-text, chart-wordcloud\n- sequence (sequences): sequence-steps, sequence-timeline-done-list,\n  sequence-snake-steps, sequence-roadmap-vertical-pill-badge,\n  sequence-pyramid-simple (TRUE triangle pyramid — use when the user\n  asks for a pyramid), sequence-funnel-simple,\n  sequence-ascending-stairs-3d-simple (3D ascending steps)\n- sequence-interaction (UML message flows, template\n  sequence-interaction-default-compact-card): participants = top-level\n  items of \"sequences\" (lanes); each child message needs \"id X\" and\n  \"step N\" (row order across all lanes); \"relations\" reference those\n  MESSAGE ids: \"- from m1 / to m2 / label call\" — arrows only draw\n  between messages that have ids\n- list (lists): list-row, list-grid, list-zigzag-up,\n  list-sector-plain-text, list-pyramid-badge-card (stacked badge\n  rows, NOT a triangle — prefer sequence-pyramid-simple for pyramids)\n- hierarchy (root with nested children): hierarchy-mindmap,\n  hierarchy-structure, hierarchy-tree-tech-style-capsule-item\n  (org charts)\n- relation (nodes plus relations from/to): relation-network-icon-badge,\n  relation-circle-icon-badge, relation-dagre-flow-tb-capsule\n  (flowcharts)\n- compare (compares): compare-binary-horizontal-simple-vs,\n  compare-swot\n- quadrant (lists): quadrant-quarter-circular (2x2 grids)\nNEVER write \"Title:\", \"Layout:\", \"Step 1 —\", bullets, or any English\ndescription of the design — only the syntax. Choose the closest\ntemplate to the user's intent and put their content into the data\nfields."
               parameters: {}
               provider_name: agentic-rag
               settings: {}
-              tool_description: "Render an infographic from declarative AntV Infographic syntax. Returns {id, url, usage} — the url opens the rendered infographic in a browser. CRITICAL: description must be actual Infographic SYNTAX, NOT a prose design brief — the engine cannot render prose. Complete working example:\ninfographic list-row-simple-horizontal-arrow\ndata\n  lists\n    - label Step 1\n      desc Prepare accounts\n    - label Step 2\n      desc Team introduction\n    - label Step 3\n      desc Tool setup\n    - label Step 4\n      desc First sprint\nStructure: first line = 'infographic <template-name>', then an indented 'data' block with template-specific fields (commonly 'lists' of '- label X / desc Y' items). ~200 built-in templates. NEVER write 'Title:', 'Layout:', 'Step 1 —', bullets, or English descriptions of the design — ONLY the syntax. Choose the closest template and put the user's content in the data fields."
+              tool_description: "Render an infographic from declarative AntV Infographic syntax.\nReturns {id, url, usage} — the url opens the rendered infographic in a browser.\n\nCRITICAL: `description` must be actual Infographic SYNTAX, NOT a prose design\nbrief. The engine cannot render prose — write the template call and data\ndirectly. Complete working example:\n\ninfographic list-row-simple-horizontal-arrow\ndata\n  lists\n    - label Step 1\n      desc Prepare accounts\n    - label Step 2\n      desc Team introduction\n    - label Step 3\n      desc Tool setup\n    - label Step 4\n      desc First sprint\n\nStructure: first line = \"infographic <template-name>\", then an indented\n\"data\" block whose list key depends on the template family. Items are\n\"- label X / desc Y\" lines (\"value N\" for charts). ~276 built-in\npresets across 8 families — VARY the choice to match the user's\nintent. Verified template names per family (data key in parentheses):\n- chart (values): chart-column-simple, chart-bar-plain-text,\n  chart-pie-compact-card, chart-line-plain-text, chart-wordcloud\n- sequence (sequences): sequence-steps, sequence-timeline-done-list,\n  sequence-snake-steps, sequence-roadmap-vertical-pill-badge,\n  sequence-pyramid-simple (TRUE triangle pyramid — use when the user\n  asks for a pyramid), sequence-funnel-simple,\n  sequence-ascending-stairs-3d-simple (3D ascending steps)\n- sequence-interaction (UML message flows, template\n  sequence-interaction-default-compact-card): participants = top-level\n  items of \"sequences\" (lanes); each child message needs \"id X\" and\n  \"step N\" (row order across all lanes); \"relations\" reference those\n  MESSAGE ids: \"- from m1 / to m2 / label call\" — arrows only draw\n  between messages that have ids\n- list (lists): list-row, list-grid, list-zigzag-up,\n  list-sector-plain-text, list-pyramid-badge-card (stacked badge\n  rows, NOT a triangle — prefer sequence-pyramid-simple for pyramids)\n- hierarchy (root with nested children): hierarchy-mindmap,\n  hierarchy-structure, hierarchy-tree-tech-style-capsule-item\n  (org charts)\n- relation (nodes plus relations from/to): relation-network-icon-badge,\n  relation-circle-icon-badge, relation-dagre-flow-tb-capsule\n  (flowcharts)\n- compare (compares): compare-binary-horizontal-simple-vs,\n  compare-swot\n- quadrant (lists): quadrant-quarter-circular (2x2 grids)\nNEVER write \"Title:\", \"Layout:\", \"Step 1 —\", bullets, or any English\ndescription of the design — only the syntax. Choose the closest\ntemplate to the user's intent and put their content into the data\nfields."
               tool_label: antv_infographic
               tool_name: antv_infographic
               type: mcp
         agent_strategy_label: FunctionCalling
         agent_strategy_name: function_calling
         agent_strategy_provider_name: langgenius/agent/agent
-        desc: Agentic strategy node wired to all 16 AgenticRAG MCP tools.
+        desc: Agentic strategy node wired to all 18 AgenticRAG MCP tools (16 core + 2 antv).
         isInIteration: false
         isInLoop: false
         memory:
