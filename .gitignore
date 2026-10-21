@@ -38,3 +38,6 @@ graphify-out/.graphify_semantic_marker
 
 # Machine-local MCP launcher (hard-coded local paths; not portable)
 ccc-mcp-wrapper.sh
+
+# uv lockfile (uv run tooling artifact; project installs via pipx)
+uv.lock
