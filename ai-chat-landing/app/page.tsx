@@ -754,11 +754,11 @@ export default function Page() {
           </div>
         ) : (
           <div ref={scrollRef} className="flex-1 overflow-y-auto">
-            <div className="mx-auto w-full max-w-3xl space-y-6 p-4 py-6 sm:p-6">
+            <div className="mx-auto w-full max-w-3xl xl:max-w-[min(90%,1400px)] space-y-6 p-4 py-6 sm:p-6">
               {active.messages.map((m) =>
                 m.role === "user" ? (
                   <div key={m.id} className="flex justify-end">
-                    <div className="max-w-[85%] rounded-2xl bg-primary px-4 py-2.5 text-sm text-primary-foreground">
+                    <div className="max-w-[85%] lg:max-w-2xl rounded-2xl bg-primary px-4 py-2.5 text-sm text-primary-foreground">
                       {m.text}
                     </div>
                   </div>
@@ -865,7 +865,7 @@ export default function Page() {
         )}
 
         <div className="shrink-0 border-t">
-          <div className="mx-auto w-full max-w-3xl p-3 sm:p-4">
+          <div className="mx-auto w-full max-w-3xl xl:max-w-[min(90%,1400px)] p-3 sm:p-4">
             <div className="rounded-3xl border bg-muted/30 p-2 shadow-sm">
               <Textarea
                 value={input}
