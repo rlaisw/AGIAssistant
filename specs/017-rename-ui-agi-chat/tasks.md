@@ -38,7 +38,7 @@ None — no shared infrastructure; the change is string literals in existing fil
 - [x] T008 Accuracy touch-up in `ai-chat-landing/README.md` (~45): badge now described as displaying "AGI Chat"
 - [x] T009 Run `pnpm typecheck && pnpm lint && pnpm test` in `ai-chat-landing/` — all green *(tsc clean, eslint clean, 71/71 vitest)*
 - [x] T010 Boundary check: modified files exactly `app/page.tsx`, `app/layout.tsx`, `lib/pdf-export/render.tsx`, `ai-chat-landing/README.md` — nothing else (SC-002/FR-009)
-- [ ] T011 Commit spec artifacts + diff together
+- [x] T011 Commit spec artifacts + diff together *(commit `934c2c2`, pushed to origin/main)*
 
 ## Dependencies & Execution Order
 
