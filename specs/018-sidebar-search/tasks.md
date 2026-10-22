@@ -47,7 +47,7 @@
 
 - [x] T010 Run `pnpm typecheck && pnpm lint && pnpm test` in `ai-chat-landing/` — all green *(tsc clean, eslint clean, **79/79** vitest)*
 - [x] T011 Boundary check: diff limited to `ai-chat-landing/app/page.tsx` + new `lib/history/search.ts` + `search.test.ts` — no backend/API edits, no new dependencies (SC-005)
-- [ ] T012 Commit spec artifacts + diff together
+- [x] T012 Commit spec artifacts + diff together *(committed and pushed)*
 
 ## Dependencies & Execution Order
 
