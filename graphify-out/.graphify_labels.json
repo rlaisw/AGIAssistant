@@ -16,7 +16,6 @@
   "21": "OneDrive On-Demand Spec",
   "24": "One-Time Migration Tests",
   "26": "OneDrive Graph Auth",
-  "27": "Answer Synthesis",
   "28": "Rule-Based Evaluator",
   "29": "Specialty Search Integration",
   "30": "Specialty Search Checklist",
@@ -76,7 +75,6 @@
   "97": "Provider Chain Tests",
   "101": "HTTP Test Server",
   "107": "Question Planner",
-  "111": "Research Page Renderer",
   "114": "Domain Filtering",
   "121": "Reflexion End-State Tests",
   "124": "AGENTS.md"
