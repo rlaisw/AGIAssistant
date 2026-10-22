@@ -70,98 +70,6 @@ type Conversation = {
   difyId?: string
 }
 
-const initialConversations: Conversation[] = [
-  {
-    id: "q3",
-    title: "Q3 roadmap draft",
-    messages: [
-      {
-        id: 1,
-        role: "user",
-        text: "Summarize the Q3 roadmap and turn it into a table I can share with stakeholders.",
-      },
-      {
-        id: 2,
-        role: "assistant",
-        reasoning:
-          "Group the roadmap items by theme, then render them as a markdown table with owners and status so it can be pasted straight into a doc.",
-        text: "Here's the Q3 roadmap, grouped by theme and ready to share:",
-        code: `| Theme       | Owner | Status   |
-|-------------|-------|----------|
-| Agents      | Alex  | On track |
-| Performance | Mia   | At risk  |
-| Onboarding  | Sam   | Shipped  |`,
-        codeName: "roadmap.md",
-        sources: ["q3-planning.md", "roadmap.yaml"],
-      },
-    ],
-  },
-  {
-    id: "auth",
-    title: "Refactor auth flow",
-    messages: [
-      {
-        id: 1,
-        role: "user",
-        text: "What's the safest order of steps to migrate from session cookies to JWTs without logging everyone out?",
-      },
-      {
-        id: 2,
-        role: "assistant",
-        text: "Migrate in three phases:\n\n1. Issue JWTs alongside existing sessions and verify both.\n2. Move reads to JWTs, keeping sessions as a fallback.\n3. Remove session issuance once error rates settle.\n\nThat way a bad token can always fall back to a valid session.",
-      },
-    ],
-  },
-  {
-    id: "copy",
-    title: "Landing page copy",
-    messages: [
-      {
-        id: 1,
-        role: "user",
-        text: "Write three hero headline options for a developer tool that previews API responses.",
-      },
-      {
-        id: 2,
-        role: "assistant",
-        text: '1. "See your API respond before you ship."\n2. "Mock it, test it, ship it."\n3. "Your endpoints, rendered."',
-      },
-    ],
-  },
-  {
-    id: "sql",
-    title: "SQL query optimization",
-    messages: [
-      {
-        id: 1,
-        role: "user",
-        text: "Why is SELECT * FROM orders WHERE email LIKE '%gmail%' so slow on 40M rows?",
-      },
-      {
-        id: 2,
-        role: "assistant",
-        text: "The leading wildcard forces a full scan of all 40M rows. Options:\n\n1. Drop the leading % if a prefix search is acceptable — then a plain index on email works.\n2. Use a trigram index (pg_trgm) for true substring search.\n3. Push the search to a dedicated search index.",
-      },
-    ],
-  },
-  {
-    id: "email",
-    title: "Onboarding email sequence",
-    messages: [
-      {
-        id: 1,
-        role: "user",
-        text: "Draft a three-email onboarding sequence for a note-taking app.",
-      },
-      {
-        id: 2,
-        role: "assistant",
-        text: "Email 1 (day 0): welcome plus one quick win — create your first note.\nEmail 2 (day 2): the aha moment — backlinks and instant search.\nEmail 3 (day 5): habits — templates, mobile capture, and a gentle upgrade nudge.",
-      },
-    ],
-  },
-]
-
 const cannedReplies = [
   {
     text: "Here's how I'd approach it:\n\n1. Start with the smallest working version and ship it behind a flag.\n2. Measure the real bottleneck before optimizing anything.\n3. Roll out gradually, watching error rates at each step.",
@@ -229,9 +137,10 @@ function parseAnswer(raw: string): { text: string; reasoning?: string } {
 }
 
 export default function Page() {
-  const [conversations, setConversations] =
-    React.useState<Conversation[]>(initialConversations)
-  const [activeId, setActiveId] = React.useState("q3")
+  const [conversations, setConversations] = React.useState<Conversation[]>([
+    { id: "c-0", title: "New chat", messages: [] },
+  ])
+  const [activeId, setActiveId] = React.useState("c-0")
   const [input, setInput] = React.useState("")
   const [sidebarOpen, setSidebarOpen] = React.useState(true)
   const [busy, setBusy] = React.useState(false)

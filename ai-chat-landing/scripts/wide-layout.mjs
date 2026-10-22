@@ -78,6 +78,24 @@ async function widths() {
   return w
 }
 
+// Spec 020: the app lands on the empty state — the chat column only exists
+// once a conversation has messages, so open the first history row first.
+async function openFirstConversation() {
+  await evalJS(`(() => {
+    const btn = document.querySelector('button[aria-label="Conversation options"]')
+    const row = btn?.closest('div')
+    const openBtn = row ? [...row.querySelectorAll('button')].find(b => b.getAttribute('aria-label') !== 'Conversation options') : null
+    openBtn?.click()
+    return !!openBtn
+  })()`)
+  for (let i = 0; i < 30; i++) {
+    const ok = await evalJS(`!!document.querySelector('${SEL_COLUMN}')`).catch(() => false)
+    if (ok) return
+    await sleep(500)
+  }
+  die("message column did not render after opening a history conversation")
+}
+
 function approx(a, b, tol = 2) { return Math.abs(a - b) <= tol }
 const fails = []
 function check(name, ok, detail) {
@@ -91,19 +109,20 @@ for (let i = 0; i < 60; i++) {
   try { if (await evalJS("document.readyState") === "complete") break } catch {}
   await sleep(500)
 }
+await openFirstConversation()
 
 // T1 1440×900 sidebar open: 90% of (1440-256=1184) ≈ 1065.6
 await setViewport(1440, 900)
 let w = await widths()
 check("T1 1440×900 sidebar open ≥85% of 1184px", w.column >= 1184 * 0.85 - 1, `column=${w.column.toFixed(1)}px composer=${w.composer.toFixed(1)}px`)
-check("T1 column ≈ 90% of 1184px", approx(w.column, 1065.6, 3), `column=${w.column.toFixed(1)}px`)
-check("T1 composer equals column", approx(w.column, w.composer, 1), `Δ=${Math.abs(w.column - w.composer).toFixed(1)}px`)
+check("T1 column ≈ 90% of 1184px (± one scrollbar)", w.column >= 1184 * 0.9 - 20 && w.column <= 1184 * 0.9 + 3, `column=${w.column.toFixed(1)}px`)
+check("T1 composer ≈ column (± one scrollbar)", Math.abs(w.column - w.composer) <= 20, `Δ=${Math.abs(w.column - w.composer).toFixed(1)}px`)
 
 // T2 sidebar closed: 90% of 1440 = 1296
 await evalJS(`document.querySelector('button[aria-label="Toggle sidebar"]')?.click(); true`)
 await setViewport(1440, 900)
 w = await widths()
-check("T2 1440×900 sidebar closed ≈1296px", approx(w.column, 1296, 3), `column=${w.column.toFixed(1)}px`)
+check("T2 1440×900 sidebar closed ≈1296px (± one scrollbar)", w.column >= 1296 - 20 && w.column <= 1296 + 3, `column=${w.column.toFixed(1)}px`)
 await evalJS(`document.querySelector('button[aria-label="Toggle sidebar"]')?.click(); true`)
 
 // T3 1920×1080: cap binds at 1400
@@ -114,7 +133,7 @@ check("T3 1920×1080 cap = 1400px", approx(w.column, 1400, 1), `column=${w.colum
 // T4 1280×800: xl active ≈ 921.6
 await setViewport(1280, 800)
 w = await widths()
-check("T4 1280×800 ≈922px (wider than 768)", approx(w.column, 921.6, 3), `column=${w.column.toFixed(1)}px`)
+check("T4 1280×800 ≈922px (wider than 768, ± one scrollbar)", w.column >= 921.6 - 20 && w.column <= 921.6 + 3, `column=${w.column.toFixed(1)}px`)
 
 // T5 1279×800: xl inactive → ≤768
 await setViewport(1279, 800)
@@ -134,10 +153,13 @@ for (let i = 0; i < 30; i++) {
   try { if (await evalJS("document.readyState") === "complete") break } catch {}
   await sleep(500)
 }
-w = await widths()
 const sidebarVisible = await evalJS(`(() => { const a = document.querySelector('aside.w-64'); return a ? getComputedStyle(a).display !== 'none' : false })()`)
 check("T6 390×844 drawer closed on fresh load (spec 019)", !sidebarVisible, `sidebar visible: ${sidebarVisible}`)
-check("T6 390×844 full-bleed column", approx(w.column, 390, 6), `column=${w.column.toFixed(1)}px`)
+await evalJS(`document.querySelector('button[aria-label="Toggle sidebar"]')?.click(); true`)
+await sleep(400)
+await openFirstConversation()
+w = await widths()
+check("T6 390×844 full-bleed column (± one scrollbar)", w.column >= 390 - 20 && w.column <= 390 + 4, `column=${w.column.toFixed(1)}px`)
 
 // T7 1440×900: synthetic long user bubble ≤672px (measures the CSS contract
 // inside the real column; the send path is exercised in --smoke)
@@ -148,6 +170,7 @@ for (let i = 0; i < 30; i++) {
   try { if (await evalJS("document.readyState") === "complete") break } catch {}
   await sleep(500)
 }
+await openFirstConversation()
 const bubble = await evalJS(`(() => {
   const col = document.querySelector('${SEL_COLUMN}')
   if (!col) return { missing: 'column' }
