@@ -110,8 +110,8 @@ anywhere in the rendered page.
   artifacts (chatflow name, server, repo docs) are untouched, verifiable by
   change scope.
 - **SC-003**: All existing quality gates stay green (typecheck, lint,
-  unit tests) and the rendered result matches the acceptance scenarios on
-  first inspection pass.
+  unit tests) and the rendered result matches the acceptance scenarios when
+  inspected.
 
 ## Assumptions
 

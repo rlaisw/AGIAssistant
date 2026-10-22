@@ -88,7 +88,7 @@ UI — its edit is the accuracy touch-up permitted by FR-009.
 2. CDP brand check at 1440×900: document text contains "AGI Chat" and zero
   occurrences of "AgenticRAG"/"AI Chat" across sidebar, header, composer,
   footer; assistant footer verified with a live throwaway conversation
-  (reuses the smoke script's send/delete flow, or a manual send).
+  (reuses the smoke pattern's send/delete flow, or a manual send).
 3. Export a PDF from the same conversation; the metadata line reads
   "… · AGI Chat".
 4. `git diff --name-only` restricted to the four files listed above
