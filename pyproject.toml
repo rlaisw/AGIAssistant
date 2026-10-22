@@ -28,7 +28,7 @@ dependencies = [
 [project.optional-dependencies]
 audio = ["faster-whisper>=1.0"]
 graphify = []
-dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.6", "mypy>=1.10"]
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "respx>=0.21", "ruff>=0.6", "mypy>=1.10"]
 
 [project.scripts]
 agentic-rag-mcp = "agentic_rag_mcp.__main__:main"
