@@ -1392,9 +1392,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/app/page.tsx": {
-    "mtime": 1792649183.3286896,
-    "seen": 1792651365.2995493,
-    "ast_hash": "fa63e4a1964b532863a00d468923b3b3",
+    "mtime": 1792655032.090513,
+    "seen": 1792658452.7285993,
+    "ast_hash": "d3053fe646ee909d8f7bf1946e820241",
     "semantic_hash": ""
   },
   "ai-chat-landing/components.json": {
@@ -1488,9 +1488,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/next.config.ts": {
-    "mtime": 1792225401.3113356,
-    "seen": 1792285896.03266,
-    "ast_hash": "b7b435554429918651a4f01cecf6ed6b",
+    "mtime": 1792653529.1062741,
+    "seen": 1792658452.728634,
+    "ast_hash": "7e59ac84515b72494e1d7a9c27c3a51b",
     "semantic_hash": ""
   },
   "ai-chat-landing/package.json": {
@@ -1674,9 +1674,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/README.md": {
-    "mtime": 1792651724.832871,
-    "seen": 1792651783.1619215,
-    "ast_hash": "2bd8d89c17b9f5b2d6d1ab6c5814f6da",
+    "mtime": 1792655117.9081845,
+    "seen": 1792658452.728752,
+    "ast_hash": "f4de2d388027ab95e809ff5910e78981",
     "semantic_hash": ""
   },
   "ai-chat-landing/agent/skills/migrate-radix-to-base/SKILL.md": {
@@ -2670,9 +2670,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/scripts/wide-layout.mjs": {
-    "mtime": 1792634809.9748363,
-    "seen": 1792638358.1958597,
-    "ast_hash": "a1182c15319a18a7b0924ac9dedcf450",
+    "mtime": 1792655004.0059414,
+    "seen": 1792658452.7286365,
+    "ast_hash": "09564d813b7f179ae4556f48783b79e1",
     "semantic_hash": ""
   },
   "specs/017-rename-ui-agi-chat/checklists/requirements.md": {
@@ -2781,6 +2781,30 @@
     "mtime": 1792649867.7074528,
     "seen": 1792651365.2998004,
     "ast_hash": "e2e2f2d31a33ff71a55c46e0960c8e67",
+    "semantic_hash": ""
+  },
+  "specs/019-mobile-sidebar-drawer/checklists/requirements.md": {
+    "mtime": 1792655077.8714027,
+    "seen": 1792658452.7288632,
+    "ast_hash": "e8aa102e935ddad791e8bdb4288c01b2",
+    "semantic_hash": ""
+  },
+  "specs/019-mobile-sidebar-drawer/plan.md": {
+    "mtime": 1792655100.1718354,
+    "seen": 1792658452.728864,
+    "ast_hash": "2c357a5e5a76903212dd67db0c4a920a",
+    "semantic_hash": ""
+  },
+  "specs/019-mobile-sidebar-drawer/spec.md": {
+    "mtime": 1792654861.2948773,
+    "seen": 1792658452.7288644,
+    "ast_hash": "be62e41118a263548d54df6bbb19ca1b",
+    "semantic_hash": ""
+  },
+  "specs/019-mobile-sidebar-drawer/tasks.md": {
+    "mtime": 1792655126.938869,
+    "seen": 1792658452.728865,
+    "ast_hash": "790b4b0b130c08ce4729d771736555cd",
     "semantic_hash": ""
   }
 }
