@@ -42,7 +42,7 @@ export function buildExportContainer(model: ExportModel): HTMLElement {
 
   const meta = document.createElement("p")
   meta.setAttribute("style", `color:${PALETTE.muted};font-size:10px;margin:0 0 20px 0;`)
-  meta.textContent = `Exported ${new Date(model.exportedAt).toLocaleString()} · AgenticRAG Chat`
+  meta.textContent = `Exported ${new Date(model.exportedAt).toLocaleString()} · AGI Chat`
   host.appendChild(meta)
 
   const mount = document.createElement("div")

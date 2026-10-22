@@ -13,7 +13,7 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "AI Chat — A simple, modern interface for AI conversations",
+  title: "AGI Chat — A simple, modern interface for AI conversations",
   description:
     "Chat window, message composer, conversation history, and model switching. Everything you need to ship your AI product, out of the box.",
 }

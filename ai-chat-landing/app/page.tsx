@@ -591,7 +591,7 @@ export default function Page() {
             <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Bot className="size-4" />
             </span>
-            <span className="font-heading text-sm font-semibold">AI Chat</span>
+            <span className="font-heading text-sm font-semibold">AGI Chat</span>
           </div>
           <div className="space-y-3 p-3">
             <Button className="w-full" onClick={newChat}>
@@ -675,7 +675,7 @@ export default function Page() {
           <div className="ml-auto flex items-center gap-1.5">
             <Badge variant="secondary" className="gap-1.5 font-medium">
               <Bot className="size-3.5" />
-              AgenticRAG
+              AGI Chat
             </Badge>
             <PdfExportButton messages={active.messages} />
             <Button variant="outline" size="sm">
@@ -817,7 +817,7 @@ export default function Page() {
                       )}
                       {!m.streaming && (
                         <div className="flex items-center gap-1 text-muted-foreground">
-                          <span className="text-xs">AgenticRAG</span>
+                          <span className="text-xs">AGI Chat</span>
                           <Button
                             variant="ghost"
                             size="icon-xs"
@@ -869,7 +869,7 @@ export default function Page() {
                     send()
                   }
                 }}
-                placeholder="Message AI Chat…"
+                placeholder="Message AGI Chat…"
                 rows={1}
                 className="min-h-8 border-transparent bg-transparent px-3 py-2 focus-visible:border-transparent focus-visible:ring-0"
               />
@@ -882,7 +882,7 @@ export default function Page() {
                 </Button>
                 <div className="ml-auto flex items-center gap-2">
                   <span className="hidden text-xs text-muted-foreground sm:inline">
-                    AgenticRAG
+                    AGI Chat
                   </span>
                   <Button
                     size="icon-sm"
@@ -897,7 +897,7 @@ export default function Page() {
               </div>
             </div>
             <p className="pt-2 text-center text-xs text-muted-foreground">
-              AI Chat can make mistakes. Check important info.
+              AGI Chat can make mistakes. Check important info.
             </p>
           </div>
         </div>

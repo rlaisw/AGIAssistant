@@ -42,7 +42,7 @@ stores Dify's conversation_id per chat for multi-turn context.
 
 - `message_end` retriever resources → source badges; `reasoning_chunk` and ` Mohammad...` blocks → the reasoning panel
 - Dify keep-alive pings are forwarded; a 120 s silent-connection watchdog aborts and shows a note instead of hanging forever
-- Conversation history sidebar, static AgenticRAG badge (the chatflow's model is fixed server-side), theme dropdown; per-chat Dify `conversation_id` keeps agent memory across turns
+- Conversation history sidebar, static "AGI Chat" badge (the chatflow's model is fixed server-side), theme dropdown; per-chat Dify `conversation_id` keeps agent memory across turns
 - Deck links in answers render as an action bar (⬇ Download / 👁 Preview-Edit) opening the sidecar's completion page (`/decks/<project>/<stem>/`) with per-slide previews — URL recognition and derivation live in `lib/deck-url.ts`
 
 ## Stack
