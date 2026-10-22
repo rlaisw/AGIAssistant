@@ -14,7 +14,7 @@ Chatbot-UI-style frontend for the Dify "AgenticRAG" chatflow. `app/api/chat/rout
 
 - `app/page.tsx` — the whole chat app (client component): sidebar, streaming bubbles, 100 ms throttled state flushes, `parseAnswer` think-tag stripping, 120 s connection watchdog, theme switcher
 - `components/markdown.tsx` — react-markdown (GFM + breaks) mapped to shadcn elements; images render inline; deck links (`/exports/…pptx` or `/decks/…/` URL families, via `lib/deck-url.ts`) render as the action bar (`components/deck-actions.tsx` — ⬇ Download / 👁 Preview-Edit)
-- `app/api/conversations/` — proxies Dify `/v1/conversations*`: history list, resume messages, and delete (backend-real, spec 014–015); `lib/history/` groups sidebar rows by recency; `lib/pdf-export/` renders the header ⬇ conversation PDF (spec 013)
+- `app/api/conversations/` — proxies Dify `/v1/conversations*`: history list, resume messages, and delete (backend-real, spec 014–015); `lib/history/` groups sidebar rows by recency; `lib/history/search.ts` + `search.test.ts` back the sidebar case-insensitive search (spec 018); `lib/pdf-export/` renders the header ⬇ conversation PDF (spec 013)
 - `scripts/wide-layout.mjs` — CDP acceptance script for the wide chat layout: ≥1280px column `min(90%,1400px)`, 672px user-bubble ceiling; `--smoke` runs the behavioral checks (spec 016)
 - No key / Dify down → canned demo replies (fallback mode)
 - Validation: `pnpm typecheck && pnpm lint` — NEVER `pnpm build` while `pnpm dev` runs (shared `.next/`)

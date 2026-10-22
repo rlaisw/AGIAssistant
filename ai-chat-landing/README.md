@@ -2,7 +2,7 @@
 
 A Chatbot-UI-style chat frontend for the **AgenticRAG** Dify chatflow, built with Next.js 16, Tailwind CSS v4, and shadcn/ui on Base UI primitives (luma preset).
 
-Questions typed here go to the Dify chatflow's Service API, and the AgenticRAG agent's answer streams back — markdown (headings, tables, images), a reasoning panel, and source badges rendered inline. The header's ⬇ button exports the whole conversation as a PDF (client-side render; `lib/pdf-export/`, spec 013). The sidebar shows backend chat history grouped by recency — Today / Yesterday / Previous 7 days / Last month / Few months ago — with resume-on-click, Load more pagination, and first-message draft promotion (`lib/history/`, `app/api/conversations/`, spec 014; each row offers a "…" menu → Delete with inline confirmation — backend-real, survives reload (spec 015). At viewports ≥1280px the chat column and composer widen to `min(90%, 1400px)` of the content area — centered and capped for readability, with long user-message bubbles capped at 672px; below 1280px the layout is unchanged (spec 016).
+Questions typed here go to the Dify chatflow's Service API, and the AgenticRAG agent's answer streams back — markdown (headings, tables, images), a reasoning panel, and source badges rendered inline. The header's ⬇ button exports the whole conversation as a PDF (client-side render; `lib/pdf-export/`, spec 013). The sidebar shows backend chat history grouped by recency — Today / Yesterday / Previous 7 days / Last month / Few months ago — with resume-on-click, Load more pagination, and first-message draft promotion (`lib/history/`, `app/api/conversations/`, spec 014; each row offers a "…" menu → Delete with inline confirmation — backend-real, survives reload (spec 015). At viewports ≥1280px the chat column and composer widen to `min(90%, 1400px)` of the content area — centered and capped for readability, with long user-message bubbles capped at 672px; below 1280px the layout is unchanged (spec 016). The sidebar's Search chats box filters the list live, case-insensitively — titles of every conversation plus the message text of opened ones — with × / Escape to clear and an explicit no-match state (`lib/history/search.ts`, spec 018).
 
 ## Quickstart
 
@@ -53,7 +53,7 @@ shadcn components installed: button, badge, card, accordion, avatar, table, sepa
 
 ## Testing
 
-`pnpm test` runs vitest over `lib/**/*.test.ts` (pure logic — deck-URL recognition/derivation, history grouping and delete state, and the PDF-export pipeline; 71 tests across 11 files). Browser-facing behavior is covered by the deploy battery's `chat-ui-liveness` and `chat-journey` scenarios (`python -m agentic_rag_mcp.deploy verify` from the repo root). Layout acceptance is measured live by the CDP script: `node scripts/wide-layout.mjs` (add `--smoke` for the behavioral checks — buckets, Load more, PDF export, delete; spec 016).
+`pnpm test` runs vitest over `lib/**/*.test.ts` (pure logic — deck-URL recognition/derivation, history grouping and delete state, sidebar search, and the PDF-export pipeline; 79 tests across 12 files). Browser-facing behavior is covered by the deploy battery's `chat-ui-liveness` and `chat-journey` scenarios (`python -m agentic_rag_mcp.deploy verify` from the repo root). Layout acceptance is measured live by the CDP script: `node scripts/wide-layout.mjs` (add `--smoke` for the behavioral checks — buckets, Load more, PDF export, delete; spec 016).
 
 ## Notes
 
