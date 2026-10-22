@@ -35,6 +35,6 @@ Width contract (see `contracts/wide-layout.md` for the full matrix):
 
 1. `pnpm typecheck && pnpm lint && pnpm test` in `ai-chat-landing/` (never
    `pnpm build` while `pnpm dev` runs).
-2. `node /tmp/kilo/cdp/wide-layout.mjs` with Chrome on :9240 and `pnpm dev`
+2. `node ai-chat-landing/scripts/wide-layout.mjs` with Chrome on :9240 and `pnpm dev`
    on :3000 — asserts SC-001–SC-003 (T1–T8 matrix) with loud failure modes.
 3. PDF export + sidebar smoke (SC-004/SC-005) at the widened layout.

@@ -60,5 +60,5 @@ abstraction, no new dependencies.
 
 ## Phase 7: Convergence
 
-- [ ] T016 Add the SC-002 1024px spot-check to `ai-chat-landing/scripts/wide-layout.mjs`: `setViewport(1024, 768)` and assert the column measures ≤768px (the `xl:` gate must stay inactive there) (SC-002) (partial)
-- [ ] T017 Update `specs/016-wide-chat-layout/plan.md` §Verification to reference the persisted script path `ai-chat-landing/scripts/wide-layout.mjs` instead of the ephemeral `/tmp/kilo/cdp/wide-layout.mjs` (plan: verification decision) (partial)
+- [x] T016 Add the SC-002 1024px spot-check to `ai-chat-landing/scripts/wide-layout.mjs` *(verified 2026-10-22: T5b 1024×768 → column=768.0px, all structural checks green)* (SC-002)
+- [x] T017 Update `specs/016-wide-chat-layout/plan.md` §Verification to reference the persisted script path *(plan.md:38 now points at `ai-chat-landing/scripts/wide-layout.mjs`)* (plan: verification decision)

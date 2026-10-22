@@ -121,6 +121,11 @@ await setViewport(1279, 800)
 w = await widths()
 check("T5 1279×800 ≤768px (xl inactive)", w.column <= 768.5, `column=${w.column.toFixed(1)}px`)
 
+// T5b 1024×768 (SC-002 spot-check): xl inactive → column capped at 768px
+await setViewport(1024, 768)
+w = await widths()
+check("T5b 1024×768 ≤768px (SC-002 spot-check)", w.column <= 768.5, `column=${w.column.toFixed(1)}px`)
+
 // T6 390×844: mobile full width minus padding, no sidebar
 await setViewport(390, 844)
 w = await widths()
