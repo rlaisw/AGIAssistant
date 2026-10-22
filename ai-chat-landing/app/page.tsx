@@ -35,6 +35,7 @@ import {
 import { ChatHistory } from "@/components/chat-history"
 import { PdfExportButton } from "@/components/pdf-export-button"
 import { createHistoryState } from "@/lib/history/state"
+import { filterHistory } from "@/lib/history/search"
 import type { ConversationRecord } from "@/lib/history/types"
 import { HistoryError } from "@/lib/history/types"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -263,6 +264,23 @@ export default function Page() {
   const syncHistory = React.useCallback(() => {
     setHistoryRecords([...history.records])
   }, [history])
+  const [searchQuery, setSearchQuery] = React.useState("")
+  const [debouncedQuery, setDebouncedQuery] = React.useState("")
+  React.useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(searchQuery), 200)
+    return () => clearTimeout(t)
+  }, [searchQuery])
+  const contentMap = React.useMemo(() => {
+    const m = new Map<string, string>()
+    for (const c of conversations) {
+      if (c.difyId) m.set(c.difyId, c.messages.map((msg) => msg.text).join("\n"))
+    }
+    return m
+  }, [conversations])
+  const filteredRecords = React.useMemo(
+    () => filterHistory(historyRecords, (id) => contentMap.get(id), debouncedQuery),
+    [historyRecords, contentMap, debouncedQuery]
+  )
 
   React.useEffect(() => {
     void history.load().then(syncHistory)
@@ -601,14 +619,34 @@ export default function Page() {
             <div className="relative">
               <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setSearchQuery("")
+                }}
                 placeholder="Search chats"
-                className="h-8 rounded-lg pr-3 pl-9"
+                className="h-8 rounded-lg pr-7 pl-9"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  aria-label="Clear search"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  ×
+                </button>
+              )}
             </div>
           </div>
           <nav className="flex-1 space-y-1 overflow-y-auto px-1 pb-4" aria-label="Chat history">
+            {history.status === "ready" && debouncedQuery.trim() && filteredRecords.length === 0 ? (
+              <div className="px-3 py-6 text-center text-xs text-muted-foreground">
+                No conversations match “{debouncedQuery}”
+              </div>
+            ) : (
             <ChatHistory
-              records={historyRecords}
+              records={filteredRecords}
               status={history.status}
               hasMore={history.hasMore}
               loadingMore={loadingMore}
@@ -618,6 +656,7 @@ export default function Page() {
               onLoadMore={() => { setLoadingMore(true); void history.loadMore().then(syncHistory).finally(() => setLoadingMore(false)) }}
               onDelete={deleteConversation}
             />
+            )}
           </nav>
           <div className="flex items-center gap-2 border-t p-3">
             <Avatar size="sm">
