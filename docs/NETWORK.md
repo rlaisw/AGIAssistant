@@ -36,7 +36,7 @@ flowchart LR
     BROWSER -. "⑤ host-side checks<br/>curl localhost:28080/healthz<br/>(aligned 28080:28080)" .-> SIDECAR
     BROWSER -. "⑥ host-side checks<br/>curl localhost:28888<br/>(aligned 28888:28888)" .-> SEARXNG
     BROWSER -- "⑦ Chat UI<br/>http://localhost:3000" --> CHATUI
-    CHATUI -- "⑧ Dify Service API (Bearer app-…)<br/>http://localhost/v1/chat-messages" --> NGINX
+    CHATUI -- "⑧ Dify Service API (Bearer app-…)<br/>http://localhost/v1/chat-messages<br/>+ /v1/conversations* (history/delete)" --> NGINX
 
     style HOST fill:#fef7c3
     style DIFY fill:#dbeafe
@@ -55,7 +55,7 @@ flowchart LR
 | ⑤ | You (terminal) | **agentic-rag** | `localhost:28080` → aligned to 28080 | Host → published port only |
 | ⑥ | You (terminal) | searxng | `localhost:28888` → aligned to 28080 | Host → published port only |
 | ⑦ | You (browser) | Chat UI | `localhost:3000` | Host → Next.js dev/prod server |
-| ⑧ | Chat UI | Dify nginx | `http://localhost/v1/chat-messages` (Bearer app key, server-side only) | Host → published port 80 — same entry door as ①, Service API path |
+| ⑧ | Chat UI | Dify nginx | `http://localhost/v1/chat-messages` · `/v1/conversations*` (history list, messages, delete — specs 014–015) (Bearer app key, server-side only) | Host → published port 80 — same entry door as ①, Service API path |
 | ⑨ | You (browser) | sidecar /exports | `http://localhost:28080/exports/<project>/<file>.pptx` | Host → published port — PPT-Master deck downloads (spec 009) |
 
 ## The two rules this encodes
@@ -77,7 +77,7 @@ flowchart LR
 | Sidecar → SearXNG | `http://searxng:28888` (config `[web.searxng] url`) | container DNS |
 | Host → SearXNG | `http://localhost:28888` | JSON API test: `/search?q=t&format=json` → 200 |
 | Browser → Chat UI | `http://localhost:3000` | Next.js (`ai-chat-landing/`) |
-| Chat UI → Dify Service API | `http://localhost/v1/chat-messages` | proxied server-side in `ai-chat-landing/app/api/chat/route.ts`; key in `.env.local` |
+| Chat UI → Dify Service API | `http://localhost/v1/chat-messages` · `/v1/conversations*` | proxied server-side in `ai-chat-landing/app/api/chat/route.ts` + `app/api/conversations/` (specs 014–015); key in `.env.local` |
 | You → PPT-Master deck downloads | `http://localhost:28080/exports/<project>/<file>.pptx` | served by the sidecar wrapper; files under the ppt-master clone's `projects/<project>/exports/` |
 | You → deck completion pages | `http://localhost:28080/decks/<project>/<stem>/` | per-export preview + download page (spec 010); slide assets at `.../slides/<file>.svg` |
 | You → rendered infographics | `http://localhost:28080/infographics/<id>/` | browser-side rendering via CDN engine (spec 012) |

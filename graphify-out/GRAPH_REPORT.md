@@ -1,7 +1,7 @@
 # Graph Report - AGIAssistant  (2026-10-22)
 
 ## Corpus Check
-- 425 files · ~336,065 words
+- 425 files · ~336,288 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 18 file(s) not represented in the graph (top: (none) 12, .css 3, .code-workspace 2)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `51012f74`
+- Built from commit: `b49e7f07`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
