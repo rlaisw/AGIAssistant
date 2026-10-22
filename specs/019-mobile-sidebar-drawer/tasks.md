@@ -19,7 +19,7 @@ Independent test: CDP D1–D7 + wide-layout matrix green.
 
 - [x] T007 Run `pnpm typecheck && pnpm lint && pnpm test` — all green *(tsc, eslint, 79/79)*
 - [x] T008 Run the full wide-layout matrix — all green (T1–T7, T9)
-- [ ] T009 Commit spec artifacts + diff together
+- [x] T009 Commit spec artifacts + diff together *(committed and pushed)*
 
 ## Dependencies
 
