@@ -57,3 +57,8 @@ abstraction, no new dependencies.
 - [x] T013 Persist the wide-layout acceptance script in the repo: `ai-chat-landing/scripts/wide-layout.mjs`; quickstart references updated *(SC-001–SC-003)*
 - [x] T014 Run the spec 015 behavioral smoke at the widened layout *(verified 2026-10-22: history rows 20, bucket headers "Today"/"Previous 7 days" render, Load more paginates 20→27, send creates a row 27→28, delete flow removes it 28→27 with marker gone; two earlier smoke orphans in Dify were cleaned up — backend shows zero test rows)* (FR-005, T011)
 - [x] T015 Export the conversation PDF and record it as the SC-004 baseline *(26.2 KiB at `/tmp/kilo/cdp/pdf-baseline.pdf`, exported live from a clean throwaway conversation — "baseline-established")* (SC-004, T002, T010)
+
+## Phase 7: Convergence
+
+- [ ] T016 Add the SC-002 1024px spot-check to `ai-chat-landing/scripts/wide-layout.mjs`: `setViewport(1024, 768)` and assert the column measures ≤768px (the `xl:` gate must stay inactive there) (SC-002) (partial)
+- [ ] T017 Update `specs/016-wide-chat-layout/plan.md` §Verification to reference the persisted script path `ai-chat-landing/scripts/wide-layout.mjs` instead of the ephemeral `/tmp/kilo/cdp/wide-layout.mjs` (plan: verification decision) (partial)
