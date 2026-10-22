@@ -682,13 +682,6 @@ export default function Page() {
               <Share2 />
               Share
             </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label="Conversation options"
-            >
-              <MoreHorizontal />
-            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
