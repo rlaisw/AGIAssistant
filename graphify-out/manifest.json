@@ -1392,9 +1392,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/app/page.tsx": {
-    "mtime": 1792655032.090513,
-    "seen": 1792658452.7285993,
-    "ast_hash": "d3053fe646ee909d8f7bf1946e820241",
+    "mtime": 1792659932.9889781,
+    "seen": 1792663066.5231166,
+    "ast_hash": "b54e948fe24b3a6300ae31da8cd22f20",
     "semantic_hash": ""
   },
   "ai-chat-landing/components.json": {
@@ -2670,9 +2670,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/scripts/wide-layout.mjs": {
-    "mtime": 1792655004.0059414,
-    "seen": 1792658452.7286365,
-    "ast_hash": "09564d813b7f179ae4556f48783b79e1",
+    "mtime": 1792660166.406833,
+    "seen": 1792663066.5231514,
+    "ast_hash": "e9de5fd806a1c46b31fc456ce4f017a8",
     "semantic_hash": ""
   },
   "specs/017-rename-ui-agi-chat/checklists/requirements.md": {
@@ -2805,6 +2805,54 @@
     "mtime": 1792655126.938869,
     "seen": 1792658452.728865,
     "ast_hash": "790b4b0b130c08ce4729d771736555cd",
+    "semantic_hash": ""
+  },
+  "specs/020-landing-new-chat/checklists/requirements.md": {
+    "mtime": 1792659574.5610247,
+    "seen": 1792663066.523364,
+    "ast_hash": "fb3e1614904ce3a277d844c2a308987f",
+    "semantic_hash": ""
+  },
+  "specs/020-landing-new-chat/contracts/landing-checks.md": {
+    "mtime": 1792659785.9935594,
+    "seen": 1792663066.5233648,
+    "ast_hash": "974b947761ac4d2e2c46845a2921f0a4",
+    "semantic_hash": ""
+  },
+  "specs/020-landing-new-chat/data-model.md": {
+    "mtime": 1792659781.4553847,
+    "seen": 1792663066.5233657,
+    "ast_hash": "30f7413f9533dcd9deaf780b2270b2a1",
+    "semantic_hash": ""
+  },
+  "specs/020-landing-new-chat/plan.md": {
+    "mtime": 1792659765.5072122,
+    "seen": 1792663066.5233662,
+    "ast_hash": "f0741a96e06448179a264896ef09ca02",
+    "semantic_hash": ""
+  },
+  "specs/020-landing-new-chat/quickstart.md": {
+    "mtime": 1792659790.4154859,
+    "seen": 1792663066.5233667,
+    "ast_hash": "10c02f5fdd13b52f6818dce06b413da1",
+    "semantic_hash": ""
+  },
+  "specs/020-landing-new-chat/research.md": {
+    "mtime": 1792659779.3113616,
+    "seen": 1792663066.5233672,
+    "ast_hash": "0999aaa82ff5bae6d6991dd166de4506",
+    "semantic_hash": ""
+  },
+  "specs/020-landing-new-chat/spec.md": {
+    "mtime": 1792659566.3089023,
+    "seen": 1792663066.5233676,
+    "ast_hash": "058bab6aecfb23e88522987168bdf378",
+    "semantic_hash": ""
+  },
+  "specs/020-landing-new-chat/tasks.md": {
+    "mtime": 1792660250.6960826,
+    "seen": 1792663066.523368,
+    "ast_hash": "dd9af5ca73a427d9e00cbb1624dd9166",
     "semantic_hash": ""
   }
 }
