@@ -245,7 +245,7 @@ Notes: v1 bounds decks at 5 pages per run (`[ppt] max_pages` in config.toml); sa
 | `script_timeout_s` | `120` | per script invocation timeout |
 | `retention_days` | `0` | `0` = keep exports forever (v1) |
 
-**Completion pages & in-chat actions (spec 010)**: every export also returns an additive `page_url` — `GET /decks/<project>/<stem>/` on the same port serves a browser completion page (per-slide previews snapshotted at export time, download button, back-to-chat edit path; honest degraded state if preview generation failed). Slide assets: `GET /decks/<project>/<stem>/slides/<file>.svg`. The AI Chat UI renders deck links in answers as an action bar (Download / Preview-Edit icons) via its markdown interceptor — the Dify webapp shows the plain link (graceful degradation). Chat UI tests: `pnpm test` (vitest) inside `ai-chat-landing/`.
+**Completion pages & in-chat actions (spec 010)**: every export also returns an additive `page_url` — `GET /decks/<project>/<stem>/` on the same port serves a browser completion page (per-slide previews snapshotted at export time, download button, back-to-chat edit path; honest degraded state if preview generation failed). Slide assets: `GET /decks/<project>/<stem>/slides/<file>.svg`. The AGI Chat UI renders deck links in answers as an action bar (Download / Preview-Edit icons) via its markdown interceptor — the Dify webapp shows the plain link (graceful degradation). Chat UI tests: `pnpm test` (vitest) inside `ai-chat-landing/`.
 
 ## Step 10 — Deployment automation (spec 011)
 

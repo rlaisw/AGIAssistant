@@ -8,7 +8,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-## Project — AI Chat (AgenticRAG Chat UI)
+## Project — AGI Chat (AgenticRAG Chat UI)
 
 Chatbot-UI-style frontend for the Dify "AgenticRAG" chatflow. `app/api/chat/route.ts` proxies `POST /api/chat` → Dify `POST {DIFY_API_BASE_URL}/chat-messages` (streaming SSE re-emitted as line-delimited JSON: chunk · reasoning · replace · sources · ping · done). The API key lives in `.env.local` (git-ignored) and stays server-side.
 

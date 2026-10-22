@@ -1,4 +1,4 @@
-# AI Chat — AgenticRAG Chat UI
+# AGI Chat — AgenticRAG Chat UI
 
 A Chatbot-UI-style chat frontend for the **AgenticRAG** Dify chatflow, built with Next.js 16, Tailwind CSS v4, and shadcn/ui on Base UI primitives (luma preset).
 

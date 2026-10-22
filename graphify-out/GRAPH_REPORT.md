@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7ac729a4`
+- Built from commit: `c8a80174`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -672,7 +672,7 @@ Nodes (33): openConversation(), createDeleteState(), DeleteRequest, DeleteStatus
 
 ### Community 109 - "page.tsx"
 Cohesion: 0.10
-Nodes (31): Assistant activity uses Trace, No sizing classes on icons inside components, Project — AI Chat (AgenticRAG Chat UI), Assistant activity uses Trace, No sizing classes on icons inside components, This is NOT the Next.js you know, cannedReplies, initialConversations (+23 more)
+Nodes (31): Assistant activity uses Trace, No sizing classes on icons inside components, Project — AGI Chat (AgenticRAG Chat UI), Assistant activity uses Trace, No sizing classes on icons inside components, This is NOT the Next.js you know, cannedReplies, initialConversations (+23 more)
 
 ### Community 110 - "Per-component notes"
 Cohesion: 0.08
@@ -1052,7 +1052,7 @@ Nodes (37): POST(), runtime, StreamEvent, R1. CLI shape, R2. Chatflow update str
 
 ### Community 205 - "AI Chat — AgenticRAG Chat UI"
 Cohesion: 0.25
-Nodes (7): AI Chat — AgenticRAG Chat UI, Dify configuration, How it works, Notes, Quickstart, Stack, Testing
+Nodes (7): AGI Chat — AgenticRAG Chat UI, Dify configuration, How it works, Notes, Quickstart, Stack, Testing
 
 ### Community 206 - "Tasks: PDF Download of Chat Conversations"
 Cohesion: 0.10
@@ -1335,7 +1335,7 @@ Nodes (4): Failure triage, Prerequisites, Quickstart: Wide Chat Layout, Validate
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `build_server()` connect `build_server` to `Reflexion Graph Agent`, `OneDrive Freshness Probe`, `Logging Setup Configuration`, `Contract — AntV Visualization Tools (Phase 1)`, `Vector Store Wrapper`, `Specialty Web Search`, `OneDrive Contract Tests`, `deploy/__main__.py`, `GraphifySearch`, `.sync_local_folder`, `Config`, `State Store Methods`, `env`, `Web Search Providers`, `OneDrive On-Demand Tests`, `pytest`, `env`, `OneDrive Graph Auth`, `Specialty Search Integration`, `Fallback Provenance Tests`, `Web Research Integration`, `laya_runtime.py`, `Specialty Search Contract`, `Web Research Contract`, `asyncio`, `Decision Routing Tests`, `MCP Contract Tests`, `Research — AntV Visualization Tools (Phase 0)`, `sources_auth`, `Success Criteria Tests`, `Ask Response Contract`, `test_logging_contract.py`, `Web Search Scrape Tasks`, `test_ppt_contract.py`, `ppt_write_page`, `Edge Case Tests`, `Specialty Search Plan`, `Provider Chain Tests`, `Feature Specification: OneDrive Ingestion — Full Pipeline with Auto-Update`, `ppt_export`, `status`, `Research: OneDrive Ingestion`, `Research Page Renderer`, `Domain Filtering`, `AntvInvalidInput`, `test_reflexion_conditioning.py`, `logging_setup.py`?**
-  _High betweenness centrality (0.299) - this node is a cross-community bridge._
+  _High betweenness centrality (0.301) - this node is a cross-community bridge._
 - **Are the 15 inferred relationships involving `build_server()` (e.g. with `D7: Migration — snapshot-absence defines the pending set; idempotent by construction` and `Phase 8: Cross-Cutting — One-Time Migration (FR-016)`) actually correct?**
   _`build_server()` has 15 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `shadcn`, `tw-animate-css`, `@tailwindcss/postcss` to the rest of the system?**
@@ -1343,7 +1343,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `json` be split into smaller, more focused modules?**
   _Cohesion score 0.05183459522422831 - nodes in this community are weakly interconnected._
 - **Why does `status()` connect `status` to `Quickstart: OneDrive On-Demand Embedding with Staleness Reminder`, `build_server`, `Research: OneDrive Ingestion`, `Feature Specification: Application Log File with Leveled Logging`, `Data Model — Deployment Automation (Phase 1)`, `page.tsx`, `deploy/__main__.py`, `Specialty Search Plan`, `logging_setup.py`?**
-  _High betweenness centrality (0.194) - this node is a cross-community bridge._
+  _High betweenness centrality (0.197) - this node is a cross-community bridge._
 - **Are the 65 inferred relationships involving `Config` (e.g. with `Technical Context` and `Phase 2: Foundational (Blocking Prerequisites)`) actually correct?**
   _`Config` has 65 INFERRED edges - model-reasoned connections that need verification._
 - **Should `rl_common.py` be split into smaller, more focused modules?**
