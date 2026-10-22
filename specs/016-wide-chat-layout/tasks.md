@@ -51,3 +51,10 @@ Phase 3 (US1) alone ships the feature; US2 is the readability safeguard.
 Smallest-first: three additive class-string edits, then the CDP
 measurement script, then the regression smoke — no refactors, no
 abstraction, no new dependencies.
+
+## Phase 6: Convergence
+
+- [ ] T013 Persist the wide-layout acceptance script in the repo: copy `/tmp/kilo/cdp/wide-layout.mjs` to `ai-chat-landing/scripts/wide-layout.mjs` and update the `/tmp/kilo/cdp/` references in `specs/016-wide-chat-layout/quickstart.md` and this file (SC-001–SC-003) (partial)
+- [ ] T014 Run the spec 015 behavioral smoke at the widened layout: sidebar time buckets render, Load more paginates, and the delete flow (menu → confirm → row removed) works at 1440×900 — extend the CDP script or verify manually, then close T011 with the result (FR-005, T011) (partial)
+- [ ] T015 Export the current conversation PDF via the header ⬇ button and record it as the comparison baseline per SC-004's honest fallback (mark "baseline-established" — the pre-change capture window closed when `1b3f4da` shipped), then close T002/T010 (SC-004, T002, T010) (partial)
+
