@@ -221,7 +221,7 @@ EOF
 pnpm dev        # http://localhost:3000
 ```
 
-The API key stays server-side — the Next.js route handler `app/api/chat/route.ts` proxies `/api/chat` → Dify `/v1/chat-messages`, and `.env.local` is git-ignored. Without a key the UI runs in demo mode with canned replies. Never run `pnpm build` while `pnpm dev` is up in the same directory (they share `.next/`). Details: [`ai-chat-landing/README.md`](ai-chat-landing/README.md).
+The API key stays server-side — the Next.js route handler `app/api/chat/route.ts` proxies `/api/chat` → Dify `/v1/chat-messages`, and `.env.local` is git-ignored. Without a key the UI runs in demo mode with canned replies. Never run `pnpm build` while `pnpm dev` is up in the same directory (they share `.next/`). Details: [`ai-chat-landing/README.md`](ai-chat-landing/README.md). Layout acceptance (spec 016): `node ai-chat-landing/scripts/wide-layout.mjs` measures the wide chat column via CDP (Chrome on `--remote-debugging-port=9240`); `--smoke` adds the behavioral checks (history buckets, Load more, PDF export, delete).
 
 ## Step 9 — PPT-Master deck generation (optional, spec 009)
 
@@ -300,3 +300,4 @@ Two additive MCP tools on the sidecar: `antv_chart(chart_type, data, title)` —
 | Infographic page blank in browser, no errors | Page served by a pre-fix image (escaped `<\/script>` swallowed the inline script), or stale chatflow | Rebuild the sidecar from current source (`deploy redeploy`); page serves `Cache-Control: no-store`, so a plain refresh suffices |
 | Agent always renders the same infographic style | Chatflow DSL `tool_description` is stale (model never sees new template names) | Update both description fields in the DSL YAML + `deploy chatflow` |
 | UML sequence diagram renders without arrows | Messages lack `id`/`step` fields, or relations point at participant labels instead of message ids | Give each message `id X` + `step N`; relations `- from m1 / to m2 / label …` |
+| Image build hangs at the pip layer (20+ min, ~0 CPU, frozen sockets) | Stalled multi-GB CUDA torch wheel download — pip has no per-socket timeout (seen 2026-10-22; first attempt dead at 25 min) | Kill and rerun `deploy all` — COPY layers are cached, only the download repeats; to cut the download ~10×, force CPU-only torch per the Dockerfile header note (`pip install --index-url https://download.pytorch.org/whl/cpu torch` before the main install) |
