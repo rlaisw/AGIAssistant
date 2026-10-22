@@ -34,7 +34,7 @@ None — no shared infrastructure; one file changed, one array deleted.
 - [x] T006 Ran `pnpm typecheck && pnpm lint && pnpm test` in `ai-chat-landing/` — all green (tsc, eslint, 79/79)
 - [x] T007 Regression scope (T6): wide-layout structural + drawer-check + search-check (basic) — all green. Required two honest adaptations to `scripts/wide-layout.mjs` (the landing change altered its precondition): (a) the chat column no longer exists at load (empty state) → added `openFirstConversation()` before measurements, with the spec-019 toggle step at mobile width; (b) opened conversations bring a ~15px scrollbar at shorter viewports → ratio checks (T1/T2/T4/T6) and the composer-equality check now allow ± one scrollbar width
 - [x] T008 Boundary check: diff limited to `ai-chat-landing/app/page.tsx`, `ai-chat-landing/scripts/wide-layout.mjs` (+ `specs/020-landing-new-chat/`)
-- [ ] T009 Commit spec artifacts + diff together
+- [x] T009 Commit spec artifacts + diff together *(committed and pushed)*
 
 ## Dependencies & Execution Order
 
