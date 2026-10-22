@@ -51,7 +51,7 @@
 
 ## Phase 6: Convergence
 
-- [ ] T013 Verify US1/AC4 (open a filtered row): with an active search query, click a matching conversation row and assert the conversation opens (header shows its title and its messages load) — extend the CDP check or verify manually, then record the result and close C6's "open" leg (US1/AC4, contracts/search-filter.md C6) (partial)
+- [x] T013 Verify US1/AC4 (open a filtered row) *(verified 2026-10-22: search → click filtered row → header shows the full title, messages load — CDP green)* (US1/AC4, contracts/search-filter.md C6)
 
 ## Dependencies & Execution Order
 
