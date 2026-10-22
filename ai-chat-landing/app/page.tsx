@@ -302,6 +302,21 @@ export default function Page() {
     }
   }, [])
 
+  // Mobile drawer (spec 019): start closed below md, Escape closes
+  React.useEffect(() => {
+    const t = setTimeout(() => {
+      if (window.innerWidth < 768) setSidebarOpen(false)
+    }, 0)
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && window.innerWidth < 768) setSidebarOpen(false)
+    }
+    window.addEventListener("keydown", onKey)
+    return () => {
+      clearTimeout(t)
+      window.removeEventListener("keydown", onKey)
+    }
+  }, [])
+
   React.useEffect(() => {
     const el = scrollRef.current
     if (el) el.scrollTop = el.scrollHeight
@@ -604,7 +619,13 @@ export default function Page() {
   return (
     <div className="flex h-svh overflow-hidden">
       {sidebarOpen && (
-        <aside className="hidden w-64 shrink-0 flex-col border-r bg-muted/30 md:flex">
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/40 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
+          />
+          <aside className="fixed inset-y-0 left-0 z-50 flex w-64 shrink-0 flex-col border-r bg-background md:static md:z-auto md:bg-muted/30">
           <div className="flex h-13 shrink-0 items-center gap-2 border-b px-3">
             <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Bot className="size-4" />
@@ -612,7 +633,10 @@ export default function Page() {
             <span className="font-heading text-sm font-semibold">AGI Chat</span>
           </div>
           <div className="space-y-3 p-3">
-            <Button className="w-full" onClick={newChat}>
+            <Button className="w-full" onClick={() => {
+              newChat()
+              if (window.innerWidth < 768) setSidebarOpen(false)
+            }}>
               <Plus />
               New chat
             </Button>
@@ -651,7 +675,10 @@ export default function Page() {
               hasMore={history.hasMore}
               loadingMore={loadingMore}
               activeDifyId={active?.difyId}
-              onOpen={openConversation}
+              onOpen={(record) => {
+                if (window.innerWidth < 768) setSidebarOpen(false)
+                void openConversation(record)
+              }}
               onRetry={() => { void history.load().then(syncHistory) }}
               onLoadMore={() => { setLoadingMore(true); void history.loadMore().then(syncHistory).finally(() => setLoadingMore(false)) }}
               onDelete={deleteConversation}
@@ -697,7 +724,8 @@ export default function Page() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </aside>
+          </aside>
+        </>
       )}
 
       <div className="flex min-w-0 flex-1 flex-col">

@@ -126,16 +126,28 @@ await setViewport(1024, 768)
 w = await widths()
 check("T5b 1024×768 ≤768px (SC-002 spot-check)", w.column <= 768.5, `column=${w.column.toFixed(1)}px`)
 
-// T6 390×844: mobile full width minus padding, no sidebar
+// T6 390×844: mobile full width minus padding, drawer starts closed
 await setViewport(390, 844)
+// Fresh load at mobile width: the spec-019 drawer must start closed
+await send("Page.navigate", { url: APP })
+for (let i = 0; i < 30; i++) {
+  try { if (await evalJS("document.readyState") === "complete") break } catch {}
+  await sleep(500)
+}
 w = await widths()
 const sidebarVisible = await evalJS(`(() => { const a = document.querySelector('aside.w-64'); return a ? getComputedStyle(a).display !== 'none' : false })()`)
-check("T6 390×844 sidebar hidden", !sidebarVisible, `sidebar visible: ${sidebarVisible}`)
+check("T6 390×844 drawer closed on fresh load (spec 019)", !sidebarVisible, `sidebar visible: ${sidebarVisible}`)
 check("T6 390×844 full-bleed column", approx(w.column, 390, 6), `column=${w.column.toFixed(1)}px`)
 
 // T7 1440×900: synthetic long user bubble ≤672px (measures the CSS contract
 // inside the real column; the send path is exercised in --smoke)
+// Fresh load at desktop: T6's mobile load closed the drawer (spec 019)
 await setViewport(1440, 900)
+await send("Page.navigate", { url: APP })
+for (let i = 0; i < 30; i++) {
+  try { if (await evalJS("document.readyState") === "complete") break } catch {}
+  await sleep(500)
+}
 const bubble = await evalJS(`(() => {
   const col = document.querySelector('${SEL_COLUMN}')
   if (!col) return { missing: 'column' }
