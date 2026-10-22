@@ -53,7 +53,7 @@ shadcn components installed: button, badge, card, accordion, avatar, table, sepa
 
 ## Testing
 
-`pnpm test` runs vitest over `lib/**/*.test.ts` (pure logic — currently the deck-URL recognition/derivation). Browser-facing behavior is covered by the deploy battery's `chat-ui-liveness` and `chat-journey` scenarios (`python -m agentic_rag_mcp.deploy verify` from the repo root). Layout acceptance is measured live by the CDP script: `node scripts/wide-layout.mjs` (add `--smoke` for the behavioral checks — buckets, Load more, PDF export, delete; spec 016).
+`pnpm test` runs vitest over `lib/**/*.test.ts` (pure logic — deck-URL recognition/derivation, history grouping and delete state, and the PDF-export pipeline; 71 tests across 11 files). Browser-facing behavior is covered by the deploy battery's `chat-ui-liveness` and `chat-journey` scenarios (`python -m agentic_rag_mcp.deploy verify` from the repo root). Layout acceptance is measured live by the CDP script: `node scripts/wide-layout.mjs` (add `--smoke` for the behavioral checks — buckets, Load more, PDF export, delete; spec 016).
 
 ## Notes
 

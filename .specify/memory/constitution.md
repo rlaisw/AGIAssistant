@@ -19,7 +19,7 @@ Superseding work retires the old design, it does not deprecate it: old code path
 
 ## Quality Gates
 
-- 100% of the pytest suite green before commit (currently 228 tests across unit/integration/contract)
+- 100% of the pytest suite green before commit (currently 344 tests across unit/integration/contract — count refreshed 2026-10-22; growth from specs 009–016, no principle change)
 - One runnable check per non-trivial behavior; deterministic tests (mocks at trust boundaries, no network in CI paths)
 - Performance targets are measured, not assumed; success criteria are hardware-relative when measurement demands it (see SC-001 amendment, spec 002)
 
@@ -29,4 +29,4 @@ Superseding work retires the old design, it does not deprecate it: old code path
 - Amendments require documented rationale in the amending spec's Clarifications section
 - Lazy engineering is the house style: shortest working diff, deletion over addition, YAGNI — never at the expense of Principles I and IV
 
-**Version**: 1.0.0 | **Ratified**: 2026-10-08 | **Last Amended**: 2026-10-08
+**Version**: 1.0.1 | **Ratified**: 2026-10-08 | **Last Amended**: 2026-10-22 (Quality Gates test-count refresh only)

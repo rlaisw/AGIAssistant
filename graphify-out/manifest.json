@@ -678,9 +678,9 @@
     "semantic_hash": "c02ac045b49ac1bec7bc8167539a4e2b"
   },
   ".specify/memory/constitution.md": {
-    "mtime": 1792224985.1470482,
-    "seen": 1792285896.032733,
-    "ast_hash": "3e8b93b8f0243bb4c23be839f1c37d8a",
+    "mtime": 1792639397.9246244,
+    "seen": 1792639404.605238,
+    "ast_hash": "b5fe539ec84230698e5db284109bb0b7",
     "semantic_hash": ""
   },
   ".specify/templates/checklist-template.md": {
@@ -1674,9 +1674,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/README.md": {
-    "mtime": 1792638748.4335432,
-    "seen": 1792638781.0735419,
-    "ast_hash": "ea9301a7c549405d13bf3005014cf4d6",
+    "mtime": 1792639398.3846254,
+    "seen": 1792639404.605268,
+    "ast_hash": "080a812bcd5856416f4bb86aac24f33f",
     "semantic_hash": ""
   },
   "ai-chat-landing/agent/skills/migrate-radix-to-base/SKILL.md": {
