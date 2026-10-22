@@ -1386,15 +1386,15 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/app/layout.tsx": {
-    "mtime": 1792225635.948663,
-    "seen": 1792285896.03265,
-    "ast_hash": "feb0a87bfb520de6e1d6451ce4cbf710",
+    "mtime": 1792645115.3676305,
+    "seen": 1792647189.9536183,
+    "ast_hash": "551d5824743c488ead680fa865c1c8f4",
     "semantic_hash": ""
   },
   "ai-chat-landing/app/page.tsx": {
-    "mtime": 1792633235.880874,
-    "seen": 1792633264.6598337,
-    "ast_hash": "0cef8c635e96238b5d6ecc13d428a37d",
+    "mtime": 1792645108.9035957,
+    "seen": 1792647189.9536192,
+    "ast_hash": "8804e83ca539ec3cbecb8c15ec86d002",
     "semantic_hash": ""
   },
   "ai-chat-landing/components.json": {
@@ -1674,9 +1674,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/README.md": {
-    "mtime": 1792639398.3846254,
-    "seen": 1792639404.605268,
-    "ast_hash": "080a812bcd5856416f4bb86aac24f33f",
+    "mtime": 1792645126.8036802,
+    "seen": 1792647189.953763,
+    "ast_hash": "19899befea57c358b7472f43760a0ee9",
     "semantic_hash": ""
   },
   "ai-chat-landing/agent/skills/migrate-radix-to-base/SKILL.md": {
@@ -2430,9 +2430,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/lib/pdf-export/render.tsx": {
-    "mtime": 1792564006.2680259,
-    "seen": 1792633264.6598575,
-    "ast_hash": "c82d378dfeb168d864aed0902dff2aa6",
+    "mtime": 1792645116.195634,
+    "seen": 1792647189.953644,
+    "ast_hash": "526e57af2c9596e7fac2984720cd81ff",
     "semantic_hash": ""
   },
   "ai-chat-landing/lib/pdf-export/slugify.test.ts": {
@@ -2673,6 +2673,54 @@
     "mtime": 1792634809.9748363,
     "seen": 1792638358.1958597,
     "ast_hash": "a1182c15319a18a7b0924ac9dedcf450",
+    "semantic_hash": ""
+  },
+  "specs/017-rename-ui-agi-chat/checklists/requirements.md": {
+    "mtime": 1792644767.7297473,
+    "seen": 1792647189.9538522,
+    "ast_hash": "c645b227beb233e2c738d0414ab9487e",
+    "semantic_hash": ""
+  },
+  "specs/017-rename-ui-agi-chat/contracts/rename-mapping.md": {
+    "mtime": 1792644932.2707481,
+    "seen": 1792647189.9538531,
+    "ast_hash": "d068fcd6369f2a1847ebd5484c21514c",
+    "semantic_hash": ""
+  },
+  "specs/017-rename-ui-agi-chat/data-model.md": {
+    "mtime": 1792644927.618722,
+    "seen": 1792647189.9538536,
+    "ast_hash": "581126c2238ee5c1edb2e862c14ac5f9",
+    "semantic_hash": ""
+  },
+  "specs/017-rename-ui-agi-chat/plan.md": {
+    "mtime": 1792645615.7973092,
+    "seen": 1792647189.9538543,
+    "ast_hash": "f768ff6029e4b93aae9aa6386f78ef07",
+    "semantic_hash": ""
+  },
+  "specs/017-rename-ui-agi-chat/quickstart.md": {
+    "mtime": 1792644942.1427965,
+    "seen": 1792647189.9538548,
+    "ast_hash": "9f9c11630b1779869d9d9e888e799ec9",
+    "semantic_hash": ""
+  },
+  "specs/017-rename-ui-agi-chat/research.md": {
+    "mtime": 1792644918.6626685,
+    "seen": 1792647189.953855,
+    "ast_hash": "31b105d7481296f74c06a28996cce4ee",
+    "semantic_hash": ""
+  },
+  "specs/017-rename-ui-agi-chat/spec.md": {
+    "mtime": 1792645615.2732887,
+    "seen": 1792647189.9538555,
+    "ast_hash": "2fbfab88ed77b7e73821dd6a98dee48c",
+    "semantic_hash": ""
+  },
+  "specs/017-rename-ui-agi-chat/tasks.md": {
+    "mtime": 1792645331.7718368,
+    "seen": 1792647189.953856,
+    "ast_hash": "0a668c3a347d3e8ec5cc82e3b318a27e",
     "semantic_hash": ""
   }
 }

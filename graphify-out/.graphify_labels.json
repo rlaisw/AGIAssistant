@@ -14,7 +14,6 @@
   "19": "Episodic Memory Records",
   "20": "Web Search Providers",
   "21": "OneDrive On-Demand Spec",
-  "23": "Logging Integration Tests",
   "24": "One-Time Migration Tests",
   "26": "OneDrive Graph Auth",
   "27": "Answer Synthesis",
@@ -75,12 +74,10 @@
   "95": "Specialty Search Quickstart",
   "96": "Specialty Search Tasks",
   "97": "Provider Chain Tests",
-  "98": "Logging Task Plan",
   "101": "HTTP Test Server",
   "107": "Question Planner",
   "111": "Research Page Renderer",
   "114": "Domain Filtering",
   "121": "Reflexion End-State Tests",
-  "122": "Feature Documentation",
   "124": "AGENTS.md"
 }
