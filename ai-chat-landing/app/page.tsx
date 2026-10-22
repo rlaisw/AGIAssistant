@@ -14,14 +14,12 @@ import {
   Lightbulb,
   Link2,
   LogOut,
-  MessageSquareText,
   Mic,
   Monitor,
   Moon,
   MoreHorizontal,
   Paperclip,
   PanelLeft,
-  Pin,
   Plus,
   RefreshCw,
   Search,
@@ -34,6 +32,11 @@ import {
   User,
 } from "lucide-react"
 
+import { ChatHistory } from "@/components/chat-history"
+import { PdfExportButton } from "@/components/pdf-export-button"
+import { createHistoryState } from "@/lib/history/state"
+import type { ConversationRecord } from "@/lib/history/types"
+import { HistoryError } from "@/lib/history/types"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Markdown } from "@/components/markdown"
@@ -47,7 +50,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { cn } from "@/lib/utils"
 
 type Message = {
   id: number
@@ -63,18 +65,14 @@ type Message = {
 type Conversation = {
   id: string
   title: string
-  group: string
   messages: Message[]
   difyId?: string
 }
-
-const sidebarGroups = ["Pinned", "Today", "Yesterday", "Previous 7 days"]
 
 const initialConversations: Conversation[] = [
   {
     id: "q3",
     title: "Q3 roadmap draft",
-    group: "Pinned",
     messages: [
       {
         id: 1,
@@ -100,7 +98,6 @@ const initialConversations: Conversation[] = [
   {
     id: "auth",
     title: "Refactor auth flow",
-    group: "Today",
     messages: [
       {
         id: 1,
@@ -117,7 +114,6 @@ const initialConversations: Conversation[] = [
   {
     id: "copy",
     title: "Landing page copy",
-    group: "Today",
     messages: [
       {
         id: 1,
@@ -134,7 +130,6 @@ const initialConversations: Conversation[] = [
   {
     id: "sql",
     title: "SQL query optimization",
-    group: "Yesterday",
     messages: [
       {
         id: 1,
@@ -151,7 +146,6 @@ const initialConversations: Conversation[] = [
   {
     id: "email",
     title: "Onboarding email sequence",
-    group: "Previous 7 days",
     messages: [
       {
         id: 1,
@@ -242,6 +236,38 @@ export default function Page() {
   const [busy, setBusy] = React.useState(false)
   const [copiedId, setCopiedId] = React.useState<number | null>(null)
   const { theme, setTheme } = useTheme()
+  const history = React.useMemo(
+    () =>
+      createHistoryState({
+        fetchPage: async (cursor?: string) => {
+          const q = cursor ? `?cursor=${encodeURIComponent(cursor)}` : ""
+          const res = await fetch(`/api/conversations${q}`)
+          if (!res.ok) {
+            const detail = (await res.json().catch(() => null)) as
+              | { error?: string }
+              | null
+            throw new HistoryError("history_unavailable", detail?.error)
+          }
+          return (await res.json()) as Awaited<
+            ReturnType<typeof import("@/lib/history/mappers")["mapConversationPage"]>
+          >
+        },
+      }),
+    []
+  )
+  const [historyRecords, setHistoryRecords] = React.useState<
+    import("@/lib/history/types").ConversationRecord[]
+  >([])
+  const [loadingMore, setLoadingMore] = React.useState(false)
+
+  const syncHistory = React.useCallback(() => {
+    setHistoryRecords([...history.records])
+  }, [history])
+
+  React.useEffect(() => {
+    void history.load().then(syncHistory)
+  }, [history, syncHistory])
+
   const streamRef = React.useRef<ReturnType<typeof setInterval> | null>(null)
   const abortRef = React.useRef<AbortController | null>(null)
   const replyRef = React.useRef(0)
@@ -303,6 +329,10 @@ export default function Page() {
   async function send(text = input) {
     const value = text.trim()
     if (!value || busy) return
+    if (active?.difyId) {
+      history.touch(active.difyId)
+      syncHistory()
+    }
     setInput("")
     setBusy(true)
     const userMessage: Message = {
@@ -418,6 +448,12 @@ export default function Page() {
                   ...c,
                   difyId: msg.conversationId,
                 }))
+                history.upsert({
+                  difyId: msg.conversationId,
+                  title: value.slice(0, 60),
+                  lastActivityAt: Date.now(),
+                })
+                syncHistory()
               }
               break
           }
@@ -459,10 +495,83 @@ export default function Page() {
     }
   }
 
+  async function openConversation(record: ConversationRecord) {
+    const existing = conversations.find((c) => c.difyId === record.difyId)
+    if (existing) {
+      setActiveId(existing.id)
+      return
+    }
+    try {
+      const res = await fetch(
+        `/api/conversations/${encodeURIComponent(record.difyId)}/messages?limit=100`
+      )
+      if (!res.ok) {
+        const detail = (await res.json().catch(() => null)) as
+          | { error?: string }
+          | null
+        throw new HistoryError("messages_unavailable", detail?.error)
+      }
+      const { messages } = (await res.json()) as {
+        messages: Message[]
+        hasMore: boolean
+      }
+      const id = `h-${record.difyId}`
+      setConversations((prev) => [
+        { id, title: record.title, messages, difyId: record.difyId },
+        ...prev,
+      ])
+      setActiveId(id)
+    } catch (err) {
+      const e = err as HistoryError
+      const id = `h-${record.difyId}`
+      setConversations((prev) => [
+        {
+          id,
+          title: record.title,
+          messages: [
+            {
+              id: (idRef.current += 1),
+              role: "assistant",
+              text: `Could not load this conversation${e.message ? `: ${e.message}` : "."} Please try again.`,
+              streaming: false,
+            },
+          ],
+          difyId: record.difyId,
+        },
+        ...prev,
+      ])
+      setActiveId(id)
+    }
+  }
+
+  async function deleteConversation(record: ConversationRecord) {
+    const res = await fetch(
+      `/api/conversations/${encodeURIComponent(record.difyId)}`,
+      { method: "DELETE" }
+    )
+    if (!res.ok) {
+      const detail = (await res.json().catch(() => null)) as
+        | { error?: string }
+        | null
+      throw new HistoryError("delete_failed", detail?.error)
+    }
+    if (active?.difyId === record.difyId) {
+      abortRef.current?.abort()
+      if (streamRef.current) {
+        clearInterval(streamRef.current)
+        streamRef.current = null
+      }
+      setBusy(false)
+      newChat()
+    }
+    history.remove(record.difyId)
+    syncHistory()
+  }
+
   function newChat() {
     const id = `c-${(idRef.current += 1)}`
     setConversations((prev) => [
-      { id, title: "New chat", group: "Today", messages: [] },
+      { id, title: "New chat", messages: [] },
       ...prev,
     ])
     setActiveId(id)
@@ -497,36 +606,18 @@ export default function Page() {
               />
             </div>
           </div>
-          <nav className="flex-1 space-y-4 overflow-y-auto px-3 pb-4">
-            {sidebarGroups.map((group) => {
-              const items = conversations.filter((c) => c.group === group)
-              if (items.length === 0) return null
-              return (
-                <div key={group}>
-                  <div className="px-2 pt-2 pb-1.5 text-xs font-medium text-muted-foreground">
-                    {group}
-                  </div>
-                  {items.map((c) => (
-                    <button
-                      key={c.id}
-                      onClick={() => setActiveId(c.id)}
-                      className={cn(
-                        "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm",
-                        c.id === activeId
-                          ? "bg-background font-medium shadow-sm"
-                          : "text-muted-foreground hover:bg-muted"
-                      )}
-                    >
-                      <MessageSquareText className="size-3.5 shrink-0" />
-                      <span className="flex-1 truncate">{c.title}</span>
-                      {group === "Pinned" && (
-                        <Pin className="size-3 shrink-0 text-muted-foreground" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )
-            })}
+          <nav className="flex-1 space-y-1 overflow-y-auto px-1 pb-4" aria-label="Chat history">
+            <ChatHistory
+              records={historyRecords}
+              status={history.status}
+              hasMore={history.hasMore}
+              loadingMore={loadingMore}
+              activeDifyId={active?.difyId}
+              onOpen={openConversation}
+              onRetry={() => { void history.load().then(syncHistory) }}
+              onLoadMore={() => { setLoadingMore(true); void history.loadMore().then(syncHistory).finally(() => setLoadingMore(false)) }}
+              onDelete={deleteConversation}
+            />
           </nav>
           <div className="flex items-center gap-2 border-t p-3">
             <Avatar size="sm">
@@ -586,6 +677,7 @@ export default function Page() {
               <Bot className="size-3.5" />
               AgenticRAG
             </Badge>
+            <PdfExportButton messages={active.messages} />
             <Button variant="outline" size="sm">
               <Share2 />
               Share

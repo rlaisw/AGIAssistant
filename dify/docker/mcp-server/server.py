@@ -72,7 +72,9 @@ async def export_file(request) -> Response:
         return Response("bad request", status_code=400)
     except ExportNotFound:
         return Response("not found", status_code=404)
-    return FileResponse(path, media_type=PPTX_CONTENT_TYPE)
+    # ACAO: the Chat UI embeds sidecar-hosted media in exported PDFs (spec 013)
+    return FileResponse(path, media_type=PPTX_CONTENT_TYPE,
+                        headers={"Access-Control-Allow-Origin": "*"})
 
 
 async def completion_page(request) -> Response:
@@ -108,7 +110,9 @@ async def completion_slide(request) -> Response:
         return Response("bad request", status_code=400)
     except FileNotFoundError:
         return Response("not found", status_code=404)
-    return FileResponse(path, media_type="image/svg+xml")
+    # ACAO: the Chat UI embeds sidecar-hosted media in exported PDFs (spec 013)
+    return FileResponse(path, media_type="image/svg+xml",
+                        headers={"Access-Control-Allow-Origin": "*"})
 
 
 async def infographic_page(request) -> Response:
@@ -124,7 +128,10 @@ async def infographic_page(request) -> Response:
     except FileNotFoundError:
         return Response("not found", status_code=404,
                         headers={"Cache-Control": "no-store"})
-    return HTMLResponse(page, headers={"Cache-Control": "no-store"})
+    return HTMLResponse(page, headers={
+        "Cache-Control": "no-store",
+        "Access-Control-Allow-Origin": "*",  # spec 013: UI embeds sidecar media in PDFs
+    })
 
 
 async def mcp_get(request) -> Response:

@@ -2,7 +2,7 @@
 
 A Chatbot-UI-style chat frontend for the **AgenticRAG** Dify chatflow, built with Next.js 16, Tailwind CSS v4, and shadcn/ui on Base UI primitives (luma preset).
 
-Questions typed here go to the Dify chatflow's Service API, and the AgenticRAG agent's answer streams back — markdown (headings, tables, images), a reasoning panel, and source badges rendered inline.
+Questions typed here go to the Dify chatflow's Service API, and the AgenticRAG agent's answer streams back — markdown (headings, tables, images), a reasoning panel, and source badges rendered inline. The header's ⬇ button exports the whole conversation as a PDF (client-side render; `lib/pdf-export/`, spec 013). The sidebar shows backend chat history grouped by recency — Today / Yesterday / Previous 7 days / Last month / Few months ago — with resume-on-click, Load more pagination, and first-message draft promotion (`lib/history/`, `app/api/conversations/`, spec 014; each row offers a "…" menu → Delete with inline confirmation — backend-real, survives reload (spec 015).
 
 ## Quickstart
 
