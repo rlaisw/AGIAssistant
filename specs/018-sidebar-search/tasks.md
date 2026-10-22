@@ -49,6 +49,10 @@
 - [x] T011 Boundary check: diff limited to `ai-chat-landing/app/page.tsx` + new `lib/history/search.ts` + `search.test.ts` — no backend/API edits, no new dependencies (SC-005)
 - [x] T012 Commit spec artifacts + diff together *(committed and pushed)*
 
+## Phase 6: Convergence
+
+- [ ] T013 Verify US1/AC4 (open a filtered row): with an active search query, click a matching conversation row and assert the conversation opens (header shows its title and its messages load) — extend the CDP check or verify manually, then record the result and close C6's "open" leg (US1/AC4, contracts/search-filter.md C6) (partial)
+
 ## Dependencies & Execution Order
 
 - T001 → all; T002 → T003 (TDD: failing suite first) → T004
