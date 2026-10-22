@@ -2640,15 +2640,15 @@
     "semantic_hash": ""
   },
   "specs/016-wide-chat-layout/plan.md": {
-    "mtime": 1792633023.6128933,
-    "seen": 1792633264.660087,
-    "ast_hash": "cebaa99cec597209f1351f9dbfccfe6d",
+    "mtime": 1792634810.2868364,
+    "seen": 1792638358.1960683,
+    "ast_hash": "6b25285ad23029f25c22ff0729929739",
     "semantic_hash": ""
   },
   "specs/016-wide-chat-layout/quickstart.md": {
-    "mtime": 1792633042.780883,
-    "seen": 1792633264.6600876,
-    "ast_hash": "6448423571526f31509723fd927f69da",
+    "mtime": 1792633957.0913384,
+    "seen": 1792638358.1960688,
+    "ast_hash": "660d39dc48914202ca413a64788d0bb1",
     "semantic_hash": ""
   },
   "specs/016-wide-chat-layout/research.md": {
@@ -2664,9 +2664,15 @@
     "semantic_hash": ""
   },
   "specs/016-wide-chat-layout/tasks.md": {
-    "mtime": 1792633036.7528858,
-    "seen": 1792633264.6600888,
-    "ast_hash": "2f0afd5b4433997869378cc37cd4cfa7",
+    "mtime": 1792634824.4908376,
+    "seen": 1792638358.1960707,
+    "ast_hash": "fa12c430691395e386bac4b029274439",
+    "semantic_hash": ""
+  },
+  "ai-chat-landing/scripts/wide-layout.mjs": {
+    "mtime": 1792634809.9748363,
+    "seen": 1792638358.1958597,
+    "ast_hash": "a1182c15319a18a7b0924ac9dedcf450",
     "semantic_hash": ""
   }
 }
