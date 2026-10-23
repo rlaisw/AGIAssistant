@@ -1392,9 +1392,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/app/page.tsx": {
-    "mtime": 1792659932.9889781,
-    "seen": 1792663066.5231166,
-    "ast_hash": "b54e948fe24b3a6300ae31da8cd22f20",
+    "mtime": 1792736474.7935178,
+    "seen": 1792738341.3638315,
+    "ast_hash": "0be0920e039f5adb59c890ba2485aefa",
     "semantic_hash": ""
   },
   "ai-chat-landing/components.json": {
@@ -2832,9 +2832,9 @@
     "semantic_hash": ""
   },
   "specs/020-landing-new-chat/quickstart.md": {
-    "mtime": 1792659790.4154859,
-    "seen": 1792663066.5233667,
-    "ast_hash": "10c02f5fdd13b52f6818dce06b413da1",
+    "mtime": 1792737127.835382,
+    "seen": 1792738341.3641136,
+    "ast_hash": "0e9ff54a2460a823cb24fe24e0f8a8fd",
     "semantic_hash": ""
   },
   "specs/020-landing-new-chat/research.md": {
@@ -2853,6 +2853,66 @@
     "mtime": 1792660250.6960826,
     "seen": 1792663066.523368,
     "ast_hash": "dd9af5ca73a427d9e00cbb1624dd9166",
+    "semantic_hash": ""
+  },
+  "ai-chat-landing/scripts/landing-check.mjs": {
+    "mtime": 1792736999.9845011,
+    "seen": 1792738341.3638678,
+    "ast_hash": "6ceb9ccdc21baa921bcd16037b511da3",
+    "semantic_hash": ""
+  },
+  "ai-chat-landing/scripts/welcome-cards.mjs": {
+    "mtime": 1792737017.5969923,
+    "seen": 1792738341.3638685,
+    "ast_hash": "7d2d7987d7a472d2ef506b5215f5f08d",
+    "semantic_hash": ""
+  },
+  "specs/021-welcome-feature-cards/checklists/requirements.md": {
+    "mtime": 1792735032.9470134,
+    "seen": 1792738341.3641164,
+    "ast_hash": "1dd9e7c476fce55d1f3b083d62bb8e5e",
+    "semantic_hash": ""
+  },
+  "specs/021-welcome-feature-cards/contracts/welcome-cards.md": {
+    "mtime": 1792735604.225182,
+    "seen": 1792738341.3641171,
+    "ast_hash": "16c4e67f0910e1765d13213d6fc5546a",
+    "semantic_hash": ""
+  },
+  "specs/021-welcome-feature-cards/data-model.md": {
+    "mtime": 1792735601.3968587,
+    "seen": 1792738341.3641179,
+    "ast_hash": "f164ff67287d52272a32ba0ed13f3f43",
+    "semantic_hash": ""
+  },
+  "specs/021-welcome-feature-cards/plan.md": {
+    "mtime": 1792736850.910421,
+    "seen": 1792738341.3641183,
+    "ast_hash": "d54b08f592d123100ad81d20fd7957bc",
+    "semantic_hash": ""
+  },
+  "specs/021-welcome-feature-cards/quickstart.md": {
+    "mtime": 1792737129.8956304,
+    "seen": 1792738341.3641188,
+    "ast_hash": "74697e0cda1bf598d25c799d8f40ed61",
+    "semantic_hash": ""
+  },
+  "specs/021-welcome-feature-cards/research.md": {
+    "mtime": 1792736849.9344149,
+    "seen": 1792738341.3641193,
+    "ast_hash": "9a2f094a22336b7f6ebdd8e8dab94942",
+    "semantic_hash": ""
+  },
+  "specs/021-welcome-feature-cards/spec.md": {
+    "mtime": 1792736849.0144086,
+    "seen": 1792738341.3641198,
+    "ast_hash": "78892c61f62384eb5da32dc2522f926c",
+    "semantic_hash": ""
+  },
+  "specs/021-welcome-feature-cards/tasks.md": {
+    "mtime": 1792737140.568963,
+    "seen": 1792738341.3641202,
+    "ast_hash": "2cd06f49e2a27fc26df5370612c52f1a",
     "semantic_hash": ""
   }
 }
