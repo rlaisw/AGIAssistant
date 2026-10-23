@@ -33,7 +33,7 @@ None — no shared infrastructure; one app file changed.
 
 - [x] T006 Ran `pnpm typecheck && pnpm lint && pnpm test` in `ai-chat-landing/` — all green (tsc, eslint, 79/79); also fixed two lint warnings from yesterday's persisted scripts (unused `version` variable in `landing-check.mjs` and `welcome-cards.mjs`)
 - [x] T007 Boundary check: diff limited to `ai-chat-landing/app/page.tsx`, the two script lint fixes, and `specs/022-thinking-indicator/`
-- [ ] T008 Commit spec artifacts + diff together
+- [x] T008 Commit spec artifacts + diff together *(committed and pushed)*
 
 ## Dependencies & Execution Order
 
