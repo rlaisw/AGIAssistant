@@ -92,7 +92,7 @@ check("T1 ring color is #82D2F6", s?.color === "rgb(130, 210, 246)", `color=${s?
 check("T1 bold Thinking text", s?.text === "Thinking" && (s?.weight === "600" || s?.weight === "700"), `text=${s?.text} weight=${s?.weight}`)
 check("T1 old dots gone", s?.dots === 0, `dots=${s?.dots}`)
 check("T6 aria-hidden on icon", s?.ariaHidden === "true", `aria-hidden=${s?.ariaHidden}`)
-check("T6 motion-safe gate", (s?.classes ?? "").includes("motion-safe:animate-spin"), "")
+check("T6 always-on spin (gate removed after user testing)", (s?.classes ?? "").includes("animate-spin") && !(s?.classes ?? "").includes("motion-safe"), "")
 
 // T2: streaming state (text arriving)
 let streaming = false

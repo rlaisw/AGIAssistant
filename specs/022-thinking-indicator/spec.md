@@ -13,7 +13,7 @@
 ### Session 2026-10-23
 
 - Q: Is `#82D2F6` on light backgrounds a contrast concern? → A: the ring is decorative — the bold "Thinking" text carries the accessible signal at full theme contrast; the ring's low luminance contrast on white is acceptable for a decorative accent (user's explicit color choice).
-- Q: Should the spin respect reduced-motion settings? → A: yes — use `motion-safe:animate-spin`; reduced-motion users get a static ring (the "Thinking" text still signals state). One-word gate, better than today's pulses which ignore the setting.
+- Q: Should the spin respect reduced-motion settings? → A: initially yes (`motion-safe:animate-spin`), **reversed after user testing** — the gate made the ring static on the user's reduced-motion environment, killing the indicator's core purpose; a loading spinner must always animate. The shipped code uses always-on `animate-spin`.
 - Q: How is the icon exposed to assistive tech? → A: the ring is decorative (`aria-hidden="true"`); the "Thinking" text announces itself as real content — no extra ARIA needed.
 - Placement (from the developer perspective): one row in both states — below the streaming content while text arrives, and in place of the three waiting dots before the first chunk.
 
@@ -105,7 +105,9 @@ ring + "Thinking" are visible; when the reply completes, both are gone.
   inline in the assistant message area where today's indicators live.
 - The indicator's lifecycle follows the existing `streaming` flag — no
   new state machinery.
-- The spin animation is gated on `motion-safe:` — reduced-motion users
-  see a static ring (the bold text still signals state).
+- The spin animation is always on (`animate-spin`) — a reduced-motion
+  gate was tried and removed after user testing found the ring static
+  (the indicator's core signal must always animate; the bold text
+  remains the accessible label).
 - The icon is decorative (`aria-hidden="true"`); the bold "Thinking"
   text is the accessible signal and announces itself.

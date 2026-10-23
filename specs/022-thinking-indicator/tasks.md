@@ -27,7 +27,7 @@ None — no shared infrastructure; one app file changed.
 - [x] T002 [P] [US1] Write `/tmp/kilo/cdp/thinking-check.mjs` implementing T1–T6 from `contracts/thinking-indicator.md`
 - [x] T003 [US1] In `ai-chat-landing/app/page.tsx`: added the `ThinkingIndicator` component (row `flex items-center gap-2 pt-2.5`, `role="status"`; `LoaderCircle` `size-4 motion-safe:animate-spin text-[#82D2F6]`, `aria-hidden="true"`; bold `text-sm font-semibold` "Thinking") + the lucide import; replaced the waiting-dots block and the streaming caret with it
 - [x] T004 [US1] Old-indicator grep (T4): zero matches for the dot spans (`animate-pulse rounded-full bg-current`, `animation-delay`) and the caret span (`h-4 w-2 animate-pulse rounded-sm bg-foreground/50`) in `app/`
-- [x] T005 [US1] Ran `/tmp/kilo/cdp/thinking-check.mjs` — **T1–T6 all green**: waiting shows the row (spin computed, color `rgb(130, 210, 246)`, bold "Thinking" weight 600, dots gone); streaming shows it below content (caret gone); completion clears (footer shows); delete-mid-stream clears; `aria-hidden` + `role="status"` + `motion-safe:` present
+- [x] T005 [US1] Ran `/tmp/kilo/cdp/thinking-check.mjs` — **T1–T6 all green**: waiting shows the row (spin computed, color `rgb(130, 210, 246)`, bold "Thinking" weight 600, dots gone); streaming shows it below content (caret gone); completion clears (footer shows); delete-mid-stream clears; `aria-hidden` + `role="status"` + always-on spin (reduced-motion gate removed after user testing)
 
 ## Phase 4: Polish & Cross-Cutting Concerns
 

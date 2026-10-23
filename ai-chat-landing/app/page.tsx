@@ -154,7 +154,7 @@ function parseAnswer(raw: string): { text: string; reasoning?: string } {
 function ThinkingIndicator() {
   return (
     <div className="flex items-center gap-2 pt-2.5 text-muted-foreground" role="status">
-      <LoaderCircle className="size-4 motion-safe:animate-spin text-[#82D2F6]" aria-hidden="true" />
+      <LoaderCircle className="size-4 animate-spin text-[#82D2F6]" aria-hidden="true" />
       <span className="text-sm font-semibold">Thinking</span>
     </div>
   )
