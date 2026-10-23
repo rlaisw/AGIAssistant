@@ -34,7 +34,11 @@ None — no shared infrastructure; one app file changed.
 - [x] T006 Ran `pnpm typecheck && pnpm lint && pnpm test` in `ai-chat-landing/` — all green (tsc, eslint, 79/79)
 - [x] T007 Regression scope (T6): landing-check (updated, **6 cards confirmed** — header "New chat", empty state, T4 first-send + cleanup) + `node scripts/wide-layout.mjs` structural — both green
 - [x] T008 Boundary check: diff limited to `ai-chat-landing/app/page.tsx` (+56/−33) + `specs/021-welcome-feature-cards/`
-- [x] T009 Commit spec artifacts + diff together *(committed and pushed)*
+- [x] T009 Commit spec artifacts + diff together *(commits `0160b1c` + `727d343`, pushed)*
+
+## Phase 5: Convergence
+
+- [ ] T010 Update the stale grid texts to the shipped layout: `spec.md` (US story line 26, AC1 line 47, FR-002, SC-001) and `plan.md` R4 still read "two-column × three-row" / `sm:grid-cols-2` — change them to the shipped `sm:grid-cols-2 lg:grid-cols-3` with `max-w-4xl` so the record leaves no contradictory statement per the Clarifications Session 2026-10-23 amendment (FR-002, SC-001, plan: R4) (contradicts)
 
 ## Dependencies & Execution Order
 
