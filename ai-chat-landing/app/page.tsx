@@ -717,7 +717,7 @@ export default function Page() {
             <p className="mt-2 text-sm text-muted-foreground">
               Ask anything, or start from a suggestion.
             </p>
-            <div className="mt-8 grid w-full max-w-2xl gap-3 sm:grid-cols-2">
+            <div className="mt-8 grid w-full max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {FEATURE_CARDS.map((c) => (
                 <div
                   key={c.title}

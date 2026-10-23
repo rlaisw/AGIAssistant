@@ -16,6 +16,7 @@
 - Q: What happens to the old four suggestion prompts (Summarize a document / Write code / Brainstorm ideas / Explain a concept)? → A: fully replaced by the six feature cards — no leftover quick-prompt row; a future variant could re-add one separately.
 - Q: Are the uploaded image's styling details covered? → A: the image could not be read by this model (no image input); the design follows the locked text table and the existing shadcn/luma card language — any styling visible only in the image (exact colors, hero art, gradients, footer links) may need a follow-up pass.
 - Structure note (from the first pass): the card must not nest a link inside a button (invalid HTML) — the send area and the label link are siblings inside the card container, so propagation separates naturally.
+- Q (post-ship, 2026-10-23): change the desktop grid from 2 columns × 3 rows to 3 columns × 2 rows? → A: yes — the grid is now `sm:grid-cols-2 lg:grid-cols-3` with the container widened `max-w-2xl → max-w-4xl` so cards keep ~290px width; mobile stays single-column. FR-002's "two-column grid" is superseded by this amendment.
 
 ## User Scenarios & Testing *(mandatory)*
 
