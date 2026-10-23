@@ -59,3 +59,5 @@ shadcn components installed: button, badge, card, accordion, avatar, table, sepa
 
 - `pnpm build` while `pnpm dev` is running clobbers the shared `.next/` directory and can kill in-flight streams — validate with `pnpm typecheck && pnpm lint` instead, or build in a separate checkout
 - `next dev` prints "Port 3000 is in use / Another next dev server is already running" when a stale server holds the port — `kill <pid>` from the message and restart
+- Remote access (phone/LAN): `next.config.ts` lists `allowedDevOrigins` (the host LAN IP) — without it, Next dev blocks cross-origin requests and the page renders but nothing is interactive; add any new access origin there and restart dev
+- Restart `pnpm dev` after any dependency change (`pnpm add`/upgrade) — the running server loads `node_modules` at start and dies or misbehaves when the tree is swapped underneath it
