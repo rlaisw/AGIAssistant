@@ -127,10 +127,29 @@ your testing. First query after container recreation is slow (engines warm up).
 
 ## Step 6 — Ingest sources (LanceDB starts empty)
 
-Mount host folders into the sidecar first (container-visible paths only), then
-via any MCP client or curl: `sources_add {"type": "local_folder", "config":
-{"path": "/data/your-docs"}}`. Auto-update: the watcher re-syncs every 5
-minutes; `sources_sync` for instant. Verify with `sources_list` → `healthy`.
+**Documents folder (spec 023):** the deployment creates and mounts
+`~/agentic-rag-docs/` ⇄ container `/data/rag-docs` automatically — drop
+documents there and register the source once:
+
+```sh
+curl -s -X POST localhost:28080/mcp -H 'Content-Type: application/json' \
+  -H 'Accept: application/json, text/event-stream' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"sources_add","arguments":{"type":"local_folder","config":{"path":"/data/rag-docs"}}}}'
+```
+
+Supported types: `.pdf` (text-based only — encrypted or scanned PDFs are
+skipped with a reason), `.docx` (paragraph text), `.xlsx`, `.pptx`.
+Audio (`.mp3`/`.wav`/`.m4a`) is scanned but skipped unless the image
+installs the `[audio]` extra. `.md`/`.txt` are not scanned. Auto-update:
+the watcher re-syncs every 5 minutes; `sources_sync` for instant. Verify
+with `sources_list` → `healthy` and `status` (documents/chunks counts).
+
+**Never** register sources under hidden directories (e.g. `~/.config/...`):
+the folder scanner excludes dot-directory paths, so such sources silently
+ingest nothing. Any other mounted folder works via
+`sources_add {"type": "local_folder", "config": {"path": "/data/your-docs"}}`.
+A SQLite database in the documents folder registers as its own source:
+`sources_add {"type": "sqlite", "config": {"db_path": "/data/rag-docs/faq.db", "table": "faq", "template": "Q: {row[question]} A: {row[answer]}"}}`.
 
 ## OneDrive (on-demand) setup
 

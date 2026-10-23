@@ -15,7 +15,9 @@ REPO_ROOT = subprocess.run(  # noqa: S603 — static path
 MOUNTS = [
     ("~/.config/agentic-rag-mcp", "/root/.config/agentic-rag-mcp"),
     ("~/.cache/huggingface", "/root/.cache/huggingface"),
+    ("~/agentic-rag-docs", "/data/rag-docs"),  # spec 023: operator documents
 ]
+_PPT_MOUNT = ("ppt-master", "/opt/ppt-master")  # repo-relative (spec 009)
 
 
 def _run(cmd: list[str], timeout: int = 900) -> subprocess.CompletedProcess:
@@ -38,13 +40,25 @@ def build_image(image: str, report) -> None:
 
 
 def recreate_container(container: str, image: str, report) -> None:
+    import os
+
+    home = os.path.expanduser("~")
+    # spec 023: the documents folder is operator-owned — pre-create it so
+    # Docker's root-owned auto-create never happens (research R2)
+    docs_dir = os.path.join(home, "agentic-rag-docs")
+    _run(["mkdir", "-p", docs_dir])
+    mounts = [
+        (host.replace("~", home), dest) for host, dest in MOUNTS
+    ] + [(os.path.join(REPO_ROOT, _PPT_MOUNT[0]), _PPT_MOUNT[1])]
     _run(["docker", "rm", "-f", container])
     run_cmd = [
         "docker", "run", "-d", "--name", container,
         "--network", "docker_default",
-        "-v", f"{MOUNTS[0][0].replace('~', __import__('os').path.expanduser('~'))}:{MOUNTS[0][1]}",
-        "-v", f"{MOUNTS[1][0].replace('~', __import__('os').path.expanduser('~'))}:{MOUNTS[1][1]}",
-        "-v", f"{__import__('os').path.join(REPO_ROOT, 'ppt-master')}:/opt/ppt-master",
+        *[
+            flag
+            for host, dest in mounts
+            for flag in ("-v", f"{host}:{dest}")
+        ],
         "-p", "28080:28080", "--restart", "always", image,
     ]
     proc = _run(run_cmd)
