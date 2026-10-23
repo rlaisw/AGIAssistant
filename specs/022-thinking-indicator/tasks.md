@@ -35,6 +35,10 @@ None — no shared infrastructure; one app file changed.
 - [x] T007 Boundary check: diff limited to `ai-chat-landing/app/page.tsx`, the two script lint fixes, and `specs/022-thinking-indicator/`
 - [x] T008 Commit spec artifacts + diff together *(committed and pushed)*
 
+## Phase 5: Convergence
+
+- [ ] T009 Persist the acceptance script in the repo: copy `/tmp/kilo/cdp/thinking-check.mjs` to `ai-chat-landing/scripts/thinking-check.mjs` and run it from there (the recurring check for the indicator; its siblings wide-layout/landing-check/welcome-cards are already persisted) (Constitution II) (partial)
+
 ## Dependencies & Execution Order
 
 - T001 → all; T002 ∥ T003 (different files, independent) → T004 → T005 → T006 → T007 → T008
