@@ -15,10 +15,12 @@
    Expect: tsc clean, eslint clean, 79/79 vitest.
 
 2. **Rendered checks** (T1–T5 per `contracts/welcome-cards.md`): fresh
-   load shows six cards with the exact titles/descriptions (2-col grid at
+   load shows six cards with the exact titles/descriptions (3-col grid at
    1440, stacked at 390); clicking a card's button sends its label as a
-   user bubble; all six label links carry `example1–6.html` hrefs with
-   `target="_blank"`; a label click sends nothing.
+   user bubble (verified on two cards: 1 and 6); all six label links carry
+   `example1–6.html` hrefs with `target="_blank"`; a label click sends
+   nothing. Run them via `node ai-chat-landing/scripts/welcome-cards.mjs`
+   (Chrome on :9240).
 
 3. **Regression scope** (T6): the spec-020 landing check with the
    card-count updated to 6 (`suggestions === 4` → `6`) + the wide-layout

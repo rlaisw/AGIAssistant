@@ -27,7 +27,7 @@ None — no shared infrastructure; one app file changed.
 - [x] T002 [P] [US1] Write `/tmp/kilo/cdp/welcome-cards.mjs` implementing T1–T5 from `contracts/welcome-cards.md`
 - [x] T003 [US1] In `ai-chat-landing/app/page.tsx`: replaced `suggestions` with `FEATURE_CARDS` (six locked records); container-card structure (send `<button>` + sibling `<a target="_blank">`, never nested); removed the now-unused lucide imports (`Code`, `FileText`, `Lightbulb`, `SquarePen` — verified suggestions-only usages)
 - [x] T004 [US1] Updated `/tmp/kilo/cdp/landing-check.mjs`: card-count assertion 4 → 6; selector moved from `button.rounded-2xl` to the container `div.rounded-2xl` (the new structure puts those classes on the container, not the button)
-- [x] T005 [US1] Ran `/tmp/kilo/cdp/welcome-cards.mjs` — **T1–T5 all green**: six cards with exact locked titles/descriptions, 2-col grid at 1440 and 1-col at 390, heading/subtext unchanged, body click sends "How to create PPT", all six `example1–6.html` hrefs with `target="_blank"`, label click sends nothing
+- [x] T005 [US1] Ran the welcome-cards checks — **all green** (persisted at `ai-chat-landing/scripts/welcome-cards.mjs`; body-send verified on TWO cards — card 1 "How to create PPT" + card 6 "Create Self-Hosted Agentic RAG", closing SC-002): six cards with exact locked titles/descriptions, 2-col grid at 1440 and 1-col at 390, heading/subtext unchanged, body click sends "How to create PPT", all six `example1–6.html` hrefs with `target="_blank"`, label click sends nothing
 
 ## Phase 4: Polish & Cross-Cutting Concerns
 

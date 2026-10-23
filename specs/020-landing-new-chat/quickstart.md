@@ -21,8 +21,9 @@
    Expect: zero output.
 
 3. **Rendered checks** (T1/T2 per `contracts/landing-checks.md`): fresh
-   load shows header "New chat" + the empty state with 4 suggestion cards
-   at 1440×900 and 390×844; zero message bubbles.
+   load shows header "New chat" + the empty state with six feature cards
+   (spec 021) at 1440×900 and 390×844; zero message bubbles. Run them
+   via `node ai-chat-landing/scripts/landing-check.mjs` (Chrome on :9240).
 
 4. **First-send check** (T4): type a marker into the initial draft,
    Enter — the sidebar gains a row with the marker title and the reply
