@@ -34,7 +34,7 @@ None — no shared infrastructure; one app file changed.
 - [x] T006 Ran `pnpm typecheck && pnpm lint && pnpm test` in `ai-chat-landing/` — all green (tsc, eslint, 79/79)
 - [x] T007 Regression scope (T6): landing-check (updated, **6 cards confirmed** — header "New chat", empty state, T4 first-send + cleanup) + `node scripts/wide-layout.mjs` structural — both green
 - [x] T008 Boundary check: diff limited to `ai-chat-landing/app/page.tsx` (+56/−33) + `specs/021-welcome-feature-cards/`
-- [ ] T009 Commit spec artifacts + diff together
+- [x] T009 Commit spec artifacts + diff together *(committed and pushed)*
 
 ## Dependencies & Execution Order
 
