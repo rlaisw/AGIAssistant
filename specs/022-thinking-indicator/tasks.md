@@ -37,7 +37,7 @@ None — no shared infrastructure; one app file changed.
 
 ## Phase 5: Convergence
 
-- [ ] T009 Persist the acceptance script in the repo: copy `/tmp/kilo/cdp/thinking-check.mjs` to `ai-chat-landing/scripts/thinking-check.mjs` and run it from there (the recurring check for the indicator; its siblings wide-layout/landing-check/welcome-cards are already persisted) (Constitution II) (partial)
+- [x] T009 Persist the acceptance script in the repo (done — `ai-chat-landing/scripts/thinking-check.mjs` runs green from the repo location; lint-safe): copy `/tmp/kilo/cdp/thinking-check.mjs` to `ai-chat-landing/scripts/thinking-check.mjs` and run it from there (the recurring check for the indicator; its siblings wide-layout/landing-check/welcome-cards are already persisted) (Constitution II) (partial)
 
 ## Dependencies & Execution Order
 
