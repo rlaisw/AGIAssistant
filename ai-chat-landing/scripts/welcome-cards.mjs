@@ -16,7 +16,7 @@ const EXPECTED = [
 
 function die(msg) { console.error(`✗ ${msg}`); process.exit(1) }
 
-const version = await fetch(`${CDP}/json/version`).then(r => r.json())
+await fetch(`${CDP}/json/version`).then(r => r.json())
   .catch(() => die(`Chrome CDP ${CDP} unreachable — start Chrome with --remote-debugging-port=9240`))
 const home = await fetch(APP).then(r => r.status).catch(() => die(`${APP} not serving`))
 if (home !== 200) die(`${APP} returned HTTP ${home}`)

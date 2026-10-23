@@ -10,6 +10,7 @@ import {
   ChevronDown,
   Copy,
   Link2,
+  LoaderCircle,
   LogOut,
   Mic,
   Monitor,
@@ -148,6 +149,15 @@ function parseAnswer(raw: string): { text: string; reasoning?: string } {
     .replace(/<\/?think>$/, "")
     .trim()
   return { text, reasoning: reasoning.trim() || undefined }
+}
+
+function ThinkingIndicator() {
+  return (
+    <div className="flex items-center gap-2 pt-2.5 text-muted-foreground" role="status">
+      <LoaderCircle className="size-4 motion-safe:animate-spin text-[#82D2F6]" aria-hidden="true" />
+      <span className="text-sm font-semibold">Thinking</span>
+    </div>
+  )
 }
 
 export default function Page() {
@@ -775,16 +785,10 @@ export default function Page() {
                       {m.text ? (
                         <>
                           <Markdown>{m.text}</Markdown>
-                          {m.streaming && (
-                            <span className="ml-1 inline-block h-4 w-2 animate-pulse rounded-sm bg-foreground/50 align-middle" />
-                          )}
+                          {m.streaming && <ThinkingIndicator />}
                         </>
                       ) : (
-                        <div className="flex items-center gap-1.5 pt-2.5 text-muted-foreground">
-                          <span className="size-1.5 animate-pulse rounded-full bg-current" />
-                          <span className="size-1.5 animate-pulse rounded-full bg-current [animation-delay:150ms]" />
-                          <span className="size-1.5 animate-pulse rounded-full bg-current [animation-delay:300ms]" />
-                        </div>
+                        <ThinkingIndicator />
                       )}
                       {m.code && (
                         <div className="overflow-hidden rounded-lg border">
