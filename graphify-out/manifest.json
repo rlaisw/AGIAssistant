@@ -1392,9 +1392,9 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/app/page.tsx": {
-    "mtime": 1792736474.7935178,
-    "seen": 1792738341.3638315,
-    "ast_hash": "0be0920e039f5adb59c890ba2485aefa",
+    "mtime": 1792741783.1942093,
+    "seen": 1792742010.5153608,
+    "ast_hash": "b575ff427148a825a29dee971c73985e",
     "semantic_hash": ""
   },
   "ai-chat-landing/components.json": {
@@ -2856,15 +2856,15 @@
     "semantic_hash": ""
   },
   "ai-chat-landing/scripts/landing-check.mjs": {
-    "mtime": 1792736999.9845011,
-    "seen": 1792738341.3638678,
-    "ast_hash": "6ceb9ccdc21baa921bcd16037b511da3",
+    "mtime": 1792741259.7295387,
+    "seen": 1792742010.5153985,
+    "ast_hash": "66232b6c89a36ed41d0015f75bd10d32",
     "semantic_hash": ""
   },
   "ai-chat-landing/scripts/welcome-cards.mjs": {
-    "mtime": 1792737017.5969923,
-    "seen": 1792738341.3638685,
-    "ast_hash": "7d2d7987d7a472d2ef506b5215f5f08d",
+    "mtime": 1792741259.7296748,
+    "seen": 1792742010.5154004,
+    "ast_hash": "6539ce8807628767baf8ad030b43f6f4",
     "semantic_hash": ""
   },
   "specs/021-welcome-feature-cards/checklists/requirements.md": {
@@ -2913,6 +2913,60 @@
     "mtime": 1792737140.568963,
     "seen": 1792738341.3641202,
     "ast_hash": "2cd06f49e2a27fc26df5370612c52f1a",
+    "semantic_hash": ""
+  },
+  "ai-chat-landing/scripts/thinking-check.mjs": {
+    "mtime": 1792741831.6714168,
+    "seen": 1792742010.5153997,
+    "ast_hash": "04df2caf5ddddadbaf29fd48945320d7",
+    "semantic_hash": ""
+  },
+  "specs/022-thinking-indicator/checklists/requirements.md": {
+    "mtime": 1792740466.140902,
+    "seen": 1792742010.5156283,
+    "ast_hash": "fc0001f082c6d6b4f5bafb672ba6f17a",
+    "semantic_hash": ""
+  },
+  "specs/022-thinking-indicator/contracts/thinking-indicator.md": {
+    "mtime": 1792740946.6609356,
+    "seen": 1792742010.515629,
+    "ast_hash": "c3cbc4a36e49fd1f82802c40b4fba98c",
+    "semantic_hash": ""
+  },
+  "specs/022-thinking-indicator/data-model.md": {
+    "mtime": 1792740943.6164513,
+    "seen": 1792742010.5156293,
+    "ast_hash": "5739ac41c3e29d8616d20e25f3ebc84e",
+    "semantic_hash": ""
+  },
+  "specs/022-thinking-indicator/plan.md": {
+    "mtime": 1792740925.0523372,
+    "seen": 1792742010.5156298,
+    "ast_hash": "d80687cc97254ae9cbe35474a4eb9b0c",
+    "semantic_hash": ""
+  },
+  "specs/022-thinking-indicator/quickstart.md": {
+    "mtime": 1792740949.9804902,
+    "seen": 1792742010.5156302,
+    "ast_hash": "24242fd02d64f62847a0bf2f714e14d0",
+    "semantic_hash": ""
+  },
+  "specs/022-thinking-indicator/research.md": {
+    "mtime": 1792740935.544401,
+    "seen": 1792742010.515631,
+    "ast_hash": "c5c6a79b8dc0e3c9bd9686156f4fe08b",
+    "semantic_hash": ""
+  },
+  "specs/022-thinking-indicator/spec.md": {
+    "mtime": 1792741883.1086555,
+    "seen": 1792742010.5156314,
+    "ast_hash": "b99762a86520b0ff0b13bb91fe353c0c",
+    "semantic_hash": ""
+  },
+  "specs/022-thinking-indicator/tasks.md": {
+    "mtime": 1792741890.5235784,
+    "seen": 1792742010.515632,
+    "ast_hash": "1971facb034203ad86dfa1f7c798ae9e",
     "semantic_hash": ""
   }
 }
