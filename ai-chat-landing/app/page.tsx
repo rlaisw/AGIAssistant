@@ -8,10 +8,7 @@ import {
   BrainCircuit,
   Check,
   ChevronDown,
-  Code,
   Copy,
-  FileText,
-  Lightbulb,
   Link2,
   LogOut,
   Mic,
@@ -25,7 +22,6 @@ import {
   Search,
   Settings,
   Share2,
-  SquarePen,
   Sun,
   ThumbsDown,
   ThumbsUp,
@@ -94,30 +90,48 @@ const cannedReplies = [
   },
 ]
 
-const suggestions = [
+const FEATURE_CARDS = [
   {
-    icon: SquarePen,
-    title: "Summarize a document",
-    subtitle: "Paste text or attach a file",
-    prompt: "Summarize this document into five bullet points.",
+    title: "Generate PowerPoint",
+    icon: "📊",
+    description: "Create professional PowerPoint from text prompts in minutes",
+    label: "How to create PPT",
+    url: "http://localhost/example1.html",
   },
   {
-    icon: Code,
-    title: "Write code",
-    subtitle: "Generate a function with tests",
-    prompt: "Write a TypeScript function that debounces an async call, with tests.",
+    title: "Generate Infographic",
+    icon: "🎨",
+    description: "Design eye-catching infographics without design skills",
+    label: "How to create Infographic",
+    url: "http://localhost/example2.html",
   },
   {
-    icon: Lightbulb,
-    title: "Brainstorm ideas",
-    subtitle: "Features, names, or plans",
-    prompt: "Brainstorm five feature ideas for a note-taking app for students.",
+    title: "Draw Chart Diagram",
+    icon: "📈",
+    description: "Visualize data with interactive charts and flow diagrams",
+    label: "How to create chart diagram",
+    url: "http://localhost/example3.html",
   },
   {
-    icon: FileText,
-    title: "Explain a concept",
-    subtitle: "Simple, with an analogy",
-    prompt: "Explain how vector databases work, with an analogy.",
+    title: "Talk with CorpIT Helpdesk Chatbot",
+    icon: "💻",
+    description: "Get instant IT support and troubleshooting guidance",
+    label: "Chat with CorpIT Support",
+    url: "http://localhost/example4.html",
+  },
+  {
+    title: "Ask Any Question with AI Chatbot",
+    icon: "🤖",
+    description: "Access knowledge across domains with our intelligent assistant",
+    label: "Ask AI Chatbot",
+    url: "http://localhost/example5.html",
+  },
+  {
+    title: "Create Personal Agentic RAG Document DB",
+    icon: "💾",
+    description: "Build your own searchable knowledge base with AI-powered Agentic RAG",
+    label: "Create Self-Hosted Agentic RAG",
+    url: "http://localhost/example6.html",
   },
 ]
 
@@ -704,20 +718,29 @@ export default function Page() {
               Ask anything, or start from a suggestion.
             </p>
             <div className="mt-8 grid w-full max-w-2xl gap-3 sm:grid-cols-2">
-              {suggestions.map((s) => (
-                <button
-                  key={s.title}
-                  onClick={() => send(s.prompt)}
+              {FEATURE_CARDS.map((c) => (
+                <div
+                  key={c.title}
                   className="rounded-2xl border bg-card p-4 text-left transition-colors hover:bg-muted"
                 >
-                  <div className="flex items-center gap-2 text-sm font-medium">
-                    <s.icon className="size-4" />
-                    {s.title}
-                  </div>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {s.subtitle}
-                  </p>
-                </button>
+                  <button className="block w-full text-left" onClick={() => send(c.label)}>
+                    <div className="flex items-center gap-2 text-sm font-medium">
+                      <span className="text-base" aria-hidden="true">
+                        {c.icon}
+                      </span>
+                      {c.title}
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">{c.description}</p>
+                  </button>
+                  <a
+                    href={c.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-block text-xs text-primary underline-offset-2 hover:underline"
+                  >
+                    {c.label} →
+                  </a>
+                </div>
               ))}
             </div>
           </div>
