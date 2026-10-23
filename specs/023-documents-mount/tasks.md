@@ -40,7 +40,7 @@
 
 ## Phase 5: Convergence
 
-- [ ] T011 Add the documents mount to both manual-recreation examples: DEPLOY.md Step 3 (~line 56) and the deploy skill's Step 3 `docker run` blocks list only the three pre-023 `-v` flags — add `-v ~/agentic-rag-docs:/data/rag-docs \` to both so the runbook's manual path no longer silently drops the mount (FR-006, spec Edge Cases) (partial)
+- [x] T011 Add the documents mount to both manual-recreation examples (done — both Step 3 `docker run` blocks now carry `-v ~/agentic-rag-docs:/data/rag-docs`): DEPLOY.md Step 3 (~line 56) and the deploy skill's Step 3 `docker run` blocks list only the three pre-023 `-v` flags — add `-v ~/agentic-rag-docs:/data/rag-docs \` to both so the runbook's manual path no longer silently drops the mount (FR-006, spec Edge Cases) (partial)
 
 ## Dependencies & Execution Order
 

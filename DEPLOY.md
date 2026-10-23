@@ -57,6 +57,7 @@ docker run -d --name agentic-rag \
   --network <DIFY_NETWORK> \
   -v ~/.config/agentic-rag-mcp:/root/.config/agentic-rag-mcp \
   -v ~/.cache/huggingface:/root/.cache/huggingface \
+  -v ~/agentic-rag-docs:/data/rag-docs \
   -v /kilocode/AGIAssistant/ppt-master:/opt/ppt-master \
   -p 28080:28080 \
   -e LOG_LEVEL=INFO \
