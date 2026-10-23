@@ -38,7 +38,7 @@ None — no shared infrastructure; one app file changed.
 
 ## Phase 5: Convergence
 
-- [ ] T010 Update the stale grid texts to the shipped layout: `spec.md` (US story line 26, AC1 line 47, FR-002, SC-001) and `plan.md` R4 still read "two-column × three-row" / `sm:grid-cols-2` — change them to the shipped `sm:grid-cols-2 lg:grid-cols-3` with `max-w-4xl` so the record leaves no contradictory statement per the Clarifications Session 2026-10-23 amendment (FR-002, SC-001, plan: R4) (contradicts)
+- [x] T010 Update the stale grid texts to the shipped layout (done: spec.md US/AC1/FR-002/SC-001, research.md R4, plan.md Design bullet — all six spots now read the shipped 3-col grid; verified no stale references remain) `spec.md` (US story line 26, AC1 line 47, FR-002, SC-001) and `plan.md` R4 still read "two-column × three-row" / `sm:grid-cols-2` — change them to the shipped `sm:grid-cols-2 lg:grid-cols-3` with `max-w-4xl` so the record leaves no contradictory statement per the Clarifications Session 2026-10-23 amendment (FR-002, SC-001, plan: R4) (contradicts)
 
 ## Dependencies & Execution Order
 

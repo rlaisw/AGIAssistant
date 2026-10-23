@@ -84,8 +84,9 @@ static array near the empty state (house pattern, matches the replaced
   description; `onClick={() => send(label)}`) → sibling `<a href target=
   "_blank" rel="noopener noreferrer">{label}</a>`. Button and link never
   nest — propagation separation is structural, not scripted.
-- **Grid**: unchanged classes (`grid w-full max-w-2xl gap-3 sm:grid-cols-2`)
-  → two columns × three rows at ≥640px, stacked below.
+- **Grid**: `grid w-full max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-3`
+  → three columns × two rows at ≥1024px, two columns at 640–1023px,
+  stacked below (post-ship amendment).
 - **Keyboard/a11y**: real `<button>` (focusable, Enter sends) and real `<a>`
   (native link semantics).
 

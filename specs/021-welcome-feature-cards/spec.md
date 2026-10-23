@@ -23,7 +23,7 @@
 ### User Story 1 - Discover and launch a capability from the welcome page (Priority: P1)
 
 On the fresh "New chat" empty state, the user sees six feature cards
-arranged in a two-column grid (three rows) on desktop and a single-column
+arranged in a three-column grid (two rows) on desktop, a two-column grid at mid widths, and a single-column
 stack on mobile. Each card shows a feature title, an emoji icon, and a
 one-line description. Clicking anywhere on the card body sends that
 feature's example prompt into the chat composer exactly like today's
@@ -44,7 +44,7 @@ opens in a new tab.
 **Acceptance Scenarios**:
 
 1. **Given** a fresh load at desktop width, **When** the empty state
-   renders, **Then** six cards appear in a two-column, three-row grid
+   renders, **Then** six cards appear in a three-column, two-row grid (desktop; two columns at mid widths)
    with the exact titles, icons, and descriptions:
 
    | # | Title | Icon | Description |
@@ -93,8 +93,8 @@ opens in a new tab.
 - **FR-001**: The welcome empty state MUST render the six locked feature
   cards with the exact titles, emoji icons, and descriptions (Acceptance
   table).
-- **FR-002**: Cards MUST lay out as a two-column grid (three rows) at
-  ≥640px and a single-column stack below.
+- **FR-002**: Cards MUST lay out as a three-column grid (two rows) at
+  ≥1024px, a two-column grid at 640–1023px, and a single-column stack below.
 - **FR-003**: Clicking a card's body MUST send the card's example prompt
   into the composer with the same send behavior as today's suggestion
   cards.
@@ -116,7 +116,7 @@ opens in a new tab.
 ### Measurable Outcomes
 
 - **SC-001**: Rendered check — six cards with the exact locked
-  titles/descriptions; two-column × three-row grid at 1440×900,
+  titles/descriptions; three-column × two-row grid at 1440×900,
   single-column stack at 390×844.
 - **SC-002**: Body click on any card sends its example prompt into the
   composer (verified on at least two cards end-to-end).

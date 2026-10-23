@@ -32,8 +32,10 @@
 
 ## R4 — Grid classes reused unchanged
 
-- **Decision**: keep `grid w-full max-w-2xl gap-3 sm:grid-cols-2` — the six
-  cards flow into two columns × three rows at ≥640px, stacked below.
+- **Decision**: use `grid w-full max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-3`
+  — the six cards flow into three columns × two rows at ≥1024px, two
+  columns at 640–1023px, stacked below (post-ship amendment per spec
+  Clarifications Session 2026-10-23).
 - **Rationale**: zero new layout code; the locked "existing pattern" is
   literally the current classes.
 - **Alternatives considered**: a three-column grid at desktop — rejected
