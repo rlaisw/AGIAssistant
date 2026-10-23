@@ -36,7 +36,11 @@
 
 - [x] T008 Run the Python suite: `.venv/bin/python -m pytest tests/ -q` — all green (including the new unit tests); frontend gates untouched by this feature
 - [x] T009 Boundary check: `git diff --name-only` limited to `src/agentic_rag_mcp/deploy/docker_ops.py`, `tests/unit/test_deploy_docker_ops.py` (new), `DEPLOY.md`, and `specs/023-documents-mount/` — no other code touched
-- [x] T010 Commit spec artifacts + diff together
+- [x] T010 Commit spec artifacts + diff together *(committed and pushed)*
+
+## Phase 5: Convergence
+
+- [ ] T011 Add the documents mount to both manual-recreation examples: DEPLOY.md Step 3 (~line 56) and the deploy skill's Step 3 `docker run` blocks list only the three pre-023 `-v` flags — add `-v ~/agentic-rag-docs:/data/rag-docs \` to both so the runbook's manual path no longer silently drops the mount (FR-006, spec Edge Cases) (partial)
 
 ## Dependencies & Execution Order
 
