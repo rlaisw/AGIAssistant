@@ -402,10 +402,10 @@
     "semantic_hash": "c6a4a40147d4d81f6107d830323c5f31"
   },
   "src/agentic_rag_mcp/store/vectordb.py": {
-    "mtime": 1792224985.1609018,
-    "seen": 1792285896.0326934,
-    "ast_hash": "f2975b717ba02782a2e95b1a8a2843e0",
-    "semantic_hash": "f2975b717ba02782a2e95b1a8a2843e0"
+    "mtime": 1792802522.3854551,
+    "seen": 1792805884.9708242,
+    "ast_hash": "e9c6c736fb78a64e0cbf88837ea39a5b",
+    "semantic_hash": ""
   },
   "tests/conftest.py": {
     "mtime": 1792224985.1609018,
@@ -900,9 +900,9 @@
     "semantic_hash": "eba6943b2a2f6407162ae12e0218bdac"
   },
   "DEPLOY.md": {
-    "mtime": 1792733275.3179953,
-    "seen": 1792733346.7091405,
-    "ast_hash": "eba622892521e751fb651d0b90a8a5d0",
+    "mtime": 1792748940.1323185,
+    "seen": 1792805884.970879,
+    "ast_hash": "6e58066e7e80951000797e2ca9c4e758",
     "semantic_hash": ""
   },
   "docs/NETWORK.md": {
@@ -1908,9 +1908,9 @@
     "semantic_hash": ""
   },
   "src/agentic_rag_mcp/deploy/docker_ops.py": {
-    "mtime": 1792390053.0750148,
-    "seen": 1792402953.6635227,
-    "ast_hash": "c239a9339954633197e869fe7d3b2bf7",
+    "mtime": 1792746825.394586,
+    "seen": 1792805884.9707966,
+    "ast_hash": "8a0cca3b1df292d1665996698b811334",
     "semantic_hash": ""
   },
   "src/agentic_rag_mcp/deploy/report.py": {
@@ -2967,6 +2967,66 @@
     "mtime": 1792741890.5235784,
     "seen": 1792742010.515632,
     "ast_hash": "1971facb034203ad86dfa1f7c798ae9e",
+    "semantic_hash": ""
+  },
+  "tests/unit/test_deploy_docker_ops.py": {
+    "mtime": 1792746801.2225451,
+    "seen": 1792805884.9708478,
+    "ast_hash": "a7e34c8e5896e6a399dd10504253082b",
+    "semantic_hash": ""
+  },
+  "tests/unit/test_vectordb_chunking.py": {
+    "mtime": 1792802030.8934174,
+    "seen": 1792805884.9708607,
+    "ast_hash": "6eb1d36f247f22ef3ed95a8b81e4fd0a",
+    "semantic_hash": ""
+  },
+  "specs/023-documents-mount/checklists/requirements.md": {
+    "mtime": 1792745739.0382004,
+    "seen": 1792805884.9710076,
+    "ast_hash": "83f5a93cf2e5efa8a8d5f78e74e7d2ea",
+    "semantic_hash": ""
+  },
+  "specs/023-documents-mount/contracts/mount-checks.md": {
+    "mtime": 1792746682.6103337,
+    "seen": 1792805884.971008,
+    "ast_hash": "087fcc6e0521b231e9dbb67b989b06ca",
+    "semantic_hash": ""
+  },
+  "specs/023-documents-mount/data-model.md": {
+    "mtime": 1792746668.6543114,
+    "seen": 1792805884.9710085,
+    "ast_hash": "c222e0ac04ebf563768daf0407a5ff84",
+    "semantic_hash": ""
+  },
+  "specs/023-documents-mount/plan.md": {
+    "mtime": 1792746641.3902698,
+    "seen": 1792805884.971009,
+    "ast_hash": "24408690fa72905819bf7d1575d16d17",
+    "semantic_hash": ""
+  },
+  "specs/023-documents-mount/quickstart.md": {
+    "mtime": 1792746694.8703544,
+    "seen": 1792805884.9710095,
+    "ast_hash": "82b49630a0c28258bb29c62da3114962",
+    "semantic_hash": ""
+  },
+  "specs/023-documents-mount/research.md": {
+    "mtime": 1792746655.9382935,
+    "seen": 1792805884.97101,
+    "ast_hash": "5808e64fc594375aab1d36a32d09a90a",
+    "semantic_hash": ""
+  },
+  "specs/023-documents-mount/spec.md": {
+    "mtime": 1792746537.1380682,
+    "seen": 1792805884.9710102,
+    "ast_hash": "ec7ea8ee787abff98ca63e970a840055",
+    "semantic_hash": ""
+  },
+  "specs/023-documents-mount/tasks.md": {
+    "mtime": 1792748972.7853599,
+    "seen": 1792805884.971011,
+    "ast_hash": "4a92e8b081ebeaeed1be0207d3689493",
     "semantic_hash": ""
   }
 }
