@@ -38,13 +38,42 @@ class VectorStore:
 
     @staticmethod
     def chunk_text(text: str, size: int = 800, overlap: int = 100) -> list[str]:
-        """Naive char-window chunker; keeps chunking deterministic for tests."""
+        """Line-aware chunker: packs whole lines up to `size` chars, never
+        splitting a line mid-way (tabular sources keep rows intact); trailing
+        whole lines up to `overlap` chars carry into the next chunk. A single
+        line longer than `size` is hard-split as a last resort. Deterministic.
+        """
         if not text:
             return []
-        out, i = [], 0
-        while i < len(text):
-            out.append(text[i : i + size])
-            i += size - overlap
+        lines = text.split("\n")
+        out: list[str] = []
+        chunk: list[str] = []
+        chunk_len = 0
+        for line in lines:
+            line_len = len(line) + (1 if chunk else 0)  # +1 for the joiner
+            if chunk and chunk_len + line_len > size:
+                out.append("\n".join(chunk))
+                # overlap: carry trailing lines up to `overlap` chars
+                tail: list[str] = []
+                tail_len = 0
+                for prev in reversed(chunk):
+                    if tail_len + len(prev) + 1 > overlap:
+                        break
+                    tail.insert(0, prev)
+                    tail_len += len(prev) + 1
+                chunk, chunk_len = list(tail), tail_len
+                line_len = len(line) + (1 if chunk else 0)
+            if line_len > size:  # pathological single line — hard-split
+                if chunk:
+                    out.append("\n".join(chunk))
+                    chunk, chunk_len = [], 0
+                for i in range(0, len(line), size):
+                    out.append(line[i : i + size])
+                continue
+            chunk.append(line)
+            chunk_len += line_len
+        if chunk:
+            out.append("\n".join(chunk))
         return out
 
     def upsert_document(
@@ -93,7 +122,7 @@ class VectorStore:
                 "chunk_id": r["id"],
                 "document_id": r["document_id"],
                 "title": r["title"],
-                "snippet": r["text"][:300],
+                "snippet": r["text"],  # full chunk (≤ chunk size) — [:300] clipped tabular rows mid-line
                 "score": float(r.get("_distance", 0.0)),
             }
             for r in results
