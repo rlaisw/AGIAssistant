@@ -678,9 +678,9 @@
     "semantic_hash": "c02ac045b49ac1bec7bc8167539a4e2b"
   },
   ".specify/memory/constitution.md": {
-    "mtime": 1792639397.9246244,
-    "seen": 1792639404.605238,
-    "ast_hash": "b5fe539ec84230698e5db284109bb0b7",
+    "mtime": 1792806578.0704658,
+    "seen": 1792806592.4267578,
+    "ast_hash": "b31f403534172820329bdb12c4fd0b0c",
     "semantic_hash": ""
   },
   ".specify/templates/checklist-template.md": {
