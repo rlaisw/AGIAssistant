@@ -129,8 +129,14 @@ your testing. First query after container recreation is slow (engines warm up).
 ## Step 6 — Ingest sources (LanceDB starts empty)
 
 **Documents folder (spec 023):** the deployment creates and mounts
-`~/agentic-rag-docs/` ⇄ container `/data/rag-docs` automatically — drop
-documents there and register the source once:
+`~/agentic-rag-docs/` ⇄ container `/data/rag-docs` automatically
+(Windows/WSL hosts: the folder is reachable in Explorer at
+`\\wsl.localhost\<distro>\home\<user>\agentic-rag-docs\`; a literal
+Windows-side folder like `C:\RAGDOCS` works by adding
+`("/mnt/c/RAGDOCS", "/data/win-docs")` to the `MOUNTS` list in
+`src/agentic_rag_mcp/deploy/docker_ops.py` + `deploy redeploy` + a one-time
+`sources_add` — the 9P bridge makes /mnt/c I/O slower than the native WSL
+folder). Drop documents there and register the source once:
 
 ```sh
 curl -s -X POST localhost:28080/mcp -H 'Content-Type: application/json' \
