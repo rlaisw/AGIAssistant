@@ -1,0 +1,1057 @@
+app:
+  description: AgenticRAG agent + PPT-Master deck generator. Deck requests route to
+    the PPT-Master agent (ppt_* MCP tools, spec 009/010); everything else goes to
+    the AgenticRAG agent.
+  icon: 💬
+  icon_background: '#FEF7C3'
+  icon_type: emoji
+  mode: advanced-chat
+  name: AGI Assistant
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/agent:0.0.51@3c6c32e593b33476cb52f4e5aaf1bf23e1c71b3d07ba64d40690e0dbce3a7e34
+    version: null
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openrouter:0.1.11@16e121bde5961b0a4dab636d8769bd70aff14fba80e05e200b30ccb2cf23cec5
+    version: null
+kind: app
+site:
+  chat_color_theme: null
+  chat_color_theme_inverted: false
+  copyright: null
+  custom_disclaimer: ''
+  default_language: en-US
+  description: null
+  icon: 💬
+  icon_background: '#FEF7C3'
+  icon_type: emoji
+  input_placeholder: null
+  privacy_policy: null
+  show_workflow_steps: true
+  title: Chatflow Basic (AgenticRAG Agent)
+  use_icon_as_answer_icon: false
+version: 0.7.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: Hi! I'm connected to the AgenticRAG MCP server. Test me with
+      — "what is the server status", "list my sources", "ask about quarterly revenue",
+      "search for Apollo 11", "sync all sources", "add the fixtures folder as a source",
+      "query the graph for X", or "remove a source".
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        iteration_id: null
+        loop_id: null
+        sourceType: agent
+        targetType: answer
+      id: agent-answer
+      source: agentic_strategy
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        iteration_id: null
+        loop_id: null
+        sourceType: agent
+        targetType: answer
+      id: ppt-agent-answer
+      source: ppt_master
+      sourceHandle: source
+      target: ppt_answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        iteration_id: null
+        loop_id: null
+        sourceType: question-classifier
+        targetType: agent
+      id: router-general
+      source: intent_router
+      sourceHandle: general
+      target: agentic_strategy
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        iteration_id: null
+        loop_id: null
+        sourceType: question-classifier
+        targetType: agent
+      id: router-ppt
+      source: intent_router
+      sourceHandle: ppt_request
+      target: ppt_master
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        iteration_id: null
+        loop_id: null
+        sourceType: start
+        targetType: question-classifier
+      id: start-router
+      source: '1776072202913'
+      sourceHandle: source
+      target: intent_router
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: Capture user's chat messages and files.
+        selected: false
+        title: User Input
+        type: start
+        variables: []
+      height: 117
+      id: '1776072202913'
+      position:
+        x: 80
+        y: 286
+      positionAbsolute:
+        x: 80
+        y: 286
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    - data:
+        agent_parameters:
+          instruction:
+            type: constant
+            value: "You are a test assistant for the AgenticRAG MCP server. You have\
+              \ 18 tools\nfrom the \"Agentic RAG\" (provider id: agentic-rag) MCP\
+              \ provider:\n\n- ask: full agentic Q&A over the knowledge base; returns\
+              \ answer + citations\n  (optional args: mode \"auto|fast|deep\", max_iterations)\n\
+              - search: raw vector search (args: query, limit)\n- web_search: LIVE\
+              \ web search via SearXNG (args: query, limit).\n  Use it for current\
+              \ events, live data (time, weather, news),\n  or anything the knowledge\
+              \ base can't contain. Note: search\n  snippets are CACHED — never trust\
+              \ them for exact time/date.\n              - web_research: DEEP web\
+              \ research (args: query, limit). Multi-engine\n                search\
+              \ then scrapes each page into grouped sections (text +\n           \
+              \     belonging images in document order), bounded, with honest\n  \
+              \              fallbacks, plus a rendered HTML artifact per page. Prefer\
+              \ it\n                over web_search when you need real page content\
+              \ (guides,\n                how-tos, documentation steps), not just\
+              \ snippets.\n- fetch_url: fetch a live web page (args: url, max_chars).\n\
+              \  For current time/date questions: call fetch_url on any URL\n  and\
+              \ use the returned `date_utc` header as the live UTC clock,\n  then\
+              \ convert to the target timezone (e.g. Hong Kong = UTC+8,\n  no DST).\
+              \ This is accurate; search snippets are not.\n- status: server health,\
+              \ decision layer, source health, index counters\n- sources_list: list\
+              \ registered sources with health\n- sources_add: register a source (type\
+              \ \"local_folder\" needs config.path;\n  type \"sqlite\" needs config.db_path/table/template;\
+              \ type \"onedrive\" needs\n  config.client_id — registering NEVER ingests\
+              \ anything)\n- sources_sync: manual incremental sync for local sources\
+              \ (optional source_id);\n  onedrive sources are on-demand and are never\
+              \ synced by it\n- sources_remove: remove a source by id (destructive\
+              \ — ask the user to\n  confirm, and call sources_list first to get the\
+              \ source_id)\n- sources_auth: complete Microsoft sign-in for a onedrive\
+              \ source (device\n  code flow); relay the sign-in URL and user code\
+              \ to the user verbatim\n- graph_query: optional graph search layer;\
+              \ if it returns FeatureDisabled,\n  say so honestly instead of guessing\n\
+              - antv_chart: statistical charts (bar/column/line/pie/radar/sankey/word-cloud/...)\
+              \ from data; returns an embeddable image URL\n- antv_infographic: declarative\
+              \ infographics (276 templates, 8 families - chart/sequence/list/hierarchy/relation/compare/quadrant);\
+              \ returns a page URL that renders in the browser\n\nONEDRIVE (ON-DEMAND\
+              \ — never embed the whole drive):\n- To add a file from OneDrive: sources_add\
+              \ (if not connected), then\n  onedrive_list_files (args: source_id,\
+              \ optional search/folder/limit) to\n  browse file names, SHOW the matches,\
+              \ and ask the user to confirm which\n  files to embed. Only then call\
+              \ onedrive_embed_files (args: source_id,\n  files: list of paths/ids)\
+              \ for EXACTLY the confirmed files.\n- NEVER embed more files than the\
+              \ user confirmed. NEVER list-and-embed\n  everything. Connection and\
+              \ sign-in ingest ZERO files automatically.\n- onedrive_embed_files returns\
+              \ per-file outcomes; report skipped/failed\n  files with their reasons\
+              \ honestly.\n- When an answer carries a staleness warning (freshness_warnings,\
+              \ also\n  appended to the answer text), relay the reminder verbatim\
+              \ and offer the\n  one-command update: re-embed that file via onedrive_embed_files\
+              \ using the\n  path or item id from the warning. The system never re-downloads\
+              \ on its own.\n\nPick the tool that matches the request, call it, then\
+              \ summarize the result\nfor the user. When a tool returns citations,\
+              \ list them. Never invent facts.\n\nANSWER FORMAT — IMAGES:\n- When\
+              \ research content contains [image: URL] lines that illustrate the steps\n\
+              \  or facts you are answering with, include the relevant images INLINE\
+              \ in your\n  answer as markdown — ![what it shows](URL) — grouped with\
+              \ the text they\n  belong to, in document order. Dify renders them in\
+              \ the chat. Prefer images\n  that illustrate the specific steps you\
+              \ describe; skip logos and avatars.\n\n\nSPECIALTY SEARCH:\n- For domain-specific\
+              \ questions (product docs, security standards, vendor-specific), call\n\
+              \  specialty_profiles() first to see available profiles, then call BOTH\
+              \ specialty_search\n  (with the matching profile) AND web_search in\
+              \ the same turn.\n- Combine results: specialty_search results are the\
+              \ PRIMARY authority (from official docs),\n  web_search results are\
+              \ SUPPLEMENTARY (community, blogs, broader context).\n- If specialty_search\
+              \ returns no results, rely on web_search and tell the user the\n  authoritative\
+              \ source had no match."
+          maximum_iterations:
+            type: constant
+            value: 10
+          model:
+            type: constant
+            value:
+              completion_params: {}
+              mode: chat
+              model: deepseek/deepseek-v4.1-flash
+              model_type: llm
+              name: deepseek/deepseek-v4.1-flash
+              provider: langgenius/openrouter/openrouter
+              type: model-selector
+          query:
+            type: constant
+            value: '{{#sys.query#}}'
+          tools:
+            type: constant
+            value:
+            - enabled: true
+              extra:
+                description: Answer a question with agentic retrieval and per-source
+                  citations.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Answer a question with agentic retrieval and per-source
+                citations.
+              tool_label: ask
+              tool_name: ask
+              type: mcp
+            - enabled: true
+              extra:
+                description: Direct vector search without synthesis.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Direct vector search without synthesis.
+              tool_label: search
+              tool_name: search
+              type: mcp
+            - enabled: true
+              extra:
+                description: Register a source. Types- local_folder, sqlite, onedrive.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Register a source. Types- local_folder, sqlite, onedrive.
+              tool_label: sources_add
+              tool_name: sources_add
+              type: mcp
+            - enabled: true
+              extra:
+                description: List sources with health and sync metadata.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: List sources with health and sync metadata.
+              tool_label: sources_list
+              tool_name: sources_list
+              type: mcp
+            - enabled: true
+              extra:
+                description: Remove a source; drops documents whose last origin was
+                  this source.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Remove a source; drops documents whose last origin
+                was this source.
+              tool_label: sources_remove
+              tool_name: sources_remove
+              type: mcp
+            - enabled: true
+              extra:
+                description: Manually trigger incremental sync.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Manually trigger incremental sync.
+              tool_label: sources_sync
+              tool_name: sources_sync
+              type: mcp
+            - enabled: true
+              extra:
+                description: Optional graph search (Graphify layer); disabled by default.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Optional graph search (Graphify layer); disabled by
+                default.
+              tool_label: graph_query
+              tool_name: graph_query
+              type: mcp
+            - enabled: true
+              extra:
+                description: 'Server health: decision layer, per-source health, index
+                  counters.'
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: 'Server health: decision layer, per-source health,
+                index counters.'
+              tool_label: status
+              tool_name: status
+              type: mcp
+            - enabled: true
+              extra:
+                description: 'Domain-scoped web search: results only from the profile
+                  configured authoritative sites (site: hard filter + post-filter).'
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: 'Domain-scoped web search: results only from the profile
+                configured authoritative sites (site: hard filter + post-filter).'
+              tool_label: specialty_search
+              tool_name: specialty_search
+              type: mcp
+            - enabled: true
+              extra:
+                description: List available specialty search profiles with their sites
+                  and descriptions. Call this first to discover which profiles exist.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: List available specialty search profiles with their
+                sites and descriptions. Call this first to discover which profiles
+                exist.
+              tool_label: specialty_profiles
+              tool_name: specialty_profiles
+              type: mcp
+            - enabled: true
+              extra:
+                description: Complete Microsoft sign-in for OneDrive sources (device
+                  code flow). Returns the sign-in URL and user code; relay both to
+                  the user.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Complete Microsoft sign-in for OneDrive sources (device
+                code flow). Returns the sign-in URL and user code; relay both to the
+                user.
+              tool_label: sources_auth
+              tool_name: sources_auth
+              type: mcp
+            - enabled: true
+              extra:
+                description: Browse OneDrive file metadata (path, name, size, modified)
+                  without downloading content. Optional name filter. Embed chosen
+                  files with onedrive_embed_files.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Browse OneDrive file metadata (path, name, size, modified)
+                without downloading content. Optional name filter. Embed chosen files
+                with onedrive_embed_files.
+              tool_label: onedrive_list_files
+              tool_name: onedrive_list_files
+              type: mcp
+            - enabled: true
+              extra:
+                description: Embed ONLY the named OneDrive files (paths and/or item
+                  ids), one-time. Per-file honest outcomes; never syncs the whole
+                  drive.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Embed ONLY the named OneDrive files (paths and/or
+                item ids), one-time. Per-file honest outcomes; never syncs the whole
+                drive.
+              tool_label: onedrive_embed_files
+              tool_name: onedrive_embed_files
+              type: mcp
+            - enabled: true
+              extra:
+                description: Live web search via configured providers (SearXNG first;
+                  falls back to Tavily/Exa).
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Live web search via configured providers (SearXNG
+                first; falls back to Tavily/Exa).
+              tool_label: web_search
+              tool_name: web_search
+              type: mcp
+            - enabled: true
+              extra:
+                description: Fetch a live web page; response includes date_utc (live
+                  UTC clock) for accurate current time/date.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Fetch a live web page; response includes date_utc
+                (live UTC clock) for accurate current time/date.
+              tool_label: fetch_url
+              tool_name: fetch_url
+              type: mcp
+            - enabled: true
+              extra:
+                description: Deep web research; grouped outline-preserving page sections,
+                  bounded, with honest fallbacks and a rendered HTML artifact per
+                  page.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Deep web research; grouped outline-preserving page
+                sections, bounded, with honest fallbacks and a rendered HTML artifact
+                per page.
+              tool_label: web_research
+              tool_name: web_research
+              type: mcp
+            - enabled: true
+              extra:
+                description: 'Generate a chart image from data. Returns {chart_type,
+                  image_url, usage}. MANDATORY data format: each item is an object
+                  with canonical field names "category" and "value" (use "time" instead
+                  of "category" for line/area): [{"category": "Peter", "value": 180}].
+                  Rename source columns to these exact fields ("Student"->"category",
+                  "Height (cm)->"value"); values must be numbers. Any 2-field record
+                  shape is auto-normalized, but canonical fields are safest. axis_x_title
+                  / axis_y_title set human axis labels — ALWAYS pass them when the
+                  user names the columns (e.g. axis_x_title="Students", axis_y_title="Height
+                  (cm)"); without them the axes are labeled with the raw field names
+                  category/value. width/height (px, <= 4000, 0 = default) override
+                  render size. Type guide: trends->line/area; comparisons->bar/column;
+                  proportions->pie/treemap; distributions->histogram/boxplot; relationships->scatter/dual-axes;
+                  hierarchies->treemap/organization; flows->sankey/flow; funnels->funnel;
+                  ranking->sorted bar/column; multi-dimensional->radar. Supported:
+                  line, area, bar, column, pie, radar, scatter, histogram, funnel,
+                  treemap, sankey, dual-axes, word-cloud, boxplot, venn, liquid, flow,
+                  mind-map, fishbone, organization, network.'
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: 'Generate a chart image from data. Returns {chart_type,
+                image_url, usage}. MANDATORY data format: each item is an object with
+                canonical field names "category" and "value" (use "time" instead of
+                "category" for line/area): [{"category": "Peter", "value": 180}].
+                Rename source columns to these exact fields ("Student"->"category",
+                "Height (cm)->"value"); values must be numbers. Any 2-field record
+                shape is auto-normalized, but canonical fields are safest. axis_x_title
+                / axis_y_title set human axis labels — ALWAYS pass them when the user
+                names the columns (e.g. axis_x_title="Students", axis_y_title="Height
+                (cm)"); without them the axes are labeled with the raw field names
+                category/value. width/height (px, <= 4000, 0 = default) override render
+                size. Type guide: trends->line/area; comparisons->bar/column; proportions->pie/treemap;
+                distributions->histogram/boxplot; relationships->scatter/dual-axes;
+                hierarchies->treemap/organization; flows->sankey/flow; funnels->funnel;
+                ranking->sorted bar/column; multi-dimensional->radar. Supported: line,
+                area, bar, column, pie, radar, scatter, histogram, funnel, treemap,
+                sankey, dual-axes, word-cloud, boxplot, venn, liquid, flow, mind-map,
+                fishbone, organization, network.'
+              tool_label: antv_chart
+              tool_name: antv_chart
+              type: mcp
+            - enabled: true
+              extra:
+                description: "Render an infographic from declarative AntV Infographic\
+                  \ syntax.\nReturns {id, url, usage} — the url opens the rendered\
+                  \ infographic in a browser.\n\nCRITICAL: `description` must be actual\
+                  \ Infographic SYNTAX, NOT a prose design\nbrief. The engine cannot\
+                  \ render prose — write the template call and data\ndirectly. Complete\
+                  \ working example:\n\ninfographic list-row-simple-horizontal-arrow\n\
+                  data\n  lists\n    - label Step 1\n      desc Prepare accounts\n\
+                  \    - label Step 2\n      desc Team introduction\n    - label Step\
+                  \ 3\n      desc Tool setup\n    - label Step 4\n      desc First\
+                  \ sprint\n\nStructure: first line = \"infographic <template-name>\"\
+                  , then an indented\n\"data\" block whose list key depends on the\
+                  \ template family. Items are\n\"- label X / desc Y\" lines (\"value\
+                  \ N\" for charts). ~276 built-in\npresets across 8 families — VARY\
+                  \ the choice to match the user's\nintent. Verified template names\
+                  \ per family (data key in parentheses):\n- chart (values): chart-column-simple,\
+                  \ chart-bar-plain-text,\n  chart-pie-compact-card, chart-line-plain-text,\
+                  \ chart-wordcloud\n- sequence (sequences): sequence-steps, sequence-timeline-done-list,\n\
+                  \  sequence-snake-steps, sequence-roadmap-vertical-pill-badge,\n\
+                  \  sequence-pyramid-simple (TRUE triangle pyramid — use when the\
+                  \ user\n  asks for a pyramid), sequence-funnel-simple,\n  sequence-ascending-stairs-3d-simple\
+                  \ (3D ascending steps)\n- sequence-interaction (UML message flows,\
+                  \ template\n  sequence-interaction-default-compact-card): participants\
+                  \ = top-level\n  items of \"sequences\" (lanes); each child message\
+                  \ needs \"id X\" and\n  \"step N\" (row order across all lanes);\
+                  \ \"relations\" reference those\n  MESSAGE ids: \"- from m1 / to\
+                  \ m2 / label call\" — arrows only draw\n  between messages that\
+                  \ have ids\n- list (lists): list-row, list-grid, list-zigzag-up,\n\
+                  \  list-sector-plain-text, list-pyramid-badge-card (stacked badge\n\
+                  \  rows, NOT a triangle — prefer sequence-pyramid-simple for pyramids)\n\
+                  - hierarchy (root with nested children): hierarchy-mindmap,\n  hierarchy-structure,\
+                  \ hierarchy-tree-tech-style-capsule-item\n  (org charts)\n- relation\
+                  \ (nodes plus relations from/to): relation-network-icon-badge,\n\
+                  \  relation-circle-icon-badge, relation-dagre-flow-tb-capsule\n\
+                  \  (flowcharts)\n- compare (compares): compare-binary-horizontal-simple-vs,\n\
+                  \  compare-swot\n- quadrant (lists): quadrant-quarter-circular (2x2\
+                  \ grids)\nNEVER write \"Title:\", \"Layout:\", \"Step 1 —\", bullets,\
+                  \ or any English\ndescription of the design — only the syntax. Choose\
+                  \ the closest\ntemplate to the user's intent and put their content\
+                  \ into the data\nfields."
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: "Render an infographic from declarative AntV Infographic\
+                \ syntax.\nReturns {id, url, usage} — the url opens the rendered infographic\
+                \ in a browser.\n\nCRITICAL: `description` must be actual Infographic\
+                \ SYNTAX, NOT a prose design\nbrief. The engine cannot render prose\
+                \ — write the template call and data\ndirectly. Complete working example:\n\
+                \ninfographic list-row-simple-horizontal-arrow\ndata\n  lists\n  \
+                \  - label Step 1\n      desc Prepare accounts\n    - label Step 2\n\
+                \      desc Team introduction\n    - label Step 3\n      desc Tool\
+                \ setup\n    - label Step 4\n      desc First sprint\n\nStructure:\
+                \ first line = \"infographic <template-name>\", then an indented\n\
+                \"data\" block whose list key depends on the template family. Items\
+                \ are\n\"- label X / desc Y\" lines (\"value N\" for charts). ~276\
+                \ built-in\npresets across 8 families — VARY the choice to match the\
+                \ user's\nintent. Verified template names per family (data key in\
+                \ parentheses):\n- chart (values): chart-column-simple, chart-bar-plain-text,\n\
+                \  chart-pie-compact-card, chart-line-plain-text, chart-wordcloud\n\
+                - sequence (sequences): sequence-steps, sequence-timeline-done-list,\n\
+                \  sequence-snake-steps, sequence-roadmap-vertical-pill-badge,\n \
+                \ sequence-pyramid-simple (TRUE triangle pyramid — use when the user\n\
+                \  asks for a pyramid), sequence-funnel-simple,\n  sequence-ascending-stairs-3d-simple\
+                \ (3D ascending steps)\n- sequence-interaction (UML message flows,\
+                \ template\n  sequence-interaction-default-compact-card): participants\
+                \ = top-level\n  items of \"sequences\" (lanes); each child message\
+                \ needs \"id X\" and\n  \"step N\" (row order across all lanes); \"\
+                relations\" reference those\n  MESSAGE ids: \"- from m1 / to m2 /\
+                \ label call\" — arrows only draw\n  between messages that have ids\n\
+                - list (lists): list-row, list-grid, list-zigzag-up,\n  list-sector-plain-text,\
+                \ list-pyramid-badge-card (stacked badge\n  rows, NOT a triangle —\
+                \ prefer sequence-pyramid-simple for pyramids)\n- hierarchy (root\
+                \ with nested children): hierarchy-mindmap,\n  hierarchy-structure,\
+                \ hierarchy-tree-tech-style-capsule-item\n  (org charts)\n- relation\
+                \ (nodes plus relations from/to): relation-network-icon-badge,\n \
+                \ relation-circle-icon-badge, relation-dagre-flow-tb-capsule\n  (flowcharts)\n\
+                - compare (compares): compare-binary-horizontal-simple-vs,\n  compare-swot\n\
+                - quadrant (lists): quadrant-quarter-circular (2x2 grids)\nNEVER write\
+                \ \"Title:\", \"Layout:\", \"Step 1 —\", bullets, or any English\n\
+                description of the design — only the syntax. Choose the closest\n\
+                template to the user's intent and put their content into the data\n\
+                fields."
+              tool_label: antv_infographic
+              tool_name: antv_infographic
+              type: mcp
+        agent_strategy_label: FunctionCalling
+        agent_strategy_name: function_calling
+        agent_strategy_provider_name: langgenius/agent/agent
+        desc: Agentic strategy node wired to all 18 AgenticRAG MCP tools (16 core
+          + 2 antv).
+        isInIteration: false
+        isInLoop: false
+        memory:
+          query_prompt_template: null
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        meta:
+          minimum_dify_version: 1.7.0
+          version: 0.0.2
+        plugin_unique_identifier: langgenius/agent:0.0.50@bf1040682cc9e1e5caf9b4670531639c440bf9448025cd5ee0915fdcf7a921f3
+        selected: false
+        title: Agentic Strategy
+        tool_node_version: null
+        type: agent
+        version: '1'
+      height: 232
+      id: agentic_strategy
+      position:
+        x: 700
+        y: 420
+      positionAbsolute:
+        x: 700
+        y: 420
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    - data:
+        answer: '{{#agentic_strategy.text#}}'
+        desc: Return the agent's response to the user.
+        selected: false
+        title: Answer
+        type: answer
+        variables: []
+      height: 147
+      id: answer
+      position:
+        x: 1010
+        y: 420
+      positionAbsolute:
+        x: 1010
+        y: 420
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    - data:
+        classes:
+        - id: ppt_request
+          label: ''
+          name: PPT request
+          topic: The user asks to generate, create, or make a PowerPoint presentation,
+            deck, or slides (e.g. 'help to generate a powerpoint about Dify software',
+            'make a 3-page deck on X', 'turn this into slides')
+        - id: general
+          label: ''
+          name: General
+          topic: 'Everything else: questions, research, chat, knowledge-base queries,
+            and any request that is not about generating a PowerPoint/deck'
+        desc: Route deck-generation requests to PPT-Master; everything else to the
+          AgenticRAG agent.
+        instruction: Classify the user's request. Choose 'PPT request' ONLY when the
+          user wants a PowerPoint/deck/slides generated.
+        model:
+          completion_params: {}
+          mode: chat
+          model: deepseek/deepseek-v4.1-flash
+          model_type: llm
+          name: deepseek/deepseek-v4.1-flash
+          provider: langgenius/openrouter/openrouter
+          type: model-selector
+        query_variable_selector:
+        - sys
+        - query
+        selected: false
+        title: PPT or General?
+        type: question-classifier
+        variables: []
+      height: 200
+      id: intent_router
+      position:
+        x: 380
+        y: 286
+      positionAbsolute:
+        x: 380
+        y: 286
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    - data:
+        answer: '{{#ppt_master.text#}}'
+        desc: Return the PPT-Master agent's response with the download link.
+        selected: false
+        title: PPT Answer
+        type: answer
+        variables: []
+      height: 147
+      id: ppt_answer
+      position:
+        x: 1010
+        y: 90
+      positionAbsolute:
+        x: 1010
+        y: 90
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    - data:
+        agent_parameters:
+          instruction:
+            type: constant
+            value: '# PPT-Master Agent Rulebook (quick-generate, v1)
+
+
+              You generate native editable PowerPoint decks from a topic or pasted
+              content, using five MCP tools. You author pages as SVG; the toolchain
+              converts them to real PPTX slides. Work only through the tools — never
+              invent file paths or fake links.
+
+
+              ## Tool protocol (exact order)
+
+
+              1. `ppt_project_init(name)` → returns `{project_id, workspace, max_pages}`.
+              Use a short url-safe name derived from the topic (e.g. `dify_intro`).
+              ALL later calls take `project_id`.
+
+              2. `ppt_icon_sync(project_id, icons)` → sync the icons your pages will
+              use (e.g. `["tabler-outline/star", "simple-icons/dify"]`). If it returns
+              `PPT_MISSING_ICON`, re-pick each missing icon from the named library
+              and retry with only the valid ones — never substitute silently.
+
+              3. For each page 1..N: `ppt_write_page(project_id, page_number, name,
+              svg)` — author the complete page as a single SVG document (contract
+              below). `N ≤ max_pages` (5 by default).
+
+              4. `ppt_check(project_id)` → if `passing: false`, fix every `[ERROR]`
+              detail by rewriting that page (`ppt_write_page` again), then re-check.
+              Repeat until `passing: true` (max ~3 repair rounds per page).
+
+              5. `ppt_export(project_id)` → returns `{file, url, page_url}`. Give
+              the user **`page_url`** as the markdown link in your final answer: `[Preview
+              & download the deck](<page_url>)` — the page previews every slide and
+              carries the download button. If `PPT_EXPORT_BLOCKED`, fix the listed
+              pages first — never deliver a broken file.
+
+
+              Revisions in the same conversation: rewrite the page (`ppt_write_page`
+              with the same page_number), re-check, re-export. A NEW export file is
+              created each time; old links keep working.
+
+
+              ## Page authoring contract (SVG)
+
+
+              Each page is ONE complete `<svg>` document:
+
+
+              - Root: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">`
+              — exactly this viewBox.
+
+              - Content lives in grouped zones: `<g id="zone-name" data-pptx-bounds="x
+              y w h">` with non-overlapping rectangles inside the 64px margins (usable
+              area 64,64 → 1216,656).
+
+              - Text: `<text>` elements with `x`, `y` (baseline), `font-size` (body
+              24, title 44, subtitle 30, annotation 18, footnote 16), `fill` hex.
+              Multi-line text = the first line plus `<tspan x="same" dy="27">` per
+              additional line. Keep lines short enough to stay inside the zone bounds
+              (~5% headroom).
+
+              - Colors (theme): background #FAFAFA, panel #EDF2F8, primary #1565C0,
+              accent #0D47A1, secondary accent #7EA6E0, text #212121, muted #5F6B7A,
+              divider #D5DCE5.
+
+              - Fonts: `Segoe UI, sans-serif` (set `font-family` on the root svg).
+
+              - Full-page background: `<rect id="page-background" data-pptx-role="background"
+              x="0" y="0" width="1280" height="720" fill="#FAFAFA"/>`.
+
+              - Icons: reference synced icons with `<use data-icon="library/name"
+              x y width height fill="#1565C0"/>` (tabler-outline stroke icons take
+              `stroke-width="2"`).
+
+              - FORBIDDEN (write_page rejects these): `<script>`, event attributes
+              (`onclick=` etc.), `<foreignObject>`, `<style>`, `class=`, non-https
+              external `href`, any viewBox other than `0 0 1280 720`.
+
+
+              Design guidance: one message per page (a title, 2–4 supporting zones),
+              Swiss-clean layout, real content from your research or the user''s pasted
+              material — never invented statistics.
+
+
+              **Sources rule (mandatory):** when any page carries facts that came
+              from web research (web_search / web_research), the LAST page of the
+              deck (or a footnote zone on each content page if the deck is one page)
+              MUST list the sources as a footnote zone — one small line per source:
+              `Source: <site/domain>` at footnote size (16, muted #5F6B7A) above the
+              page bottom margin. A deck built purely from the user''s pasted text
+              needs no sources zone. Never state a number, name, or date you did not
+              get from research, the user''s material, or an earlier tool response
+              in this conversation.
+
+
+              ## Charts in decks
+
+
+              When a page presents comparisons, trends, proportions, or rankings,
+              generate a chart instead of tables of numbers: call `antv_chart(chart_type,
+              data, title)` — it returns `image_url`; embed it as `<image href="..."
+              x y width height/>` inside a properly grouped `<g>` zone (not top-level).
+              Choose the type by intent: trends → line/area, comparisons → bar/column,
+              proportions → pie/treemap, distributions → histogram/boxplot. Size charts
+              within their zone (a common choice: 640×360 inside a 1280×720 page).
+              The deck pipeline downloads and embeds the image bytes automatically
+              — exported decks are self-contained; if the image fetch fails, fix or
+              remove the image before retrying (the page will be rejected otherwise).
+
+
+              ## Input modes
+
+
+              - Topic ("a deck about X"): research first with `web_search`/`web_research`,
+              then build pages from the sourced facts. Deck language = the user''s
+              prompt language.
+
+              - Pasted content: build the deck from the user''s text — no invented
+              claims, no padding beyond what the material supports.
+
+
+              ## Behavior rules
+
+
+              - Narrate progress between tool calls (one short line per step: which
+              page is being authored, that checks are running, that export started).
+              The user is watching a multi-minute run.
+
+              - Page count: default to the smallest deck that serves the request (1–3
+              pages unless the user asks for more); never exceed `max_pages` in one
+              run — offer a continuation for larger decks.
+
+              - Iteration budget: if you run out of tool-call iterations mid-deck,
+              report exactly which pages are done and offer to continue with a fresh,
+              smaller run.
+
+              - Honest failure: if a page cannot pass checks after ~3 repair rounds,
+              say which page and why, and deliver nothing rather than a broken file.
+              If asked for something outside these tools (animated video, file-upload
+              parsing in v1), say so plainly and offer what you CAN do (topic or pasted-text
+              decks, ≤ 5 pages).
+
+              - Cross-conversation edits are out of scope: if asked to edit a deck
+              from an earlier conversation, say so and offer to regenerate in this
+              conversation.
+
+              - When the user attaches a file, explain that v1 accepts pasted text
+              or researched topics, and offer those alternatives.
+
+              '
+          maximum_iterations:
+            type: constant
+            value: 30
+          model:
+            type: constant
+            value:
+              completion_params: {}
+              mode: chat
+              model: deepseek/deepseek-v4.1-flash
+              model_type: llm
+              name: deepseek/deepseek-v4.1-flash
+              provider: langgenius/openrouter/openrouter
+              type: model-selector
+          query:
+            type: constant
+            value: '{{#sys.query#}}'
+          tools:
+            type: constant
+            value:
+            - enabled: true
+              extra:
+                description: Create an isolated PPT generation workspace. Start every
+                  deck here.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Create an isolated PPT generation workspace. Start
+                every deck here.
+              tool_label: ppt_project_init
+              tool_name: ppt_project_init
+              type: mcp
+            - enabled: true
+              extra:
+                description: Prepare icons for a PPT project; missing icons reported
+                  honestly.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Prepare icons for a PPT project; missing icons reported
+                honestly.
+              tool_label: ppt_icon_sync
+              tool_name: ppt_icon_sync
+              type: mcp
+            - enabled: true
+              extra:
+                description: Write one slide page as a complete SVG document.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Write one slide page as a complete SVG document.
+              tool_label: ppt_write_page
+              tool_name: ppt_write_page
+              type: mcp
+            - enabled: true
+              extra:
+                description: Run the slide quality gate; returns fixable issues.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Run the slide quality gate; returns fixable issues.
+              tool_label: ppt_check
+              tool_name: ppt_check
+              type: mcp
+            - enabled: true
+              extra:
+                description: Export the deck as a native editable .pptx; returns download
+                  and preview page URLs.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Export the deck as a native editable .pptx; returns
+                download and preview page URLs.
+              tool_label: ppt_export
+              tool_name: ppt_export
+              type: mcp
+            - enabled: true
+              extra:
+                description: 'Generate a chart image from data. Returns {chart_type,
+                  image_url, usage}. MANDATORY data format: each item is an object
+                  with canonical field names "category" and "value" (use "time" instead
+                  of "category" for line/area): [{"category": "Peter", "value": 180}].
+                  Rename source columns to these exact fields ("Student"->"category",
+                  "Height (cm)->"value"); values must be numbers. Any 2-field record
+                  shape is auto-normalized, but canonical fields are safest. axis_x_title
+                  / axis_y_title set human axis labels — ALWAYS pass them when the
+                  user names the columns (e.g. axis_x_title="Students", axis_y_title="Height
+                  (cm)"); without them the axes are labeled with the raw field names
+                  category/value. width/height (px, <= 4000, 0 = default) override
+                  render size. Type guide: trends->line/area; comparisons->bar/column;
+                  proportions->pie/treemap; distributions->histogram/boxplot; relationships->scatter/dual-axes;
+                  hierarchies->treemap/organization; flows->sankey/flow; funnels->funnel;
+                  ranking->sorted bar/column; multi-dimensional->radar. Supported:
+                  line, area, bar, column, pie, radar, scatter, histogram, funnel,
+                  treemap, sankey, dual-axes, word-cloud, boxplot, venn, liquid, flow,
+                  mind-map, fishbone, organization, network.'
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: 'Generate a chart image from data. Returns {chart_type,
+                image_url, usage}. MANDATORY data format: each item is an object with
+                canonical field names "category" and "value" (use "time" instead of
+                "category" for line/area): [{"category": "Peter", "value": 180}].
+                Rename source columns to these exact fields ("Student"->"category",
+                "Height (cm)->"value"); values must be numbers. Any 2-field record
+                shape is auto-normalized, but canonical fields are safest. axis_x_title
+                / axis_y_title set human axis labels — ALWAYS pass them when the user
+                names the columns (e.g. axis_x_title="Students", axis_y_title="Height
+                (cm)"); without them the axes are labeled with the raw field names
+                category/value. width/height (px, <= 4000, 0 = default) override render
+                size. Type guide: trends->line/area; comparisons->bar/column; proportions->pie/treemap;
+                distributions->histogram/boxplot; relationships->scatter/dual-axes;
+                hierarchies->treemap/organization; flows->sankey/flow; funnels->funnel;
+                ranking->sorted bar/column; multi-dimensional->radar. Supported: line,
+                area, bar, column, pie, radar, scatter, histogram, funnel, treemap,
+                sankey, dual-axes, word-cloud, boxplot, venn, liquid, flow, mind-map,
+                fishbone, organization, network.'
+              tool_label: antv_chart
+              tool_name: antv_chart
+              type: mcp
+            - enabled: true
+              extra:
+                description: Live web search via configured providers (SearXNG first;
+                  falls back to Tavily/Exa).
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Live web search via configured providers (SearXNG
+                first; falls back to Tavily/Exa).
+              tool_label: web_search
+              tool_name: web_search
+              type: mcp
+            - enabled: true
+              extra:
+                description: Deep web research; grouped outline-preserving page sections,
+                  bounded, with honest fallbacks and a rendered HTML artifact per
+                  page.
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: Deep web research; grouped outline-preserving page
+                sections, bounded, with honest fallbacks and a rendered HTML artifact
+                per page.
+              tool_label: web_research
+              tool_name: web_research
+              type: mcp
+        agent_strategy_label: FunctionCalling
+        agent_strategy_name: function_calling
+        agent_strategy_provider_name: langgenius/agent/agent
+        desc: Deck generator wired to the ppt_* + antv_* MCP tools (specs 009/010/012).
+        isInIteration: false
+        isInLoop: false
+        memory:
+          query_prompt_template: null
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        meta:
+          minimum_dify_version: 1.7.0
+          version: 0.0.2
+        plugin_unique_identifier: langgenius/agent:0.0.50@bf1040682cc9e1e5caf9b4670531639c440bf9448025cd5ee0915fdcf7a921f3
+        selected: false
+        title: PPT-Master
+        tool_node_version: null
+        type: agent
+        version: '1'
+      height: 232
+      id: ppt_master
+      position:
+        x: 700
+        y: 90
+      positionAbsolute:
+        x: 700
+        y: 90
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+  rag_pipeline_variables: []
