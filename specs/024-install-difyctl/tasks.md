@@ -40,7 +40,7 @@ None — host tooling install; the binary itself is the foundation and lands in 
 
 ## Phase 5: Convergence
 
-- [ ] T012 Document the difyctl prerequisite in the runbook: `OPENAPI_ENABLED=true` (Dify 1.18.0 Community defaults it to false; without it the whole `/openapi/v1/*` group including the OAuth device flow 404s) — add to DEPLOY.md (Step 10 area / difyctl notes) and sync the deploy skill's Step 10, so a fresh-host operator doesn't hit the same silent 404 (FR-004, plan: Design) (missing)
+- [x] T012 Document the difyctl prerequisite in the runbook (done — DEPLOY.md Step 10 + deploy skill, in sync): `OPENAPI_ENABLED=true` (Dify 1.18.0 Community defaults it to false; without it the whole `/openapi/v1/*` group including the OAuth device flow 404s) — add to DEPLOY.md (Step 10 area / difyctl notes) and sync the deploy skill's Step 10, so a fresh-host operator doesn't hit the same silent 404 (FR-004, plan: Design) (missing)
 
 ## Dependencies & Execution Order
 

@@ -275,6 +275,20 @@ Notes: v1 bounds decks at 5 pages per run (`[ppt] max_pages` in config.toml); sa
 
 ## Step 10 — Deployment automation (spec 011)
 
+difyctl note (spec 024): the Dify CLI needs `OPENAPI_ENABLED=true` in
+`docker/.env` (1.18.0 Community defaults it to **false** — without it the
+whole `/openapi/v1/*` group, including the OAuth device flow, 404s) plus an
+API container restart. Install: `curl -L -o ~/.local/bin/difyctl
+https://github.com/langgenius/dify/releases/download/1.18.0/difyctl-v1.18.0-linux-x64`
+(checksum-gate against the release's checksums file before executing); skill:
+`difyctl install skills ~/.config/kilo/skills`; login:
+`difyctl login --server http://localhost --insecure --no-browser --no-wait`
+(approve in browser). The round-trip script lives at
+`dify/difyctl-export-reimport-publish.sh` (export → re-import → publish →
+verify integrity).
+
+
+
 One command rebuilds, redeploys, updates the chatflow, and verifies the whole stack — no Dify UI actions, no prompts:
 
 ```bash
