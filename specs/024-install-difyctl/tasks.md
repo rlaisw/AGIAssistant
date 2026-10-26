@@ -36,7 +36,11 @@ None — host tooling install; the binary itself is the foundation and lands in 
 ## Phase 4: Polish & Cross-Cutting Concerns
 
 - [x] T010 Zero stack impact (V7/SC-005): compare `docker ps` container set and statuses before/after the whole feature, and the app row (id, name, sites code) in the Dify DB — must be identical; the published version id advancing (from T009) is the only permitted change
-- [x] T011 Commit spec artifacts + the adopted script `dify/difyctl-export-reimport-publish.sh` together (binary, skill, and token are host-side, not repo artifacts)
+- [x] T011 Commit spec artifacts + the adopted script `dify/difyctl-export-reimport-publish.sh` together (binary, skill, and token are host-side, not repo artifacts) *(commit `8342d5d`, pushed)*
+
+## Phase 5: Convergence
+
+- [ ] T012 Document the difyctl prerequisite in the runbook: `OPENAPI_ENABLED=true` (Dify 1.18.0 Community defaults it to false; without it the whole `/openapi/v1/*` group including the OAuth device flow 404s) — add to DEPLOY.md (Step 10 area / difyctl notes) and sync the deploy skill's Step 10, so a fresh-host operator doesn't hit the same silent 404 (FR-004, plan: Design) (missing)
 
 ## Dependencies & Execution Order
 
