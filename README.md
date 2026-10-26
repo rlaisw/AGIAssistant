@@ -81,7 +81,7 @@ agentic-rag-mcp --init   # writes ~/.config/agentic-rag-mcp/config.toml
 
 ## Dify integration
 
-A stateless-HTTP sidecar for Dify ships in [`dify/`](dify/): Dockerfile, compose fragments (Dify networks + HF-cache mount), and a ready-to-import chatflow DSL (`dify/Chatflow Basic (AgenticRAG Agent).yml`). Build and run:
+A stateless-HTTP sidecar for Dify ships in [`dify/`](dify/): Dockerfile, compose fragments (Dify networks + HF-cache mount), and a ready-to-import chatflow DSL (`dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml`, imported as the app **AGI Assistant**). Build and run:
 
 ```bash
 docker build -f dify/docker/mcp-server/Dockerfile -t agentic-rag-mcp:latest .

@@ -4,7 +4,7 @@ app:
   icon_background: '#FEF7C3'
   icon_type: emoji
   mode: advanced-chat
-  name: Chatflow Basic (AgenticRAG Agent)
+  name: AGI Assistant
   use_icon_as_answer_icon: false
 dependencies: []
 kind: app

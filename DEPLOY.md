@@ -88,7 +88,7 @@ containers on the Docker network use `agentic-rag:28080`.
 3. Dify UI → Tools → MCP → Add Server: `http://agentic-rag:28080/mcp`
    (container DNS name + the aligned container port 28080; never `localhost`),
    no headers, no Dynamic Client Registration.
-4. Import the chatflow: `AgenticRAG/dify/Chatflow Basic (AgenticRAG Agent).yml`
+4. Import the chatflow: `AgenticRAG/dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml` (the deploy CLI imports/updates it as the app **AGI Assistant**)
    (Studio → Import DSL). Re-select tools in the Agent node if they don't resolve.
 5. Rules learned the hard way:
    - Never `localhost`/`127.0.0.1` in the Dify UI — Docker DNS name only.

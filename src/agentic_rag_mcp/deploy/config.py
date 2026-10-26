@@ -24,7 +24,7 @@ class DeployConfig:
     console_email: str = ""
     console_password: str = ""
     api_key: str = ""
-    app_name: str = "Chatflow Basic (AgenticRAG Agent)"
+    app_name: str = "AGI Assistant"
     chat_ui_url: str = "http://localhost:3000"
     sidecar_image: str = "agentic-rag-mcp:latest"
     container: str = "agentic-rag"
@@ -59,7 +59,7 @@ def resolve(cfg: Config) -> DeployConfig:
         console_password=os.environ.get("DIFY_CONSOLE_PASSWORD")
         or str(dify.get("console_password", "")),
         api_key=os.environ.get("DIFY_API_KEY") or str(dify.get("api_key", "")),
-        app_name=str(dify.get("app_name", "Chatflow Basic (AgenticRAG Agent)")),
+        app_name=str(dify.get("app_name", "AGI Assistant")),
         chat_ui_url=str(deploy.get("chat_ui_url", "http://localhost:3000")),
         sidecar_image=str(deploy.get("sidecar_image", "agentic-rag-mcp:latest")),
         container=str(deploy.get("container", "agentic-rag")),
