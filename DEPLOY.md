@@ -313,7 +313,7 @@ VENV=/home/administrator/.local/share/pipx/venvs/agentic-rag-mcp/bin/python
 $VENV -m agentic_rag_mcp.deploy verify --dry-run   # plan only, touches nothing
 $VENV -m agentic_rag_mcp.deploy redeploy            # build → recreate → health → register/re-sync tools
 $VENV -m agentic_rag_mcp.deploy chatflow            # draft-update or import + publish the DSL
-$VENV -m agentic_rag_mcp.deploy verify              # 10-scenario headless battery (self-cleaning)
+$VENV -m agentic_rag_mcp.deploy verify              # 11-scenario headless battery (self-cleaning; stop-generation added 2026-10-28)
 $VENV -m agentic_rag_mcp.deploy cleanup             # prune deck projects older than [deploy] retention_days (default 30; 0 = keep forever)
 $VENV -m agentic_rag_mcp.deploy all                 # everything, aborting honestly on failure
 ```
@@ -383,6 +383,7 @@ Two additive MCP tools on the sidecar: `antv_chart(chart_type, data, title)` —
 - Generated visuals are routed by the agent instruction per output type (rule added 2026-10-27, in both agentic nodes' IMAGES section): `antv_chart` returns `image_url` → inlined as `![title](image_url)`; `antv_infographic` returns an interactive HTML page → given as a labeled markdown link (it cannot be inlined with `![]()`). If answers link charts instead of showing them, or inline infographic URLs, the DSL agent instruction is stale — republish with `deploy chatflow`.
 - Template menu: ~276 presets across 8 families (chart, sequence, sequence-interaction, list, hierarchy, relation, compare, quadrant). Key picks: true triangle pyramid = `sequence-pyramid-simple` (`list-pyramid-*` renders stacked badge rows, NOT a triangle); org charts = `hierarchy-structure` / `hierarchy-tree-*`; UML flows = `sequence-interaction-default-compact-card` — message children need `id` + `step` fields and `relations` reference those MESSAGE ids, or arrows don't draw.
 - Page gotchas: the served page must close the CDN script tag with a literal `</script>` (an escaped `<\/script>` makes the browser swallow the inline render script → blank page, no errors). Don't add "svg has ≥ 20 chars of text" health checks — sparse-but-valid charts get nuked by them. The page is served with `Cache-Control: no-store` + a `page-version` marker.
+- Content sizing per template (seen 2026-10-28): `sequence-snake-steps` and other tight zig-zag layouts want terse content — labels ≤ 5 words, descs ≤ ~8 words, ≤ 6–8 steps; long multi-line descs overlap into unreadable text. For long text prefer `sequence-steps` or `list-row-simple-horizontal-arrow`, or split into two infographics.
 
 ## Troubleshooting
 
