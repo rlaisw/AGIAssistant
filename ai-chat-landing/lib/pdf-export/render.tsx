@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client"
 
 import { Markdown } from "@/components/markdown"
 import { embedOrDegradeImages } from "@/lib/pdf-export/image-wait"
+import { rewriteCrossOriginImages } from "@/lib/pdf-export/image-proxy"
 import type { ExportDeps, RenderFn } from "@/lib/pdf-export/export"
 import type { ExportModel } from "@/lib/pdf-export/types"
 
@@ -94,6 +95,9 @@ export const renderExportModel: RenderFn = (model: ExportModel): HTMLElement => 
 }
 
 export async function rasterizeExport(container: HTMLElement) {
+  // cross-origin hosts rarely send ACAO, so route them through the same-origin
+  // proxy first — otherwise html2canvas (useCORS) drops them from the PDF
+  rewriteCrossOriginImages(container)
   // FR-012: wait for images, degrade unfetchable ones to labeled links
   await embedOrDegradeImages(container)
   // html2canvas rasterizes via a cloned iframe of the document — the

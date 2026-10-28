@@ -78,6 +78,7 @@ flowchart LR
 | Host → SearXNG | `http://localhost:28888` | JSON API test: `/search?q=t&format=json` → 200 |
 | Browser → Chat UI | `http://localhost:3000` | Next.js (`ai-chat-landing/`) |
 | Chat UI → Dify Service API | `http://localhost/v1/chat-messages` · `/v1/conversations*` | proxied server-side in `ai-chat-landing/app/api/chat/route.ts` + `app/api/conversations/` (specs 014–015); key in `.env.local` |
+| Chat UI → remote image hosts (PDF export) | arbitrary `http(s)` image URLs from answer markdown | same-origin fetch in `ai-chat-landing/app/api/image-proxy/route.ts` — the export rasterizer (html2canvas useCORS) drops ACAO-less remote images, so bytes are fetched server-side; image/* only, 10 MB cap, cloud-metadata IP blocked |
 | You → PPT-Master deck downloads | `http://localhost:28080/exports/<project>/<file>.pptx` | served by the sidecar wrapper; files under the ppt-master clone's `projects/<project>/exports/` |
 | You → deck completion pages | `http://localhost:28080/decks/<project>/<stem>/` | per-export preview + download page (spec 010); slide assets at `.../slides/<file>.svg` |
 | You → rendered infographics | `http://localhost:28080/infographics/<id>/` | browser-side rendering via CDN engine (spec 012) |

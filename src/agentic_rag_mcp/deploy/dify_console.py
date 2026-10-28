@@ -105,3 +105,77 @@ class DifyConsole:
 
     def publish(self, app_id: str) -> None:
         self._post(f"/apps/{app_id}/workflows/publish", {})
+
+    def export_app(self, app_id: str) -> str:
+        """Export the app's DSL as YAML text (spec 026 cycle step 1).
+
+        The console returns either a JSON payload with the YAML in `data` or a
+        packaged zip bundle (manifest.yaml + the app DSL) — both are handled.
+        """
+        import io
+        import zipfile
+
+        resp = self.client.get(
+            f"{self.base}/apps/{app_id}/export",
+            headers=self._headers(),
+            params={"include_secret": "false"},
+            timeout=60,
+        )
+        if resp.status_code != 200:
+            raise ConsoleError(
+                f"/apps/{app_id}/export failed ({resp.status_code}): {resp.text[:200]}"
+            )
+        if resp.content[:2] == b"PK":
+            bundle = zipfile.ZipFile(io.BytesIO(resp.content))
+            names = [
+                n for n in bundle.namelist()
+                if n.endswith((".yml", ".yaml")) and n != "manifest.yaml"
+            ]
+            if len(names) != 1:
+                raise ConsoleError(
+                    f"/apps/{app_id}/export: expected 1 DSL file in bundle, got {names}"
+                )
+            return bundle.read(names[0]).decode("utf-8")
+        try:
+            body = resp.json()
+            if isinstance(body, dict) and isinstance(body.get("data"), str):
+                return body["data"]
+        except ValueError:
+            pass
+        if resp.text.lstrip().startswith(("app:", "kind:")):
+            return resp.text
+        raise ConsoleError(
+            f"/apps/{app_id}/export: unexpected response shape: {resp.text[:120]}"
+        )
+
+    # spec 025: Ollama model-provider setup -------------------------------
+
+    def list_plugins(self) -> list[dict]:
+        body = self._get("/workspaces/current/plugin/list")
+        return body.get("plugins", []) if isinstance(body, dict) else []
+
+    def install_marketplace_plugins(self, identifiers: list[str]) -> dict:
+        return self._post(
+            "/workspaces/current/plugin/install/marketplace",
+            {"plugin_unique_identifiers": identifiers},
+        )
+
+    def plugin_task(self, task_id: str) -> dict:
+        return self._get(f"/workspaces/current/plugin/tasks/{task_id}")
+
+    def save_provider_credentials(self, provider: str, credentials: dict) -> None:
+        self._post(
+            f"/workspaces/current/model-providers/{provider}/credentials",
+            {"credentials": credentials},
+        )
+
+    def save_model_credentials(self, provider: str, model: str, model_type: str,
+                               credentials: dict) -> None:
+        self._post(
+            f"/workspaces/current/model-providers/{provider}/models/credentials",
+            {"model": model, "model_type": model_type, "credentials": credentials},
+        )
+
+    def list_provider_models(self, provider: str) -> list[dict]:
+        body = self._get(f"/workspaces/current/model-providers/{provider}/models")
+        return body.get("data", []) if isinstance(body, dict) else []

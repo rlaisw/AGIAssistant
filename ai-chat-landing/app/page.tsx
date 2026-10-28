@@ -30,11 +30,16 @@ import {
 } from "lucide-react"
 
 import { ChatHistory } from "@/components/chat-history"
+import { ModelDropdown } from "@/components/model-dropdown"
 import { PdfExportButton } from "@/components/pdf-export-button"
 import { createHistoryState } from "@/lib/history/state"
 import { filterHistory } from "@/lib/history/search"
 import type { ConversationRecord } from "@/lib/history/types"
 import { HistoryError } from "@/lib/history/types"
+import { badgeModel, badgeNote, type BadgeValue } from "@/lib/models/badge"
+import { fetchAvailability } from "@/lib/models/availability"
+import { createModelStorage } from "@/lib/models/persistence"
+import { DEFAULT_MODEL_ID, isModelId, optionById, type ModelId } from "@/lib/models/options"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Markdown } from "@/components/markdown"
@@ -58,6 +63,7 @@ type Message = {
   codeName?: string
   sources?: string[]
   streaming?: boolean
+  noBadge?: boolean
 }
 
 type Conversation = {
@@ -169,6 +175,17 @@ export default function Page() {
   const [sidebarOpen, setSidebarOpen] = React.useState(true)
   const [busy, setBusy] = React.useState(false)
   const [copiedId, setCopiedId] = React.useState<number | null>(null)
+  const modelStorage = React.useMemo(
+    () => createModelStorage(typeof window === "undefined" ? null : window.localStorage),
+    []
+  )
+  const [selectionByConv, setSelectionByConv] = React.useState<Record<string, ModelId>>({})
+  const [localAvailable, setLocalAvailable] = React.useState(false)
+  // spec 026: the configured cloud model is server truth (the published app);
+  // applyingModel blocks sends while a reconfiguration cycle runs (FR-003).
+  const [configuredCloud, setConfiguredCloud] = React.useState<ModelId>(DEFAULT_MODEL_ID)
+  const [applyingModel, setApplyingModel] = React.useState<ModelId | null>(null)
+  const [applyError, setApplyError] = React.useState<string | null>(null)
   const { theme, setTheme } = useTheme()
   const history = React.useMemo(
     () =>
@@ -227,6 +244,65 @@ export default function Page() {
 
   const active =
     conversations.find((c) => c.id === activeId) ?? conversations[0]
+  // spec 026: local selection stays per-conversation; a cloud selection means
+  // "the globally configured model" (server truth supersedes stored choices).
+  const storedSelection = selectionByConv[activeId]
+  const activeModel: ModelId = storedSelection === "local" ? "local" : configuredCloud
+
+  const refreshAvailability = React.useCallback(() => {
+    void fetchAvailability().then(setLocalAvailable)
+  }, [])
+  React.useEffect(() => {
+    refreshAvailability()
+  }, [refreshAvailability])
+  React.useEffect(() => {
+    void fetch("/api/models/current")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((body: { model?: string } | null) => {
+        if (body?.model && isModelId(body.model)) setConfiguredCloud(body.model)
+      })
+      .catch(() => {})
+  }, [])
+
+  async function applyCloudModel(id: ModelId) {
+    setApplyError(null)
+    setApplyingModel(id)
+    try {
+      const res = await fetch("/api/models/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: id }),
+      })
+      const body = (await res.json().catch(() => ({}))) as { error?: string }
+      if (!res.ok) throw new Error(body.error ?? `apply failed (${res.status})`)
+      setConfiguredCloud(id)
+      setSelectionByConv((prev) => ({ ...prev, [activeId]: id }))
+      if (active?.difyId) modelStorage.setSelection(active.difyId, id)
+    } catch (err) {
+      // FR-004: honest error, the visible selection reverts to what still runs
+      setApplyError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setApplyingModel(null)
+    }
+  }
+
+  function selectModel(id: ModelId) {
+    setApplyError(null)
+    if (id === "local") {
+      setSelectionByConv((prev) => ({ ...prev, [activeId]: id }))
+      if (active?.difyId) modelStorage.setSelection(active.difyId, id)
+      return
+    }
+    if (id === configuredCloud || applyingModel) return // same-model no-op / single cycle
+    void applyCloudModel(id)
+  }
+
+  function resetSelectionToCloud(convId: string, difyId: string | undefined) {
+    // spec 026: the fallback/reset target is the globally configured cloud
+    // model, not a hardcoded default (research D6).
+    setSelectionByConv((prev) => ({ ...prev, [convId]: configuredCloud }))
+    if (difyId) modelStorage.setSelection(difyId, configuredCloud)
+  }
 
   React.useEffect(() => {
     return () => {
@@ -292,9 +368,18 @@ export default function Page() {
     }, 60)
   }
 
+  // FR-007 vs error-matrix row 8: a local selection only counts as failed when
+  // Local is actually down — a Dify-side error (e.g. a stale published app)
+  // surfaces as a normal send error and keeps the selection visible.
+  async function localModelFailed(): Promise<boolean> {
+    const localOk = await fetchAvailability()
+    setLocalAvailable(localOk)
+    return !localOk
+  }
+
   async function send(text = input) {
     const value = text.trim()
-    if (!value || busy) return
+    if (!value || busy || applyingModel) return
     if (active?.difyId) {
       history.touch(active.difyId)
       syncHistory()
@@ -308,6 +393,24 @@ export default function Page() {
     }
     const assistantId = (idRef.current += 1)
     const difyId = active?.difyId
+    const sendConvId = activeId
+    const requested = activeModel
+    const assistantIndex = (active?.messages.length ?? 0) + 1
+
+    // spec 025 FR-002/FR-004: the selection applies to this send; a local
+    // selection that cannot serve falls back to cloud with a persistent
+    // badge note and resets the stored selection (never auto-resume).
+    let serving = requested
+    let badgeValue: BadgeValue = requested
+    if (requested === "local") {
+      const localOk = await fetchAvailability()
+      setLocalAvailable(localOk)
+      if (!localOk) {
+        serving = configuredCloud
+        badgeValue = `${configuredCloud}|fallback`
+        resetSelectionToCloud(sendConvId, difyId)
+      }
+    }
 
     updateConversation(activeId, (c) => ({
       ...c,
@@ -331,7 +434,7 @@ export default function Page() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: value, conversationId: difyId ?? null }),
+        body: JSON.stringify({ query: value, conversationId: difyId ?? null, aiModel: serving }),
         signal: controller.signal,
       })
       if (!res.ok || !res.body) {
@@ -420,6 +523,8 @@ export default function Page() {
                   lastActivityAt: Date.now(),
                 })
                 syncHistory()
+                modelStorage.setSelection(msg.conversationId, serving)
+                modelStorage.setBadge(msg.conversationId, assistantIndex, badgeValue)
               }
               break
           }
@@ -427,6 +532,23 @@ export default function Page() {
       }
       if (flushTimer) clearTimeout(flushTimer)
       if (watchdog) clearTimeout(watchdog)
+      // spec 025 FR-007: a mid-generation local failure can close the Dify
+      // stream without an error event (empty reply) — treat that as failure
+      // when Local is actually down (reset per FR-004); a Dify-side empty
+      // reply keeps the selection (error-matrix row 8). Never a silent bubble.
+      if (!answer.trim() && requested === "local") {
+        const localFailed = await localModelFailed()
+        if (localFailed) resetSelectionToCloud(sendConvId, difyId)
+        updateMessage(assistantId, {
+          text: localFailed
+            ? "The local model could not answer this message and the selection was reset to DeepSeek. Please send again."
+            : "Something went wrong sending this message. The selection stays on Qwen3 8B — please send again.",
+          streaming: false,
+          noBadge: true,
+        })
+        setBusy(false)
+        return
+      }
       flush()
       updateMessage(assistantId, { streaming: false })
       setBusy(false)
@@ -439,11 +561,26 @@ export default function Page() {
         !timedOut
       )
         return
+      // spec 025 FR-007 / error-matrix row 8: reset only when Local is
+      // actually down; a Dify-side error keeps the selection and never falls
+      // back to canned demo replies for a local-requested send.
+      const localFailed = await localModelFailed()
+      if (localFailed) resetSelectionToCloud(sendConvId, difyId)
       if (!answer) {
-        if (timedOut) {
+        if (timedOut || localFailed) {
           updateMessage(assistantId, {
-            text: "Connection lost — the assistant may still be working on it. Please send your question again.",
+            text: localFailed
+              ? "The local model could not answer this message and the selection was reset to DeepSeek. Please send again."
+              : "Connection lost — the assistant may still be working on it. Please send your question again.",
             streaming: false,
+            noBadge: localFailed,
+          })
+          setBusy(false)
+        } else if (requested === "local") {
+          updateMessage(assistantId, {
+            text: "Something went wrong sending this message. The selection stays on Qwen3 8B — please send again.",
+            streaming: false,
+            noBadge: true,
           })
           setBusy(false)
         } else {
@@ -465,6 +602,11 @@ export default function Page() {
     const existing = conversations.find((c) => c.difyId === record.difyId)
     if (existing) {
       setActiveId(existing.id)
+      // spec 025 FR-003/SC-003: resume re-hydrates the stored selection
+      setSelectionByConv((prev) => ({
+        ...prev,
+        [existing.id]: modelStorage.getSelection(record.difyId),
+      }))
       return
     }
     try {
@@ -487,6 +629,11 @@ export default function Page() {
         ...prev,
       ])
       setActiveId(id)
+      // spec 025 FR-003/SC-003: the choice sticks across reload/resume
+      setSelectionByConv((prev) => ({
+        ...prev,
+        [id]: modelStorage.getSelection(record.difyId),
+      }))
     } catch (err) {
       const e = err as HistoryError
       const id = `h-${record.difyId}`
@@ -531,6 +678,14 @@ export default function Page() {
       newChat()
     }
     history.remove(record.difyId)
+    // spec 025 (FR-005 interplay): purging the model keys on delete —
+    // no orphaned selection or badge data for a removed conversation.
+    modelStorage.purgeConversation(record.difyId)
+    setSelectionByConv((prev) => {
+      const next = { ...prev }
+      delete next[`h-${record.difyId}`]
+      return next
+    })
     syncHistory()
   }
 
@@ -757,7 +912,7 @@ export default function Page() {
         ) : (
           <div ref={scrollRef} className="flex-1 overflow-y-auto">
             <div className="mx-auto w-full max-w-3xl xl:max-w-[min(90%,1400px)] space-y-6 p-4 py-6 sm:p-6">
-              {active.messages.map((m) =>
+              {active.messages.map((m, index) =>
                 m.role === "user" ? (
                   <div key={m.id} className="flex justify-end">
                     <div className="max-w-[85%] lg:max-w-2xl rounded-2xl bg-primary px-4 py-2.5 text-sm text-primary-foreground">
@@ -818,9 +973,43 @@ export default function Page() {
                           ))}
                         </div>
                       )}
+                      {!m.streaming &&
+                        badgeNote(
+                          active.difyId
+                            ? modelStorage.getBadge(active.difyId, index)
+                            : "cloud"
+                        ) && (
+                          <p
+                            className="text-xs italic text-muted-foreground"
+                            data-fallback-note
+                          >
+                            {badgeNote(
+                              active.difyId
+                                ? modelStorage.getBadge(active.difyId, index)
+                                : "cloud"
+                            )}
+                          </p>
+                        )}
                       {!m.streaming && (
                         <div className="flex items-center gap-1 text-muted-foreground">
-                          <span className="text-xs">AGI Chat</span>
+                          {!m.noBadge && (
+                            <span
+                              className="text-xs"
+                              data-model-badge={badgeModel(
+                                active.difyId
+                                  ? modelStorage.getBadge(active.difyId, index)
+                                  : "cloud"
+                              )}
+                            >
+                              {optionById(
+                                badgeModel(
+                                  active.difyId
+                                    ? modelStorage.getBadge(active.difyId, index)
+                                    : "cloud"
+                                )
+                              ).displayName}
+                            </span>
+                          )}
                           <Button
                             variant="ghost"
                             size="icon-xs"
@@ -884,14 +1073,35 @@ export default function Page() {
                   <Mic />
                 </Button>
                 <div className="ml-auto flex items-center gap-2">
-                  <span className="hidden text-xs text-muted-foreground sm:inline">
-                    AGI Chat
-                  </span>
+                  {applyingModel ? (
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <LoaderCircle
+                        className="size-3.5 animate-spin text-[#82D2F6]"
+                        aria-hidden="true"
+                      />
+                      Applying {optionById(applyingModel).displayName}…
+                    </span>
+                  ) : (
+                    <ModelDropdown
+                      value={activeModel}
+                      localAvailable={localAvailable}
+                      onValueChange={selectModel}
+                      onOpen={refreshAvailability}
+                    />
+                  )}
+                  {applyError && !applyingModel && (
+                    <span
+                      className="max-w-56 truncate text-xs text-destructive"
+                      title={applyError}
+                    >
+                      {applyError}
+                    </span>
+                  )}
                   <Button
                     size="icon-sm"
                     className="rounded-full"
                     aria-label="Send message"
-                    disabled={!input.trim() || busy}
+                    disabled={!input.trim() || busy || !!applyingModel}
                     onClick={() => send()}
                   >
                     <ArrowUp />

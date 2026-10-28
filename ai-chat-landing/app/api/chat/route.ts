@@ -9,7 +9,7 @@ type StreamEvent = {
 }
 
 export async function POST(req: Request) {
-  const { query, conversationId } = await req.json()
+  const { query, conversationId, aiModel } = await req.json()
   if (!query || typeof query !== "string") {
     return Response.json({ error: "query is required" }, { status: 400 })
   }
@@ -30,7 +30,15 @@ export async function POST(req: Request) {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      inputs: {},
+      // spec 026: cloud selection is global (the published app is patched);
+      // sends carry only the local switch. Absent input = cloud (else branch),
+      // battery and legacy callers stay byte-identical when aiModel is omitted.
+      inputs:
+        aiModel === "local"
+          ? { ai_model: "local" }
+          : aiModel
+            ? { ai_model: "cloud" }
+            : {},
       query,
       response_mode: "streaming",
       conversation_id: conversationId ?? "",

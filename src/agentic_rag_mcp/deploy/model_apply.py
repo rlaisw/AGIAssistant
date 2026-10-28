@@ -1,0 +1,110 @@
+"""Spec 026: apply a cloud LLM to the chatflow — export → patch → overwrite → publish.
+
+The cycle reconfigures the published app itself (contracts §4): the published
+app is untouched until the publish step, so any failure leaves the previous
+configuration serving (FR-004).
+"""
+
+from __future__ import annotations
+
+import os
+import re
+
+import yaml
+
+from .config import REPO_ROOT
+from .dify_console import DifyConsole
+
+CLOUD_PROVIDER = "langgenius/openrouter/openrouter"
+MAIN_NODE_IDS = ("intent_router", "agentic_strategy", "ppt_master")
+START_NODE_ID = "1776072202913"
+REMOVE_NODE_SUFFIXES = ("_kimi", "_glm", "_qwen38")
+REMOVE_CASE_IDS = {"kimi", "glm", "qwen38"}
+REMOVE_REF_RE = re.compile(
+    r"\{\{#[^}]*?(?:_kimi|_glm|_qwen38)\.text#\}\}"
+)
+ARTIFACT = os.path.join(REPO_ROOT, "dify", "AGIAssistant", "AGI_Assistant.yml")
+
+
+def _model_block(model_id: str) -> dict:
+    return {
+        "completion_params": {},
+        "mode": "chat",
+        "model": model_id,
+        "model_type": "llm",
+        "name": model_id,
+        "provider": CLOUD_PROVIDER,
+        "type": "model-selector",
+    }
+
+
+def patch_dsl(yaml_text: str, model_id: str) -> str:
+    """Set the three main LLM nodes to model_id + idempotent FR-005 cleanup."""
+    doc = yaml.safe_load(yaml_text)
+    graph = doc["workflow"]["graph"]
+    nodes, edges = graph["nodes"], graph["edges"]
+    by_id = {n["id"]: n for n in nodes}
+
+    for nid in MAIN_NODE_IDS:
+        if nid not in by_id:
+            raise ValueError(f"main node missing from DSL: {nid}")
+        n = by_id[nid]
+        block = _model_block(model_id)
+        if n["data"]["type"] == "question-classifier":
+            n["data"]["model"] = block
+        else:
+            n["data"]["agent_parameters"]["model"]["value"] = block
+
+    # FR-005: remove routing-era branches, their edges, router cases, and the
+    # cloud_model start variable (no-op when already clean).
+    remove_ids = {
+        n["id"] for n in nodes
+        if any(n["id"].endswith(suffix) for suffix in REMOVE_NODE_SUFFIXES)
+    }
+    if remove_ids:
+        graph["nodes"] = [n for n in nodes if n["id"] not in remove_ids]
+        edges[:] = [
+            e for e in edges
+            if e["source"] not in remove_ids and e["target"] not in remove_ids
+        ]
+    router = by_id.get("model_router")
+    if router and "cases" in router["data"]:
+        router["data"]["cases"] = [
+            c for c in router["data"]["cases"]
+            if c["case_id"] not in REMOVE_CASE_IDS
+        ]
+    start = by_id.get(START_NODE_ID)
+    if start and "variables" in start["data"]:
+        start["data"]["variables"] = [
+            v for v in start["data"]["variables"] if v["variable"] != "cloud_model"
+        ]
+
+    # FR-005 (convergence T019): strip the removed nodes' template references
+    # from the shared answer nodes — dangling refs must not survive cleanup.
+    for nid in ("answer", "ppt_answer"):
+        n = by_id.get(nid)
+        if n and isinstance(n["data"].get("answer"), str):
+            n["data"]["answer"] = REMOVE_REF_RE.sub("", n["data"]["answer"])
+
+    return yaml.dump(doc, sort_keys=False, allow_unicode=True, width=1000)
+
+
+def apply_model(dcfg, report, model_id: str) -> None:
+    console = DifyConsole(dcfg)
+    console.login()
+    report.add("console-login", evidence="ok")
+
+    app = console.find_app(dcfg.app_name)
+    yaml_text = console.export_app(app["id"])
+    report.add("export", evidence=f"{len(yaml_text)} bytes")
+
+    patched = patch_dsl(yaml_text, model_id)
+    with open(ARTIFACT, "w", encoding="utf-8") as f:
+        f.write(patched)
+    report.add("patch", evidence=f"model={model_id} → {os.path.relpath(ARTIFACT, REPO_ROOT)}")
+
+    console.update_workflow_draft(app["id"], yaml.safe_load(patched)["workflow"])
+    report.add("overwrite", evidence="draft replaced (published app untouched)")
+
+    console.publish(app["id"])
+    report.add("publish", evidence=f"applied {model_id}")

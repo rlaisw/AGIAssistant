@@ -31,13 +31,16 @@ class DeployConfig:
     db_container: str = "docker-db_postgres-1"
     api_container: str = "docker-api-1"
     retention_days: int = 30
+    ollama_base_url: str = "http://172.17.0.1:11434"
+    ollama_model: str = "qwen3-8b-nothink"
+    openrouter_api_key: str = ""
     dsl_path: str = os.path.join(
-        REPO_ROOT, "dify", "Chatflow Basic (AgenticRAG Agent + PPT-Master).yml"
+        REPO_ROOT, "dify", "AGIAssistant", "AGI_Assistant.yml"
     )
 
     @property
     def secrets(self) -> list[str]:
-        return [s for s in (self.console_password, self.api_key) if s]
+        return [s for s in (self.console_password, self.api_key, self.openrouter_api_key) if s]
 
     def require_console(self) -> None:
         if not self.console_email or not self.console_password:
@@ -66,10 +69,16 @@ def resolve(cfg: Config) -> DeployConfig:
         db_container=str(deploy.get("db_container", "docker-db_postgres-1")),
         api_container=str(deploy.get("api_container", "docker-api-1")),
         retention_days=int(deploy.get("retention_days", 30)),
+        ollama_base_url=os.environ.get("DIFY_OLLAMA_BASE_URL")
+        or str(deploy.get("ollama_base_url", "http://172.17.0.1:11434")),
+        ollama_model=os.environ.get("DIFY_OLLAMA_MODEL")
+        or str(deploy.get("ollama_model", "qwen3-8b-nothink")),
+        openrouter_api_key=os.environ.get("DIFY_OPENROUTER_API_KEY")
+        or str(dify.get("openrouter_api_key", "")),
         dsl_path=str(dify.get("dsl_path")
                      or os.path.join(
-                         REPO_ROOT, "dify", "Chatflow Basic (AgenticRAG Agent + PPT-Master).yml"
-                     )),
+                          REPO_ROOT, "dify", "AGIAssistant", "AGI_Assistant.yml"
+                      )),
     )
 
 

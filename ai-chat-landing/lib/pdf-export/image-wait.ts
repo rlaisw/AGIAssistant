@@ -32,10 +32,12 @@ export async function embedOrDegradeImages(
             resolve()
           }
           const degrade = (reason: string) => {
-            console.warn(`[pdf-export] image degraded to link (${reason}):`, img.src)
+            // prefer the pre-proxy URL when the src was rewritten (image-proxy)
+            const original = img.getAttribute?.("data-orig-src") ?? img.src
+            console.warn(`[pdf-export] image degraded to link (${reason}):`, original)
             const link = doc.createElement("a") as HTMLAnchorElement
-            link.href = img.src
-            link.textContent = img.alt || img.src
+            link.href = original
+            link.textContent = img.alt || original
             img.replaceWith(link as unknown as Node)
             finish()
           }

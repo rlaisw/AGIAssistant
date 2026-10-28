@@ -18,7 +18,12 @@ createExportState(): { get(): "idle"|"busy"|"error", run(fn): Promise<void>, dis
 
 // image embed/link decision (pure, testable; production path via embedOrDegradeImages)
 decideImages(urls: string[], opts): Promise<{url, embed}[]>
-embedOrDegradeImages(container: HTMLElement, timeoutMs?): Promise<void>  // replaces failures with labeled links + console warn
+embedOrDegradeImages(container: HTMLElement, timeoutMs?): Promise<void>  // replaces failures with labeled links + console warn; link targets data-orig-src when the src was proxied
+
+// same-origin proxy rewrite (added 2026-10-28; html2canvas useCORS drops ACAO-less remote images)
+needsProxy(src, origin): boolean   // pure
+proxySrc(src): string              // pure -> /api/image-proxy?url=<enc>
+rewriteCrossOriginImages(container): void  // swaps cross-origin <img> srcs for proxy URLs, keeps original in data-orig-src
 
 // orchestrator (node-testable: render/rasterize/save seams injected)
 exportConversation(messages: ExportMessage[], deps: ExportDeps): Promise<void>
@@ -54,8 +59,12 @@ type ExportDeps = {
 | infographic/chart media served by the sidecar | `Access-Control-Allow-Origin: *` |
 
 No route, schema, or status-code changes; MCP `/mcp` and Dify-facing routes
-are untouched. Remote third-party images (web research) keep the
-attempt-CORS → labeled-link fallback (FR-012).
+are untouched. Remote third-party images (web research) no longer rely on
+CORS: since 2026-10-28 the export path rewrites them through the UI's own
+`GET /api/image-proxy?url=…` (server-side fetch, image/* only, 10 MB cap,
+10 s timeout) before rasterizing — so they survive html2canvas's `useCORS`.
+When the proxy itself fails, the FR-012 labeled-link fallback still applies
+(pointing at the original URL via `data-orig-src`).
 
 ## 4. New frontend dependencies (Constitution III record)
 

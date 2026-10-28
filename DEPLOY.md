@@ -98,6 +98,18 @@ containers on the Docker network use `agentic-rag:28080`.
 
 ## Step 5 — SearXNG (only if web_search is wanted)
 
+**Known behavior — transient empty results**: the upstream engines
+(google cse, brave, duckduckgo, wikipedia) periodically CAPTCHA/429 the
+instance (`docker logs searxng` shows `SearxEngineCaptchaException` /
+`TooManyRequestsException` with ~3-minute suspensions). During those
+windows `web_search`/`web_research`/`specialty_search` all return empty —
+the agent correctly reports "no results" and answers from general
+knowledge (flagged). They recover on their own; repeated probing
+*refreshes* the suspensions, so retry after a few quiet minutes. The
+engine set in `/home/administrator/searxng/settings.yml` was diversified
+(2026-10-27) with mojeek/qwant/startpage/swisscows to reduce
+single-provider block windows.
+
 The stock image ships WITHOUT the JSON API enabled — the AgenticRAG provider
 uses `format=json`, so create the settings first:
 
@@ -308,6 +320,57 @@ $VENV -m agentic_rag_mcp.deploy all                 # everything, aborting hones
 
 Behavior: exit 0 = success · N = failed battery scenarios · 2 = configuration error. Tool-cache re-sync is version-gated (DB path for Dify 1.17.x — the console Update flow doesn't re-sync tools in that version; unknown versions are skipped with a notice). The chatflow command updates the app **in place** (draft + publish — app id and API key preserved) and only imports when no same-name app exists. Console credentials are never logged (masked). Tests: `pytest tests/unit/test_deploy_* tests/integration/test_deploy_console.py tests/contract/test_deploy_cli.py`.
 
+## Step 10b — Local AI model (spec 025, "AI LLM" drop-down)
+
+The Chat UI's model selector offers a local Qwen3 8B alongside the cloud DeepSeek. Prerequisites on the host (rootless, no systemd unit — restart after reboot):
+
+```bash
+# Ollama (rootless install; server must bind 0.0.0.0 so Dify's containers reach it)
+curl -fsSL -o /tmp/kilo/ollama.tar.zst https://ollama.com/download/ollama-linux-amd64.tar.zst
+mkdir -p ~/ollama && tar --zstd -xf /tmp/kilo/ollama.tar.zst -C ~/ollama
+ln -sf ~/ollama/bin/ollama ~/.local/bin/ollama
+OLLAMA_HOST=0.0.0.0 setsid nohup ollama serve > ~/ollama/serve.log 2>&1 < /dev/null &
+
+# The no-think model (FR-009: reasoning disabled; Dify nodes add think:false too)
+ollama pull qwen3:8b
+ollama create qwen3-8b-nothink -f dify/AGIAssistant/ollama/qwen3-8b-nothink.Modelfile
+```
+
+Register the model inside Dify (installs the marketplace Ollama plugin when
+absent, then registers `qwen3-8b-nothink` as a custom LLM pointing at the
+docker-bridge address `http://172.17.0.1:11434`, plus the extra OpenRouter
+cloud models for the grouped menu — idempotent, safe to rerun):
+
+```bash
+$VENV -m agentic_rag_mcp.deploy models
+```
+
+Apply a cloud model to the chatflow itself (spec 026, what the Chat UI's
+"AI LLM" menu calls server-side): export → patch the three main LLM nodes
+→ overwrite the draft → publish. The published app is untouched until the
+publish step, so a failure leaves the previous configuration serving; the
+exported artifact (`dify/AGIAssistant/AGI_Assistant.yml`) mirrors the
+published app and is git-versioned for recovery:
+
+```bash
+$VENV -m agentic_rag_mcp.deploy apply-model moonshotai/kimi-k3
+$VENV -m agentic_rag_mcp.deploy apply-model deepseek/deepseek-v4.1-flash  # back to default
+```
+
+Notes: the chatflow routes on the `ai_model` start input (`local` → the three
+`*_local` nodes; absent/anything else → the configured cloud model — the
+battery sends no input and stays byte-identical). Cloud selection is global:
+the Chat UI's model menu applies it via `deploy apply-model` (spec 026).
+Extra cloud models (`z-ai/glm-5.3-flash`, `qwen/qwen3.8-flash`) are
+registered as OpenRouter custom models by the same `models` command (the
+openrouter plugin was upgraded to 0.1.12 for this; `moonshotai/kimi-k3`
+ships in its catalog). The Chat UI probes availability host-side via
+`GET /api/models`; a stopped Ollama degrades to the configured cloud model
+with a persistent inline note (FR-004), never a fabricated reply. Config keys:
+`[deploy] ollama_base_url` (default `http://172.17.0.1:11434`),
+`ollama_model` (default `qwen3-8b-nothink`). Live checks:
+`node ai-chat-landing/scripts/model-dropdown-check.mjs A|B|C1|C2|D`.
+
 ## Step 11 — AntV visualization tools (spec 012)
 
 Two additive MCP tools on the sidecar: `antv_chart(chart_type, data, title)` — statistical charts (bar/line/pie/radar/sankey/…; geography types excluded) rendered by the GPT-Vis service, returning an embeddable image URL; `antv_infographic(description)` — declarative infographics rendered browser-side at `GET /infographics/<id>/` (engine loads from CDN; no server-side DOM). Deck pages referencing remote chart images are exported **self-contained** — the pipeline downloads and embeds image bytes at page-write time (misformat sniffed from bytes; fetch failure = honest gate error).
@@ -317,6 +380,7 @@ Two additive MCP tools on the sidecar: `antv_chart(chart_type, data, title)` —
 **Operator notes**:
 
 - The chatflow agent is driven by the DSL's `tool_description`, not the server docstring. After changing the `antv_infographic` docstring: update both description fields in the chatflow DSL YAML, then `python -m agentic_rag_mcp.deploy chatflow`. A stale description makes the model anchor on one template (every infographic comes out the same style).
+- Generated visuals are routed by the agent instruction per output type (rule added 2026-10-27, in both agentic nodes' IMAGES section): `antv_chart` returns `image_url` → inlined as `![title](image_url)`; `antv_infographic` returns an interactive HTML page → given as a labeled markdown link (it cannot be inlined with `![]()`). If answers link charts instead of showing them, or inline infographic URLs, the DSL agent instruction is stale — republish with `deploy chatflow`.
 - Template menu: ~276 presets across 8 families (chart, sequence, sequence-interaction, list, hierarchy, relation, compare, quadrant). Key picks: true triangle pyramid = `sequence-pyramid-simple` (`list-pyramid-*` renders stacked badge rows, NOT a triangle); org charts = `hierarchy-structure` / `hierarchy-tree-*`; UML flows = `sequence-interaction-default-compact-card` — message children need `id` + `step` fields and `relations` reference those MESSAGE ids, or arrows don't draw.
 - Page gotchas: the served page must close the CDN script tag with a literal `</script>` (an escaped `<\/script>` makes the browser swallow the inline render script → blank page, no errors). Don't add "svg has ≥ 20 chars of text" health checks — sparse-but-valid charts get nuked by them. The page is served with `Cache-Control: no-store` + a `page-version` marker.
 
@@ -341,4 +405,6 @@ Two additive MCP tools on the sidecar: `antv_chart(chart_type, data, title)` —
 | Agent always renders the same infographic style | Chatflow DSL `tool_description` is stale (model never sees new template names) | Update both description fields in the DSL YAML + `deploy chatflow` |
 | UML sequence diagram renders without arrows | Messages lack `id`/`step` fields, or relations point at participant labels instead of message ids | Give each message `id X` + `step N`; relations `- from m1 / to m2 / label …` |
 | Image build hangs at the pip layer (20+ min, ~0 CPU, frozen sockets) | Stalled multi-GB CUDA torch wheel download — pip has no per-socket timeout (seen 2026-10-22; first attempt dead at 25 min) | Kill and rerun `deploy all` — COPY layers are cached, only the download repeats; to cut the download ~10×, force CPU-only torch per the Dockerfile header note (`pip install --index-url https://download.pytorch.org/whl/cpu torch` before the main install) |
+| Exported PDF drops remote images that display fine in chat | Pre-2026-10-28 Chat UI: html2canvas-pro rasterizes with `useCORS` and remote hosts without ACAO headers silently drop out of the PDF | Pull current `ai-chat-landing/` — the export path rewrites remote images through the same-origin `app/api/image-proxy` before rasterizing; failures degrade to labeled links |
+| Model links a chart instead of showing it, or inlines an infographic URL as an image | DSL agent-instruction generated-visuals rule is stale (charts inline via `image_url`, infographics link — rule added 2026-10-27) | `python -m agentic_rag_mcp.deploy chatflow` to republish the artifact instruction |
 | Chat UI loads from another machine but nothing is interactive | Next dev blocks cross-origin requests without an `allowedDevOrigins` entry (page renders, hydration dead) | Add the access origin to `allowedDevOrigins` in `ai-chat-landing/next.config.ts` and restart `pnpm dev` |

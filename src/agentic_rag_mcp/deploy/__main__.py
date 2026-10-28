@@ -89,6 +89,67 @@ def cmd_chatflow(dcfg: DeployConfig, dry: bool) -> int:
     return report.exit_code()
 
 
+def cmd_models(dcfg: DeployConfig, dry: bool) -> int:
+    from . import model_setup
+
+    report = RunReport()
+    report.configure(dcfg)
+    if dry:
+        print("dry-run plan (models):")
+        print("  - install marketplace Ollama plugin if absent")
+        print(f"  - save provider credential (base_url={dcfg.ollama_base_url})")
+        print(f"  - register model {dcfg.ollama_model} as a custom LLM")
+        return 0
+    try:
+        dcfg.require_console()
+        model_setup.setup_models(dcfg, report)
+    except Exception as exc:  # noqa: BLE001 — honest failure boundary
+        report.add("models", "failed", evidence=str(exc))
+        print(report.summary(dcfg))
+        return 1 if not isinstance(exc, ConfigError) else 2
+    print(report.summary(dcfg))
+    return report.exit_code()
+
+
+CLOUD_MODEL_IDS = (
+    "deepseek/deepseek-v4.1-flash",
+    "moonshotai/kimi-k3",
+    "z-ai/glm-5.3-flash",
+    "qwen/qwen3.8-flash",
+)
+
+
+def cmd_apply_model(dcfg: DeployConfig, model_id: str | None, dry: bool) -> int:
+    from . import model_apply
+
+    if not model_id:
+        print("error: apply-model requires a cloud model id")
+        print("valid:", ", ".join(CLOUD_MODEL_IDS))
+        return 2
+    if model_id not in CLOUD_MODEL_IDS:
+        print(f"error: unknown cloud model id: {model_id}")
+        print("valid:", ", ".join(CLOUD_MODEL_IDS))
+        return 2
+    report = RunReport()
+    report.configure(dcfg)
+    if dry:
+        print(f"dry-run plan (apply-model {model_id}):")
+        print("  - export the AGI Assistant app to dify/AGIAssistant/AGI_Assistant.yml")
+        print(f"  - patch the three main LLM nodes to {model_id} (+ idempotent cleanup)")
+        print("  - overwrite the app draft (published app untouched until publish)")
+        print("  - publish")
+        return 0
+    try:
+        dcfg.require_console()
+        model_apply.apply_model(dcfg, report, model_id)
+    except Exception as exc:  # noqa: BLE001 — honest failure boundary
+        report.add("apply-model", "failed", evidence=str(exc))
+        print(report.summary(dcfg))
+        return 1 if not isinstance(exc, ConfigError) else 2
+    print(report.summary(dcfg))
+    return report.exit_code()
+
+
 def cmd_verify(dcfg: DeployConfig, dry: bool, skip_chat: bool = False) -> int:
     if dry:
         print("dry-run plan (verify): run the battery scenarios headlessly,")
@@ -123,7 +184,9 @@ def cmd_cleanup(dcfg: DeployConfig, dry: bool, retention_days: int | None) -> in
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="agentic-rag-deploy")
     parser.add_argument("command",
-                         choices=["redeploy", "chatflow", "verify", "cleanup", "all"])
+                         choices=["redeploy", "chatflow", "models", "apply-model", "verify", "cleanup", "all"])
+    parser.add_argument("model_id", nargs="?",
+                         help="cloud model id for apply-model (e.g. moonshotai/kimi-k3)")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--skip-chat", action="store_true")
     parser.add_argument("--retention-days", type=int, default=None,
@@ -139,6 +202,10 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_redeploy(dcfg, args.dry_run)
     if args.command == "chatflow":
         return cmd_chatflow(dcfg, args.dry_run)
+    if args.command == "models":
+        return cmd_models(dcfg, args.dry_run)
+    if args.command == "apply-model":
+        return cmd_apply_model(dcfg, args.model_id, args.dry_run)
     if args.command == "verify":
         return cmd_verify(dcfg, args.dry_run, args.skip_chat)
     if args.command == "cleanup":

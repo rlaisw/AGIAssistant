@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import argparse
 import logging
+import re
 import uuid
 from pathlib import Path
+from urllib.parse import urljoin
 
 import httpx
 from mcp.server.fastmcp import FastMCP
@@ -29,17 +31,40 @@ from .store.vectordb import VectorStore
 log = logging.getLogger("agentic_rag_mcp")
 
 
+_IMG_SRC_RE = re.compile(r"""<img[^>]+(?:src|data-src)=["']([^"']+)["']""", re.I)
+_IMG_SKIP = ("pixel", "tracker", "beacon", "spacer", "1x1", "blank.gif")
+
+
 def _fetch_url(url: str, max_chars: int = 4000) -> dict:
-    """Fetch a live web page (httpx). Shared by the MCP tool and the deep loop."""
+    """Fetch a live web page (httpx). Shared by the MCP tool and the deep loop.
+
+    Returns page text plus `images`: every <img> source on the page, absolutized
+    against the final URL (lazy data-src and relative paths included), with
+    obvious trackers stripped — so the caller can inline step screenshots
+    (2026-10-27 user request: collect as many page images as possible).
+    """
     if not url.startswith(("http://", "https://")):
         raise ValueError("url must be http(s)")
     resp = httpx.get(url, timeout=20.0, follow_redirects=True,
                      headers={"User-Agent": "agentic-rag-mcp/0.1"})
+    final_url = str(resp.url)
+    images: list[str] = []
+    seen: set[str] = set()
+    for src in _IMG_SRC_RE.findall(resp.text):
+        abs_url = urljoin(final_url, src.strip())
+        low = abs_url.lower()
+        if not abs_url.startswith(("http://", "https://")) or abs_url in seen:
+            continue
+        if any(bad in low for bad in _IMG_SKIP):
+            continue
+        seen.add(abs_url)
+        images.append(abs_url)
     return {
-        "url": str(resp.url),
+        "url": final_url,
         "status": resp.status_code,
         "date_utc": resp.headers.get("date", ""),
         "text": resp.text[:max_chars],
+        "images": images,
     }
 
 
@@ -288,7 +313,7 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
         return filter_by_domains(hits, resolved["sites"])       # FR-006
 
     @mcp.tool()
-    def web_research(query: str, limit: int = 3) -> dict:
+    def web_research(query: str, limit: int = 6) -> dict:
         """Grouped web research: multi-engine search via the provider chain, then a
         per-page outline-preserving scrape (sections keep text + belonging image in
         document order), bounded for the LLM, with honest snippet fallbacks and a
