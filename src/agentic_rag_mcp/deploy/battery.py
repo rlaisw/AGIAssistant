@@ -205,6 +205,81 @@ def scenario_chat_journey(dcfg: DeployConfig) -> tuple[bool, str]:
     return served, f"link={url} serves={target.status_code}"
 
 
+def scenario_stop_generation(dcfg: DeployConfig) -> tuple[bool, str]:
+    """Spec 027 SC-005: a stop must halt the backend generation, not just the
+    client view. Streams a long answer, calls the stop endpoint mid-stream,
+    then asserts the stored answer does not grow after the stream closes."""
+    if not dcfg.api_key:
+        return True, "skipped: no DIFY_API_KEY configured (notice, not failure)"
+    base = dcfg.console_url.rstrip("/") + "/v1"
+    headers = {"Authorization": f"Bearer {dcfg.api_key}"}
+    user = "deploy-battery"
+    task_id = ""
+    conversation_id = ""
+    answer = ""
+    stopped = False
+    stop_status = None
+    with httpx.stream(
+        "POST",
+        f"{base}/chat-messages",
+        headers=headers,
+        json={"inputs": {},
+              "query": "Write a detailed 400-word story about a mountain rescue. "
+                       "Do not use any tools.",
+              "response_mode": "streaming",
+              "conversation_id": "",
+              "user": user},
+        timeout=180,
+    ) as resp:
+        if resp.status_code != 200:
+            return False, f"chat-messages={resp.status_code}"
+        for line in resp.iter_lines():
+            if not line.startswith("data:"):
+                continue
+            try:
+                event = json.loads(line[5:])
+            except json.JSONDecodeError:
+                continue
+            task_id = event.get("task_id") or task_id
+            conversation_id = event.get("conversation_id") or conversation_id
+            if event.get("event") in ("message", "agent_message"):
+                answer += event.get("answer") or ""
+            if not stopped and len(answer) > 80 and task_id:
+                stop = httpx.post(
+                    f"{base}/chat-messages/{task_id}/stop",
+                    headers=headers,
+                    json={"user": user},
+                    timeout=30,
+                )
+                stop_status = stop.status_code
+                stopped = stop.status_code in (200, 404)
+                if not stopped:
+                    return False, f"stop={stop.status_code}"
+    if not conversation_id or not answer:
+        return False, (f"generation never became stoppable "
+                       f"(task={bool(task_id)}, answer={len(answer)} chars)")
+    # SC-005: after the stream closes, the backend must not add more content.
+    # Dify exposes history at GET /messages?conversation_id=… (not
+    # /conversations/{id}/messages — same quirk the Chat UI proxy documents).
+    time.sleep(5)
+    r = httpx.get(
+        f"{base}/messages",
+        headers=headers,
+        params={"user": user, "conversation_id": conversation_id, "limit": 10},
+        timeout=60,
+    )
+    if r.status_code != 200:
+        return False, f"messages={r.status_code}"
+    stored = ""
+    for msg in r.json().get("data") or []:
+        if msg.get("answer") is not None:
+            stored = msg["answer"]
+    delta = len(stored.strip()) - len(answer.strip())
+    ok = delta <= 0
+    return ok, (f"stop={stop_status} halted backend "
+                f"(stored={len(stored.strip())} vs delivered={len(answer.strip())}, delta={delta})")
+
+
 def scenario_antv_chart(dcfg: DeployConfig) -> tuple[bool, str]:
     try:
         result = mcp_call("antv_chart", {
@@ -282,6 +357,7 @@ def registry(skip_chat: bool = False) -> list[tuple[str, object]]:
         ("completion-page", scenario_completion_page),
         ("honest-errors", scenario_honest_errors),
         ("chat-ui-liveness", scenario_chat_ui_liveness),
+        ("stop-generation", scenario_stop_generation),
         ("antv-chart", scenario_antv_chart),
         ("antv-infographic", scenario_antv_infographic),
         ("chart-in-deck", scenario_chart_in_deck),

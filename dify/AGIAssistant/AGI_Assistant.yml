@@ -271,9 +271,9 @@ workflow:
             value:
               completion_params: {}
               mode: chat
-              model: z-ai/glm-5.3-flash
+              model: moonshotai/kimi-k3
               model_type: llm
-              name: z-ai/glm-5.3-flash
+              name: moonshotai/kimi-k3
               provider: langgenius/openrouter/openrouter
               type: model-selector
           query:
@@ -541,9 +541,9 @@ workflow:
         model:
           completion_params: {}
           mode: chat
-          model: z-ai/glm-5.3-flash
+          model: moonshotai/kimi-k3
           model_type: llm
-          name: z-ai/glm-5.3-flash
+          name: moonshotai/kimi-k3
           provider: langgenius/openrouter/openrouter
           type: model-selector
         query_variable_selector:
@@ -691,9 +691,9 @@ workflow:
             value:
               completion_params: {}
               mode: chat
-              model: z-ai/glm-5.3-flash
+              model: moonshotai/kimi-k3
               model_type: llm
-              name: z-ai/glm-5.3-flash
+              name: moonshotai/kimi-k3
               provider: langgenius/openrouter/openrouter
               type: model-selector
           query:

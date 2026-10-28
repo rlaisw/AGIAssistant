@@ -1,11 +1,13 @@
 export const runtime = "nodejs"
 
 type StreamEvent = {
-  type: "chunk" | "reasoning" | "replace" | "sources" | "done" | "error" | "ping"
+  // spec 027: additive "task" event — consumers must tolerate unknown types
+  type: "chunk" | "reasoning" | "replace" | "sources" | "done" | "error" | "ping" | "task"
   text?: string
   sources?: string[]
   message?: string
   conversationId?: string
+  taskId?: string
 }
 
 export async function POST(req: Request) {
@@ -57,6 +59,9 @@ export async function POST(req: Request) {
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
   const reader = upstream.body.getReader()
+  // spec 027: once the client cancels (user stop), the loop's pending read
+  // rejects — don't report that as a stream error to a stopping client
+  let cancelled = false
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -64,6 +69,7 @@ export async function POST(req: Request) {
         controller.enqueue(encoder.encode(JSON.stringify(event) + "\n"))
       let buffer = ""
       let difyConversationId: string | undefined
+      let taskIdSent = false
 
       try {
         for (;;) {
@@ -96,6 +102,18 @@ export async function POST(req: Request) {
                 !difyConversationId
               ) {
                 difyConversationId = event.conversation_id
+              }
+              // spec 027 (contracts §1): forward the generation ids once — the
+              // task id lets the client halt the backend via /api/chat/stop,
+              // and the early conversation_id lets a stopped FIRST turn still
+              // register its conversation in history (done never arrives)
+              if (typeof event.task_id === "string" && !taskIdSent && event.task_id) {
+                taskIdSent = true
+                send({
+                  type: "task",
+                  taskId: event.task_id,
+                  conversationId: difyConversationId,
+                })
               }
               switch (event.event) {
                 case "message":
@@ -133,15 +151,17 @@ export async function POST(req: Request) {
         }
         send({ type: "done", conversationId: difyConversationId })
       } catch (error) {
-        send({
-          type: "error",
-          message: error instanceof Error ? error.message : "stream error",
-        })
+        if (!cancelled)
+          send({
+            type: "error",
+            message: error instanceof Error ? error.message : "stream error",
+          })
       } finally {
         controller.close()
       }
     },
     cancel() {
+      cancelled = true
       reader.cancel().catch(() => {})
     },
   })

@@ -23,6 +23,7 @@ import {
   Search,
   Settings,
   Share2,
+  Square,
   Sun,
   ThumbsDown,
   ThumbsUp,
@@ -40,6 +41,13 @@ import { badgeModel, badgeNote, type BadgeValue } from "@/lib/models/badge"
 import { fetchAvailability } from "@/lib/models/availability"
 import { createModelStorage } from "@/lib/models/persistence"
 import { DEFAULT_MODEL_ID, isModelId, optionById, type ModelId } from "@/lib/models/options"
+import { splitFollowUp } from "@/lib/follow-up"
+import {
+  composerMode,
+  decideStopAction,
+  finalizeOnStop,
+  shouldCallBackendStop,
+} from "@/lib/stop/state"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Markdown } from "@/components/markdown"
@@ -64,6 +72,9 @@ type Message = {
   sources?: string[]
   streaming?: boolean
   noBadge?: boolean
+  // spec 027: session-only stop marker (survives conversation switching,
+  // lost on reload — the partial transcript is the durable record)
+  stopped?: boolean
 }
 
 type Conversation = {
@@ -166,6 +177,28 @@ function ThinkingIndicator() {
   )
 }
 
+// follow-up prompts (2026-10-28): the trailing "Want me to…?" paragraph of a
+// finished answer renders as blue text with a 💡; mid-stream it stays inline
+function AssistantText({ message }: { message: Message }) {
+  if (!message.text) return <ThinkingIndicator />
+  const { body, followUp } = message.streaming
+    ? { body: message.text, followUp: undefined }
+    : splitFollowUp(message.text)
+  return (
+    <>
+      <div data-answer-text>
+        <Markdown>{body}</Markdown>
+        {followUp && (
+          <div className="mt-3 text-blue-600 dark:text-blue-400" data-follow-up>
+            <Markdown>{`💡 ${followUp}`}</Markdown>
+          </div>
+        )}
+      </div>
+      {message.streaming && <ThinkingIndicator />}
+    </>
+  )
+}
+
 export default function Page() {
   const [conversations, setConversations] = React.useState<Conversation[]>([
     { id: "c-0", title: "New chat", messages: [] },
@@ -241,6 +274,18 @@ export default function Page() {
   const replyRef = React.useRef(0)
   const idRef = React.useRef(3)
   const scrollRef = React.useRef<HTMLDivElement>(null)
+  // spec 027: the in-flight generation (single-flight app-wide, research R5)
+  // and the one-way stop latch (FR-009). genRef survives conversation switches
+  // so the generation keeps updating its own conversation (FR-010).
+  const genRef = React.useRef<{
+    convId: string
+    assistantId: number
+    title: string
+    model: ModelId
+    taskId: string | null
+    isDemo: boolean
+  } | null>(null)
+  const stopRequestedRef = React.useRef(false)
 
   const active =
     conversations.find((c) => c.id === activeId) ?? conversations[0]
@@ -248,6 +293,13 @@ export default function Page() {
   // "the globally configured model" (server truth supersedes stored choices).
   const storedSelection = selectionByConv[activeId]
   const activeModel: ModelId = storedSelection === "local" ? "local" : configuredCloud
+  // spec 027 (FR-001/FR-010): Stop replaces Send only while the viewed
+  // conversation is the one generating; re-renders on busy/activeId changes
+  // cover every transition of genRef this depends on
+  const stopMode = composerMode({
+    busy,
+    viewingGeneratingConversation: genRef.current?.convId === activeId,
+  })
 
   const refreshAvailability = React.useCallback(() => {
     void fetchAvailability().then(setLocalAvailable)
@@ -338,32 +390,45 @@ export default function Page() {
     setConversations((prev) => prev.map((c) => (c.id === id ? updater(c) : c)))
   }
 
-  function updateMessage(id: number, patch: Partial<Message>) {
-    updateConversation(activeId, (c) => ({
+  function updateMessage(id: number, patch: Partial<Message>, convId: string = activeId) {
+    updateConversation(convId, (c) => ({
       ...c,
       messages: c.messages.map((m) => (m.id === id ? { ...m, ...patch } : m)),
     }))
   }
 
-  function demoStream(assistantId: number) {
+  // spec 027: every generation end (complete, error, stop) funnels through
+  // here — clears the single-flight refs and frees the composer (FR-002/005)
+  function finishGeneration() {
+    genRef.current = null
+    stopRequestedRef.current = false
+    setBusy(false)
+  }
+
+  function demoStream(assistantId: number, convId: string = activeId) {
     const reply = cannedReplies[replyRef.current % cannedReplies.length]
     replyRef.current += 1
+    if (genRef.current) genRef.current.isDemo = true
     const words = reply.text.split(" ")
     let i = 0
     streamRef.current = setInterval(() => {
       i += 3
       const done = i >= words.length
-      updateMessage(assistantId, {
-        text: words.slice(0, Math.min(i, words.length)).join(" "),
-        streaming: !done,
-        sources: done ? reply.sources : undefined,
-        code: done ? reply.code : undefined,
-        codeName: done ? reply.codeName : undefined,
-      })
+      updateMessage(
+        assistantId,
+        {
+          text: words.slice(0, Math.min(i, words.length)).join(" "),
+          streaming: !done,
+          sources: done ? reply.sources : undefined,
+          code: done ? reply.code : undefined,
+          codeName: done ? reply.codeName : undefined,
+        },
+        convId
+      )
       if (done && streamRef.current) {
         clearInterval(streamRef.current)
         streamRef.current = null
-        setBusy(false)
+        finishGeneration()
       }
     }, 60)
   }
@@ -422,6 +487,17 @@ export default function Page() {
       ],
     }))
 
+    // spec 027: single-flight generation record + stop latch reset (FR-009)
+    stopRequestedRef.current = false
+    genRef.current = {
+      convId: sendConvId,
+      assistantId,
+      title: value.slice(0, 60),
+      model: serving,
+      taskId: null,
+      isDemo: false,
+    }
+
     const controller = new AbortController()
     abortRef.current = controller
     let answer = ""
@@ -460,10 +536,14 @@ export default function Page() {
       const flush = () => {
         flushTimer = null
         const parsed = parseAnswer(answer)
-        updateMessage(assistantId, {
-          text: parsed.text,
-          reasoning: reasoning || parsed.reasoning,
-        })
+        updateMessage(
+          assistantId,
+          {
+            text: parsed.text,
+            reasoning: reasoning || parsed.reasoning,
+          },
+          sendConvId
+        )
       }
       const scheduleFlush = () => {
         if (flushTimer) return
@@ -486,6 +566,7 @@ export default function Page() {
             sources?: string[]
             message?: string
             conversationId?: string
+            taskId?: string
           }
           try {
             msg = JSON.parse(line)
@@ -507,13 +588,32 @@ export default function Page() {
               scheduleFlush()
               break
             case "sources":
-              updateMessage(assistantId, { sources: msg.sources })
+              updateMessage(assistantId, { sources: msg.sources }, sendConvId)
+              break
+            case "task":
+              // spec 027: generation ids from the stream — taskId for the
+              // backend halt; the conversation registers NOW (not at done)
+              // so it is reachable and stoppable in the sidebar mid-stream,
+              // and a stopped first turn still resumes from history (FR-010)
+              if (genRef.current) genRef.current.taskId = msg.taskId ?? null
+              if (msg.conversationId) {
+                updateConversation(sendConvId, (c) =>
+                  c.difyId ? c : { ...c, difyId: msg.conversationId }
+                )
+                history.upsert({
+                  difyId: msg.conversationId,
+                  title: value.slice(0, 60),
+                  lastActivityAt: Date.now(),
+                })
+                modelStorage.setSelection(msg.conversationId, serving)
+                syncHistory()
+              }
               break
             case "error":
               throw new Error(msg.message ?? "Stream error")
             case "done":
               if (msg.conversationId) {
-                updateConversation(activeId, (c) => ({
+                updateConversation(sendConvId, (c) => ({
                   ...c,
                   difyId: msg.conversationId,
                 }))
@@ -539,28 +639,39 @@ export default function Page() {
       if (!answer.trim() && requested === "local") {
         const localFailed = await localModelFailed()
         if (localFailed) resetSelectionToCloud(sendConvId, difyId)
-        updateMessage(assistantId, {
-          text: localFailed
-            ? "The local model could not answer this message and the selection was reset to DeepSeek. Please send again."
-            : "Something went wrong sending this message. The selection stays on Qwen3 8B — please send again.",
-          streaming: false,
-          noBadge: true,
-        })
-        setBusy(false)
+        updateMessage(
+          assistantId,
+          {
+            text: localFailed
+              ? "The local model could not answer this message and the selection was reset to DeepSeek. Please send again."
+              : "Something went wrong sending this message. The selection stays on Qwen3 8B — please send again.",
+            streaming: false,
+            noBadge: true,
+          },
+          sendConvId
+        )
+        finishGeneration()
         return
       }
       flush()
-      updateMessage(assistantId, { streaming: false })
-      setBusy(false)
+      updateMessage(assistantId, { streaming: false }, sendConvId)
+      finishGeneration()
     } catch (error) {
       if (flushTimer) clearTimeout(flushTimer)
       if (watchdog) clearTimeout(watchdog)
+      // spec 027: once a user stop is latched, the turn is already finalized —
+      // any stream remnant (abort, error event racing the abort) is ignored
+      if (stopRequestedRef.current) return
       if (
         error instanceof DOMException &&
         error.name === "AbortError" &&
         !timedOut
-      )
+      ) {
+        // spec 027 (research R3, supersedes the old silent return that left
+        // streaming + busy stuck): other aborts (delete, unmount) end quietly
+        finishGeneration()
         return
+      }
       // spec 025 FR-007 / error-matrix row 8: reset only when Local is
       // actually down; a Dify-side error keeps the selection and never falls
       // back to canned demo replies for a local-requested send.
@@ -568,34 +679,106 @@ export default function Page() {
       if (localFailed) resetSelectionToCloud(sendConvId, difyId)
       if (!answer) {
         if (timedOut || localFailed) {
-          updateMessage(assistantId, {
-            text: localFailed
-              ? "The local model could not answer this message and the selection was reset to DeepSeek. Please send again."
-              : "Connection lost — the assistant may still be working on it. Please send your question again.",
-            streaming: false,
-            noBadge: localFailed,
-          })
-          setBusy(false)
+          updateMessage(
+            assistantId,
+            {
+              text: localFailed
+                ? "The local model could not answer this message and the selection was reset to DeepSeek. Please send again."
+                : "Connection lost — the assistant may still be working on it. Please send your question again.",
+              streaming: false,
+              noBadge: localFailed,
+            },
+            sendConvId
+          )
+          finishGeneration()
         } else if (requested === "local") {
-          updateMessage(assistantId, {
-            text: "Something went wrong sending this message. The selection stays on Qwen3 8B — please send again.",
-            streaming: false,
-            noBadge: true,
-          })
-          setBusy(false)
+          updateMessage(
+            assistantId,
+            {
+              text: "Something went wrong sending this message. The selection stays on Qwen3 8B — please send again.",
+              streaming: false,
+              noBadge: true,
+            },
+            sendConvId
+          )
+          finishGeneration()
         } else {
-          demoStream(assistantId)
+          demoStream(assistantId, sendConvId)
         }
       } else {
         const parsed = parseAnswer(answer)
-        updateMessage(assistantId, {
-          text: `${parsed.text}\n\nSomething went wrong while streaming the response.`,
-          reasoning: reasoning || parsed.reasoning,
-          streaming: false,
-        })
-        setBusy(false)
+        updateMessage(
+          assistantId,
+          {
+            text: `${parsed.text}\n\nSomething went wrong while streaming the response.`,
+            reasoning: reasoning || parsed.reasoning,
+            streaming: false,
+          },
+          sendConvId
+        )
+        finishGeneration()
       }
     }
+  }
+
+  // spec 027 (FR-001/003/004/006/009): user Stop — halt the backend, abort the
+  // stream, finalize the turn honestly, free the composer in under 1 second
+  function stopGeneration() {
+    const gen = genRef.current
+    if (!gen || stopRequestedRef.current) return // nothing running / double-click (FR-009)
+    stopRequestedRef.current = true
+
+    const conv = conversations.find((c) => c.id === gen.convId)
+    const message = conv?.messages.find((m) => m.id === gen.assistantId)
+    const hasAnswerText = Boolean(message?.text?.trim())
+    const action = decideStopAction({
+      busy: true,
+      stopRequested: false,
+      hasAnswerText,
+      hasReasoning: Boolean(message?.reasoning?.trim()),
+      generationPhase: hasAnswerText ? "streaming" : "thinking",
+    })
+
+    // FR-006: halt the backend generation too — fire-and-forget; the client
+    // stops cleanly regardless, failures warn here and surface in the battery
+    if (
+      shouldCallBackendStop({
+        taskId: gen.taskId ?? undefined,
+        demoMode: gen.isDemo,
+      })
+    ) {
+      void fetch("/api/chat/stop", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ taskId: gen.taskId }),
+      }).catch((err) =>
+        console.warn("[stop] backend halt failed (client stopped anyway):", err)
+      )
+    }
+
+    if (gen.isDemo) {
+      if (streamRef.current) {
+        clearInterval(streamRef.current)
+        streamRef.current = null
+      }
+    } else {
+      abortRef.current?.abort()
+    }
+
+    if (action === "remove-empty-turn") {
+      updateConversation(gen.convId, (c) => ({
+        ...c,
+        messages: c.messages.filter((m) => m.id !== gen.assistantId),
+      }))
+    } else if (action === "finalize-stopped") {
+      const patch = finalizeOnStop({
+        text: message?.text ?? "",
+        reasoning: message?.reasoning,
+        streaming: true,
+      })
+      if (!("remove" in patch)) updateMessage(gen.assistantId, patch, gen.convId)
+    }
+    finishGeneration()
   }
 
   async function openConversation(record: ConversationRecord) {
@@ -674,6 +857,8 @@ export default function Page() {
         clearInterval(streamRef.current)
         streamRef.current = null
       }
+      genRef.current = null
+      stopRequestedRef.current = false
       setBusy(false)
       newChat()
     }
@@ -937,14 +1122,7 @@ export default function Page() {
                           <p className="mt-1.5 leading-relaxed">{m.reasoning}</p>
                         </div>
                       )}
-                      {m.text ? (
-                        <>
-                          <Markdown>{m.text}</Markdown>
-                          {m.streaming && <ThinkingIndicator />}
-                        </>
-                      ) : (
-                        <ThinkingIndicator />
-                      )}
+                      <AssistantText message={m} />
                       {m.code && (
                         <div className="overflow-hidden rounded-lg border">
                           <div className="flex items-center justify-between border-b bg-muted/50 px-3 py-1.5 text-xs text-muted-foreground">
@@ -972,6 +1150,14 @@ export default function Page() {
                             </Badge>
                           ))}
                         </div>
+                      )}
+                      {m.stopped && (
+                        <p
+                          className="text-xs italic text-muted-foreground"
+                          data-stopped-caption
+                        >
+                          Stopped
+                        </p>
                       )}
                       {!m.streaming &&
                         badgeNote(
@@ -1097,15 +1283,28 @@ export default function Page() {
                       {applyError}
                     </span>
                   )}
-                  <Button
-                    size="icon-sm"
-                    className="rounded-full"
-                    aria-label="Send message"
-                    disabled={!input.trim() || busy || !!applyingModel}
-                    onClick={() => send()}
-                  >
-                    <ArrowUp />
-                  </Button>
+                  {stopMode === "stop" ? (
+                    <Button
+                      size="icon-sm"
+                      className="rounded-full"
+                      aria-label="Stop generation"
+                      data-composer-mode="stop"
+                      onClick={() => stopGeneration()}
+                    >
+                      <Square className="size-3.5 fill-current" />
+                    </Button>
+                  ) : (
+                    <Button
+                      size="icon-sm"
+                      className="rounded-full"
+                      aria-label="Send message"
+                      data-composer-mode="send"
+                      disabled={!input.trim() || busy || !!applyingModel}
+                      onClick={() => send()}
+                    >
+                      <ArrowUp />
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
