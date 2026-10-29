@@ -45,8 +45,12 @@ def _validate(chart_type: str, data: list, title: str) -> None:
 def _normalize_data(chart_type: str, data: list) -> list:
     """Auto-normalize 2-field records to the canonical shape the rendering
     service plots (arbitrary field names render an EMPTY chart — verified
-    empirically 2026-10-20). Records with the canonical fields pass through."""
+    empirically 2026-10-20). Records with the canonical fields pass through.
+    Scatter is x/y-only (verified 2026-10-28: category/value renders an
+    empty frame — image bytes do not scale with point count; x/y does)."""
     key_field = "time" if chart_type in ("line", "area") else "category"
+    if chart_type == "scatter":
+        return _normalize_scatter(data)
     if all(key_field in d and "value" in d for d in data):
         return data
     # exactly two fields: one string-ish -> category/time, one numeric -> value
@@ -67,6 +71,25 @@ def _normalize_data(chart_type: str, data: list) -> list:
             )
         normalized.append({key_field: d[string_key], "value": d[number_key]})
     return normalized
+
+
+def _is_num(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def _normalize_scatter(data: list) -> list:
+    """Scatter plots two numeric axes: {x, y} is canonical and passes through;
+    {category, value} with BOTH numeric is mapped to {x, y} so calls made per
+    the generic tool description still render (2026-10-28)."""
+    if all(_is_num(d.get("x")) and _is_num(d.get("y")) for d in data):
+        return data
+    if all(_is_num(d.get("category")) and _is_num(d.get("value")) for d in data):
+        return [{"x": d["category"], "y": d["value"]} for d in data]
+    raise AntvInvalidInput(
+        "scatter data records must be {\"x\": <number>, \"y\": <number>} "
+        "(height/weight, age/salary, …); {\"category\": <number>, \"value\": <number>} "
+        "is also accepted and mapped"
+    )
 
 
 def generate_chart(cfg: Config, chart_type: str, data: list, title: str = "",

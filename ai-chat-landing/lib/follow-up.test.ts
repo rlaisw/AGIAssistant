@@ -34,4 +34,60 @@ describe("splitFollowUp", () => {
     const r = splitFollowUp("Body.\n\nWant me to continue?  ")
     expect(r.followUp).toBe("Want me to continue?")
   })
+
+  it("catches a multi-line follow-up that ends with a period (real case 2026-10-28)", () => {
+    const r = splitFollowUp(
+      "Summary of the BMI data.\n\nDetails here.\n\nWant me to add any of these next?\nA radar or box-plot comparing BMI spread\nA histogram of BMI distribution\nJust tell me which and I'll generate it."
+    )
+    expect(r.body).toBe("Summary of the BMI data.\n\nDetails here.")
+    expect(r.followUp).toContain("Want me to add any of these next?")
+    expect(r.followUp).toContain("Just tell me which and I'll generate it.")
+  })
+
+  it("captures the whole block when options sit in their own paragraphs (live case 2026-10-28)", () => {
+    const r = splitFollowUp(
+      "The watch-list is the 14 employees at BMI 25+.\n\nWant me to add any of these next?\n\nA radar or box-plot comparing BMI spread by group\nA histogram of BMI distribution\nAn Excel-style pivot or a chart in a different style (bar, treemap, dual-axis)\n\nJust tell me which and I'll generate it."
+    )
+    expect(r.body).toBe("The watch-list is the 14 employees at BMI 25+.")
+    expect(r.followUp).toContain("Want me to add any of these next?")
+    expect(r.followUp).toContain("A radar or box-plot")
+    expect(r.followUp).toContain("Just tell me which and I'll generate it.")
+  })
+
+  it("styles a single-paragraph 'Want a …?' opener ending with a bang (Kimi case 2026-10-28)", () => {
+    const r = splitFollowUp(
+      "Answer content here.\n\nWant a different view — e.g., a sorted BMI ranking, a histogram of height/weight distribution, or a dual-axis chart? Just let me know!"
+    )
+    expect(r.body).toBe("Answer content here.")
+    expect(r.followUp).toBe("Want a different view — e.g., a sorted BMI ranking, a histogram of height/weight distribution, or a dual-axis chart? Just let me know!")
+  })
+
+  it("captures opener + options + a 'Just say' closer (Qwen case 2026-10-28)", () => {
+    const r = splitFollowUp(
+      "What the scatter shows: weight rises with height overall.\n\nWant a different cut?\n\nI can regenerate any of these as:\nSorted column chart (BMI high → low) for a ranked watch list\nDual-axes (BMI bars + height line) per employee\nBox plot of BMI spread, or a treemap/sankey grouping\nAn infographic summary card for a slide/report\n\nJust say which one. I spot-checked your BMI column and the values are consistent."
+    )
+    expect(r.body).toBe("What the scatter shows: weight rises with height overall.")
+    expect(r.followUp).toContain("Want a different cut?")
+    expect(r.followUp).toContain("Dual-axes")
+    expect(r.followUp).toContain("Just say which one.")
+  })
+
+  it("does not match plain 'just' sentences as closers", () => {
+    const text = "Analysis.\n\nJust because the data says so, it is fine."
+    expect(splitFollowUp(text)).toEqual({ body: text })
+  })
+
+  it("styles only the closer when no opener precedes the options (options belong to their question)", () => {
+    const r = splitFollowUp(
+      "This is a long and detailed analysis paragraph explaining the full BMI breakdown of the entire employee dataset with many numbers in it, far beyond one line of text, so it must stay in the body.\n\nA radar or box-plot\nA histogram\n\nJust tell me which and I'll generate it."
+    )
+    expect(r.body).toContain("long and detailed analysis")
+    expect(r.body).toContain("A radar or box-plot")
+    expect(r.followUp).toBe("Just tell me which and I'll generate it.")
+  })
+
+  it("does not style a last paragraph that merely mentions wanting something", () => {
+    const text = "Analysis.\n\nThe team wanted me to check twice, so I did."
+    expect(splitFollowUp(text)).toEqual({ body: text })
+  })
 })

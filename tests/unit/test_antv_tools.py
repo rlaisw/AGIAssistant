@@ -98,6 +98,30 @@ def test_auto_normalizes_raw_column_names():
     ]
 
 
+def test_scatter_needs_two_numbers():
+    """Empirically driven (2026-10-28): scatter with category/value renders an
+    EMPTY frame (image bytes don't scale with point count); x/y plots points.
+    The tool must accept x/y, map numeric category/value, and reject the rest."""
+    from agentic_rag_mcp.antv import charts
+
+    # x/y is canonical for scatter and passes through
+    assert charts._normalize_data("scatter", [
+        {"x": 168.6, "y": 65.3}, {"x": 176.6, "y": 74.3},
+    ]) == [{"x": 168.6, "y": 65.3}, {"x": 176.6, "y": 74.3}]
+
+    # numeric category/value (the old description's shape) maps to x/y
+    assert charts._normalize_data("scatter", [
+        {"category": 168.6, "value": 65.3}, {"category": 176.6, "value": 74.3},
+    ]) == [{"x": 168.6, "y": 65.3}, {"x": 176.6, "y": 74.3}]
+
+    # string category scatter is not plottable — reject honestly
+    with pytest.raises(charts.AntvInvalidInput):
+        charts._normalize_data("scatter", [{"category": "E001", "value": 65.3}])
+    # mixed shapes are rejected
+    with pytest.raises(charts.AntvInvalidInput):
+        charts._normalize_data("scatter", [{"x": 1, "y": 2}, {"category": 3, "value": 4}])
+
+
 def test_unsupported_type_names_supported_set(tmp_path, monkeypatch):
     from agentic_rag_mcp.antv import charts
     from agentic_rag_mcp.antv.errors import AntvError, AntvInvalidType

@@ -609,6 +609,9 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
         [{"category": "Peter", "value": 180}, {"category": "Mary", "value": 165}]
         Rename any source columns to these exact fields ("Student"->"category",
         "Height (cm)"->"value"); values must be numbers, not strings.
+        EXCEPT scatter: each point needs TWO numbers — {"x": <number>, "y": <number>}
+        (e.g. height/weight, age/salary); numeric {"category","value"} pairs are
+        mapped to x/y automatically, but "x"/"y" is the reliable shape.
         Any 2-field record shape is auto-normalized, but canonical fields are safest.
 
         axis_x_title / axis_y_title set human axis labels (e.g. "Students",
