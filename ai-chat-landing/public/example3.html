@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMI Distribution Histogram</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #fff; font-family: Arial, Helvetica, sans-serif; }
+  .wrap { max-width: 760px; margin: 24px auto; }
+  .prompt {
+    font-size: 16px;
+    line-height: 1.5;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e3e3e3;
+    margin-bottom: 16px;
+  }
+  .prompt .prompt-label {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .prompt p { margin: 0; padding: 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="prompt">
+    <h2 class="prompt-label" style="margin-bottom: 0; padding-bottom: 0; color: green;">Prompt: </h2>
+    <i style="color: green;">Generate a BMI distribution histogram. Employee ID Height (CM) Weight (KG) BMI E001 168.6 65.3 23.0 .....</i>
+    <p></p>
+  </div>
+  <svg id="chart" width="720" height="440" viewBox="0 0 720 440" role="img" aria-label="BMI distribution histogram"></svg>
+</div>
+<script>
+// Raw BMI data (E001–E020)
+const bmi = [
+  23.0, 25.6, 19.0, 22.7, 23.9, 27.0, 23.8, 20.5, 27.4, 23.2,
+  19.1, 25.0, 22.8, 24.2, 20.2, 19.0, 21.7, 26.1, 19.8, 20.5
+];
+
+// Build 1.0-wide bins from 19.0 to 28.0
+const start = Math.floor(Math.min(...bmi));   // 19
+const end   = Math.ceil(Math.max(...bmi));    // 28
+const bins = [];
+for (let b = start; b < end; b++) {
+  bins.push({ label: b.toFixed(1) + "-" + (b + 0.9).toFixed(1), count: 0 });
+}
+bmi.forEach(v => {
+  const i = Math.min(Math.floor(v - start), bins.length - 1);
+  bins[i].count++;
+});
+
+// SVG setup
+const NS = "http://www.w3.org/2000/svg";
+const svg = document.getElementById("chart");
+const W = 720, H = 440, m = { top: 46, right: 24, bottom: 56, left: 56 };
+const pw = W - m.left - m.right, ph = H - m.top - m.bottom;
+const maxY = Math.max(...bins.map(b => b.count));
+
+function el(tag, attrs, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  svg.appendChild(e);
+  return e;
+}
+
+// Title
+el("text", { x: W / 2, y: 26, "text-anchor": "middle", "font-size": 18, "font-weight": "bold" },
+  "BMI Distribution (n = " + bmi.length + ")");
+
+// Gridlines + Y-axis tick labels
+for (let t = 0; t <= maxY; t++) {
+  const y = m.top + ph - (t / maxY) * ph;
+  el("line", { x1: m.left, y1: y, x2: m.left + pw, y2: y, stroke: t === 0 ? "#333" : "#e3e3e3" });
+  el("text", { x: m.left - 8, y: y + 4, "text-anchor": "end", "font-size": 12 }, t);
+}
+
+// Y-axis line
+el("line", { x1: m.left, y1: m.top, x2: m.left, y2: m.top + ph, stroke: "#333" });
+
+// Bars + labels
+const bw = pw / bins.length;
+bins.forEach((b, i) => {
+  const h = (b.count / maxY) * ph;
+  const x = m.left + i * bw + bw * 0.08;
+  const y = m.top + ph - h;
+  const rect = el("rect", { x: x, y: y, width: bw * 0.84, height: h, fill: "#4e79a7" });
+  const tip = document.createElementNS(NS, "title");
+  tip.textContent = b.label + ": " + b.count + " employees";
+  rect.appendChild(tip);
+  el("text", { x: x + bw * 0.42, y: y - 6, "text-anchor": "middle", "font-size": 12, "font-weight": "bold" }, b.count);
+  el("text", { x: m.left + i * bw + bw / 2, y: m.top + ph + 20, "text-anchor": "middle", "font-size": 11 }, b.label);
+});
+
+// Axis titles
+el("text", { x: m.left + pw / 2, y: H - 10, "text-anchor": "middle", "font-size": 13 }, "BMI");
+el("text", { x: 18, y: m.top + ph / 2, "text-anchor": "middle", "font-size": 13,
+  transform: "rotate(-90 18 " + (m.top + ph / 2) + ")" }, "Number of Employees");
+</script>
+</body>
+</html>

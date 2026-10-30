@@ -38,6 +38,28 @@ def _model_block(model_id: str) -> dict:
     }
 
 
+def strip_null_variable_params(doc: dict) -> None:
+    """Bug fix ppt-no-response (2026-10-29): agent params exported as
+    {"type": "variable", "value": None} carry a null variable selector —
+    Dify 1.18's variable_pool.get(None) raises len(None) and kills the node
+    before any LLM/tool call (PPT-Master failed in 59 ms). Bare nulls are
+    equally invalid (AgentNodeData validation). The runnable shape — proven
+    by the pre-026 export — is the key ABSENT entirely. Real selectors
+    (non-empty lists) pass through untouched.
+    """
+    for n in doc["workflow"]["graph"]["nodes"]:
+        params = (n.get("data") or {}).get("agent_parameters")
+        if not isinstance(params, dict):
+            continue
+        for key in [k for k, v in params.items()
+                    if isinstance(v, dict) and v.get("type") == "variable"
+                    and not v.get("value")]:
+            del params[key]
+        for key in ("allowed_tools", "context", "files"):
+            if key in params and params[key] is None:
+                del params[key]
+
+
 def patch_dsl(yaml_text: str, model_id: str) -> str:
     """Set the three main LLM nodes to model_id + idempotent FR-005 cleanup."""
     doc = yaml.safe_load(yaml_text)
@@ -85,6 +107,11 @@ def patch_dsl(yaml_text: str, model_id: str) -> str:
         n = by_id.get(nid)
         if n and isinstance(n["data"].get("answer"), str):
             n["data"]["answer"] = REMOVE_REF_RE.sub("", n["data"]["answer"])
+
+    # ppt-no-response: exports can materialize null variable selectors
+    # ({"type": "variable", "value": None}) on agent nodes — normalize so
+    # every apply cycle leaves the DSL in the runnable shape.
+    strip_null_variable_params(doc)
 
     return yaml.dump(doc, sort_keys=False, allow_unicode=True, width=1000)
 

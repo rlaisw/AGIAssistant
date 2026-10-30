@@ -19,7 +19,7 @@ The six cards render in `data-model.md` order; each card's button sends its
 
 ## Error-handling expectations (from research)
 
-- Placeholder URLs 404 in a new tab — accepted temporary state.
+- Placeholder URLs 404 in a new tab — accepted temporary state. **Superseded 2026-10-30:** all six help pages now exist and serve 200 — `ai-chat-landing/public/example1.html` … `example6.html`, each with a 16 px green prompt/procedures provenance strip at the top; card labels link to them same-origin (`/exampleN.html`), wired in `app/page.tsx` + mirrored in `scripts/welcome-cards.mjs`. The accepted-404 clause no longer applies.
 - Label click never sends (structural sibling separation).
 - No nested-interactive markup; no icon library; no new dependencies.
 - Old suggestion prompts are superseded (no leftover row).

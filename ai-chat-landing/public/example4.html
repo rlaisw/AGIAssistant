@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TVB-OA — Reset Corporate User ID Password</title>
+<style>
+  :root {
+    --brand: #1a4d8f;
+    --brand-dark: #123a6b;
+    --accent: #e8f0fa;
+    --border: #d0d7de;
+    --text: #1f2328;
+    --muted: #57606a;
+    --warn-bg: #fff8e5;
+    --warn-border: #e6b800;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: var(--text);
+    background: #f6f8fa;
+    line-height: 1.55;
+  }
+  .prompt {
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--border);
+    background: #fff;
+  }
+  .prompt .prompt-label {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .prompt p { margin: 0; padding: 0; }
+  header {
+    background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+    color: #fff;
+    padding: 28px 24px;
+  }
+  header h1 { margin: 0 0 4px; font-size: 1.6rem; }
+  header p  { margin: 0; opacity: .85; font-size: .95rem; }
+  main { max-width: 900px; margin: 0 auto; padding: 24px; }
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  }
+  .rules h2, .option h2 { margin-top: 0; }
+  .option { border-left: 5px solid var(--brand); }
+  .option h2 { color: var(--brand); font-size: 1.15rem; display: flex; align-items: center; gap: 10px; }
+  .tag {
+    background: var(--accent);
+    color: var(--brand-dark);
+    border-radius: 20px;
+    font-size: .72rem;
+    padding: 2px 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+  }
+  ol { padding-left: 22px; }
+  li { margin: 6px 0; }
+  code, .mono {
+    font-family: "Consolas", "SF Mono", Menlo, monospace;
+    background: #f0f3f6;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: .9em;
+  }
+  a { color: var(--brand); word-break: break-all; }
+  .kbd {
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #b9c0c8;
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: 0 7px;
+    font-family: "Consolas", monospace;
+    font-size: .85em;
+    margin: 0 1px;
+  }
+  .note {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-left-width: 5px;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: .92rem;
+  }
+  .reboot { color: #b3261e; font-weight: 600; }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: .82rem;
+    padding: 8px 24px 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    header { background: #1a4d8f !important; -webkit-print-color-adjust: exact; }
+    .card { box-shadow: none; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="prompt">
+  <h2 class="prompt-label" style="margin-bottom: 0; padding-bottom: 0; color: green;">Prompt: </h2>
+  <i style="color: green;">How to reset TVB-OA user's password.</i>
+  <p></p>
+</div>
+
+<header>
+  <h1>Reset Corporate User ID Password</h1>
+  <p>TVB-OA / TVBI-OA — Password Change Procedure</p>
+</header>
+
+<main>
+
+  <!-- Password rules -->
+  <section class="card rules">
+    <h2>Password Requirements</h2>
+    <ul>
+      <li>At least <strong>8 characters</strong> containing letters (<strong>upper &amp; lower case</strong>) and <strong>numbers</strong> — e.g. <span class="mono">Tmchan99</span></li>
+      <li>Must <strong>not</strong> contain your first name, last name, or login name</li>
+      <li>Password history = <strong>1</strong> — the last password cannot be reused</li>
+      <li>Password expires every <strong>365 days</strong></li>
+    </ul>
+  </section>
+
+  <!-- Option I -->
+  <section class="card option">
+    <h2>Option I <span class="tag">TVB-IT computer</span></h2>
+    <p>For <strong>TVB-OA / TVBI-OA network users</strong> on a TVB-IT computer.</p>
+    <ol>
+      <li>Press <span class="kbd">CTRL</span> <span class="kbd">ALT</span> <span class="kbd">DELETE</span></li>
+      <li>Click <strong>“Change a password”</strong></li>
+      <li>Enter your existing password in the <strong>“Old password”</strong> box</li>
+      <li>Enter the new password in <strong>“New password”</strong>, and again in <strong>“Confirm password”</strong></li>
+      <li>Press <span class="kbd">Enter</span></li>
+      <li class="reboot">Reboot your computer for the change to take effect.</li>
+    </ol>
+    <div class="note">
+      Alternatively, use the self-service password-change website (see Option&nbsp;III address).
+    </div>
+  </section>
+
+  <!-- Option II -->
+  <section class="card option">
+    <h2>Option II <span class="tag">ENG / NMG off-network</span></h2>
+    <p>For <strong>ENG or NMG users</strong> not joined to the TVB-IT network.</p>
+    <ol>
+      <li>Go to:
+        <br><a href="https://winpwd.tvb-oa.tvb.org.hk/RDWeb/Pages/en-US/password.aspx">
+          https://winpwd.tvb-oa.tvb.org.hk/RDWeb/Pages/en-US/password.aspx</a>
+      </li>
+      <li>Enter your domain login ID in the <strong>“Domain\user account”</strong> box, e.g. <span class="mono">TVB-OA\AB12345</span> or <span class="mono">TVBI-OA\AB12345</span></li>
+      <li>Enter your existing password in the <strong>“Current password”</strong> box</li>
+      <li>Enter the new password in <strong>“New password”</strong>, and again in <strong>“Confirm new password”</strong></li>
+      <li>Click <strong>“Submit”</strong></li>
+      <li class="reboot">Reboot your computer for the change to take effect.</li>
+    </ol>
+  </section>
+
+  <!-- Option III -->
+  <section class="card option">
+    <h2>Option III <span class="tag">External users</span></h2>
+    <p>For <strong>external users</strong> (non-TVB group domain network).</p>
+    <ol>
+      <li>Go to:
+        <br><a href="https://103.84.222.22/RDWeb/Pages/en-US/password.aspx">
+          https://103.84.222.22/RDWeb/Pages/en-US/password.aspx</a>
+      </li>
+      <li>Enter your domain login ID in the <strong>“Domain\user account”</strong> box</li>
+      <li>Enter your existing password in the <strong>“Current password”</strong> box</li>
+      <li>Enter the new password in <strong>“New password”</strong>, and again in <strong>“Confirm new password”</strong></li>
+      <li>Click <strong>“Submit”</strong></li>
+      <li class="reboot">Reboot your computer for the change to take effect.</li>
+    </ol>
+  </section>
+
+</main>
+
+<footer>
+  Source: “Reset Corporate User ID Password Procedure” (reset password.pdf) — TVB-OA IT documentation.
+</footer>
+
+</body>
+</html>

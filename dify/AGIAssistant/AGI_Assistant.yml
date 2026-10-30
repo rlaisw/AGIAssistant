@@ -20,7 +20,7 @@ dependencies:
 - current_identifier: null
   type: marketplace
   value:
-    marketplace_plugin_unique_identifier: langgenius/openrouter:0.1.12@abecfe116195e4d51d4f8f10e07dee6aceeed73bf4b6f96334a336e0511ddf68
+    marketplace_plugin_unique_identifier: langgenius/openrouter:0.1.13@80af9099f792342118f076e4e4b9d8fb31515792c8ce0b1d6a9bf5687216ae59
     version: null
 kind: app
 site:
@@ -271,9 +271,9 @@ workflow:
             value:
               completion_params: {}
               mode: chat
-              model: deepseek/deepseek-v4.1-flash
+              model: moonshotai/kimi-k3
               model_type: llm
-              name: deepseek/deepseek-v4.1-flash
+              name: moonshotai/kimi-k3
               provider: langgenius/openrouter/openrouter
               type: model-selector
           query:
@@ -541,9 +541,9 @@ workflow:
         model:
           completion_params: {}
           mode: chat
-          model: deepseek/deepseek-v4.1-flash
+          model: moonshotai/kimi-k3
           model_type: llm
-          name: deepseek/deepseek-v4.1-flash
+          name: moonshotai/kimi-k3
           provider: langgenius/openrouter/openrouter
           type: model-selector
         query_variable_selector:
@@ -590,15 +590,6 @@ workflow:
       zIndex: 0
     - data:
         agent_parameters:
-          allowed_tools:
-            type: variable
-            value: null
-          context:
-            type: variable
-            value: null
-          files:
-            type: variable
-            value: null
           instruction:
             type: constant
             value: '# PPT-Master Agent Rulebook (quick-generate, v1)
@@ -691,9 +682,9 @@ workflow:
             value:
               completion_params: {}
               mode: chat
-              model: deepseek/deepseek-v4.1-flash
+              model: moonshotai/kimi-k3
               model_type: llm
-              name: deepseek/deepseek-v4.1-flash
+              name: moonshotai/kimi-k3
               provider: langgenius/openrouter/openrouter
               type: model-selector
           query:
@@ -1147,15 +1138,6 @@ workflow:
       zIndex: 0
     - data:
         agent_parameters:
-          allowed_tools:
-            type: variable
-            value: null
-          context:
-            type: variable
-            value: null
-          files:
-            type: variable
-            value: null
           instruction:
             type: constant
             value: '# PPT-Master Agent Rulebook (quick-generate, v1)

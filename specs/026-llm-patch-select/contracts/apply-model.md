@@ -72,3 +72,15 @@ Exit 0 = applied; non-zero = failed with the failing step named
 `dify/AGIAssistant/AGI_Assistant.yml` is the cycle-maintained mirror of
 the published app: rewritten on every export step (FR-007), git-versioned
 for recovery (re-import the previous export after a corrupted cycle).
+
+## 6. Normalization invariant (added 2026-10-29, bug ppt-no-response)
+
+Every apply cycle MUST leave agent params free of null variable selectors:
+`strip_null_variable_params` deletes `{"type": "variable", "value": null}`
+wrappers and bare-null `allowed_tools`/`context`/`files` keys (the key absent
+is the only shape Dify 1.18 both validates and runs — bare nulls fail
+`AgentNodeData` validation, null selectors crash `variable_pool.get(None)`
+with `len(None)` before any LLM/tool call). Real selectors (non-empty lists)
+pass through untouched. Pinned by
+`tests/unit/test_deploy_model_apply.py::test_strips_null_variable_selectors_from_agent_params`
+and `::test_strips_bare_null_agent_params_to_absent`.

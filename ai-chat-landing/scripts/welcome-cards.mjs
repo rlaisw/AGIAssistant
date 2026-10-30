@@ -6,12 +6,12 @@ const CDP = "http://localhost:9240"
 const APP = "http://localhost:3000"
 
 const EXPECTED = [
-  { title: "Generate PowerPoint", description: "Create professional PowerPoint from text prompts in minutes", label: "How to create PPT", url: "http://localhost/example1.html" },
-  { title: "Generate Infographic", description: "Design eye-catching infographics without design skills", label: "How to create Infographic", url: "http://localhost/example2.html" },
-  { title: "Draw Chart Diagram", description: "Visualize data with interactive charts and flow diagrams", label: "How to create chart diagram", url: "http://localhost/example3.html" },
-  { title: "Talk with CorpIT Helpdesk Chatbot", description: "Get instant IT support and troubleshooting guidance", label: "Chat with CorpIT Support", url: "http://localhost/example4.html" },
-  { title: "Ask Any Question with AI Chatbot", description: "Access knowledge across domains with our intelligent assistant", label: "Ask AI Chatbot", url: "http://localhost/example5.html" },
-  { title: "Create Personal Agentic RAG Document DB", description: "Build your own searchable knowledge base with AI-powered Agentic RAG", label: "Create Self-Hosted Agentic RAG", url: "http://localhost/example6.html" },
+  { title: "Generate PowerPoint", description: "Create professional PowerPoint from text prompts in minutes", label: "How to create PPT", url: "/example1.html" },
+  { title: "Generate Infographic", description: "Design eye-catching infographics without design skills", label: "How to create Infographic", url: "/example2.html" },
+  { title: "Draw Chart Diagram", description: "Visualize data with interactive charts and flow diagrams", label: "How to create chart diagram", url: "/example3.html" },
+  { title: "Talk with CorpIT Helpdesk Chatbot", description: "Get instant IT support and troubleshooting guidance", label: "Chat with CorpIT Support", url: "/example4.html" },
+  { title: "Ask Any Question with AI Chatbot", description: "Access knowledge across domains with our intelligent assistant", label: "Ask AI Chatbot", url: "/example5.html" },
+  { title: "Create Personal Agentic RAG Document DB", description: "Build your own searchable knowledge base with AI-powered Agentic RAG", label: "Create Self-Hosted Agentic RAG", url: "/example6.html" },
 ]
 
 function die(msg) { console.error(`✗ ${msg}`); process.exit(1) }

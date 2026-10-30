@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OneDrive Guide — Upload, Sync &amp; Manage Files</title>
+<style>
+  :root{
+    --blue:#0078d4; --blue-dark:#005a9e; --ink:#1b1b1f; --sub:#5a5a66;
+    --bg:#f5f7fa; --card:#ffffff; --line:#e3e7ee; --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65;
+  }
+  .prompt {
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+  }
+  .prompt .prompt-label {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .prompt p { margin: 0; padding: 0; }
+  header{
+    background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dark) 100%);
+    color:#fff; padding:48px 24px 40px; text-align:center;
+  }
+  header h1{margin:0 0 8px; font-size:2rem; letter-spacing:-.5px;}
+  header p{margin:0; opacity:.92; font-size:1.05rem;}
+  .wrap{max-width:920px; margin:0 auto; padding:0 24px 64px;}
+  .notice{
+    background:#fff8e1; border:1px solid #ffe08a; border-left:5px solid #f0b400;
+    border-radius:10px; padding:14px 18px; margin:28px 0; font-size:.95rem; color:#5c4708;
+  }
+  section{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:28px 30px; margin:24px 0; box-shadow:0 2px 10px rgba(16,30,54,.05);
+  }
+  h2{
+    font-size:1.35rem; margin:0 0 6px; color:var(--blue-dark);
+    display:flex; align-items:center; gap:10px;
+  }
+  .num{
+    background:var(--blue); color:#fff; width:32px; height:32px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:1rem; font-weight:700; flex:0 0 32px;
+  }
+  h3{font-size:1.05rem; margin:22px 0 6px; color:var(--ink);}
+  ol,ul{margin:8px 0 8px 4px; padding-left:22px;}
+  li{margin:6px 0;}
+  code{
+    background:#eef2f8; border:1px solid var(--line); border-radius:5px;
+    padding:1px 6px; font-family:"SF Mono",Consolas,Menlo,monospace; font-size:.88em;
+  }
+  .steps{margin-top:10px;}
+  figure{margin:18px 0;}
+  figure img{
+    max-width:100%; height:auto; border:1px solid var(--line);
+    border-radius:10px; display:block; background:#fff;
+  }
+  figcaption{font-size:.82rem; color:var(--sub); margin-top:6px; text-align:center;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px;}
+  @media(max-width:640px){.grid{grid-template-columns:1fr;} header h1{font-size:1.5rem;}}
+  .tip{
+    background:#eef6fd; border-left:5px solid var(--blue); border-radius:8px;
+    padding:12px 16px; margin:16px 0; font-size:.93rem;
+  }
+  footer{max-width:920px; margin:0 auto; padding:0 24px 60px; font-size:.9rem; color:var(--sub);}
+  footer h2{font-size:1.1rem;}
+  footer a{color:var(--blue-dark); text-decoration:none;}
+  footer a:hover{text-decoration:underline;}
+  footer li{margin:8px 0;}
+</style>
+</head>
+<body>
+
+<div class="prompt">
+  <h2 class="prompt-label" style="margin-bottom: 0; padding-bottom: 0; color: green;">Prompt: </h2>
+  <i style="color: green;">Give me the procedure to upload, sync, and manage files on OneDrive.</i>
+  <p></p>
+</div>
+
+<header>
+  <h1>OneDrive: Upload, Sync &amp; Manage Files</h1>
+  <p>A step-by-step guide for the website and desktop app</p>
+</header>
+
+<div class="wrap">
+
+  <div class="notice">
+    <strong>Source note:</strong> This procedure is compiled from Microsoft's official
+    support pages plus community guides (see Sources). The Agentic RAG knowledge base
+    contained no matching document for this query.
+  </div>
+
+  <!-- SECTION 1 -->
+  <section>
+    <h2><span class="num">1</span> Upload files and folders to OneDrive</h2>
+    <p>OneDrive stores 300+ file types. Upload through the website, or drag-and-drop with the desktop app.</p>
+
+    <h3>Via the OneDrive website</h3>
+    <ol class="steps">
+      <li>Go to <strong>OneDrive.com</strong> and sign in with your Microsoft account.</li>
+      <li>Open <strong>My Files</strong> (or the target folder). To create one: <strong>New → Folder</strong>.</li>
+      <li>Click <strong>Upload</strong> at the top, then choose <strong>Files</strong> or <strong>Folder</strong>.</li>
+      <li>Select your items and click <strong>Open/Upload</strong> — they appear in your OneDrive.</li>
+    </ol>
+
+    <figure>
+      <img src="https://support.microsoft.com/en-us/onedrive/media/odb-qs-first-uploadonline.png" alt="Uploading files on the OneDrive website">
+      <figcaption>Uploading files on the OneDrive website</figcaption>
+    </figure>
+
+    <h3>Via File Explorer (desktop app installed)</h3>
+    <p>Select your files and drag them onto <strong>OneDrive</strong> in the Navigation pane.</p>
+    <div class="grid">
+      <figure>
+        <img src="https://support.microsoft.com/en-us/onedrive/media/onedrive-savetoonedrive.png" alt="Saving a document to OneDrive - Personal">
+        <figcaption>Saving a document to OneDrive – Personal</figcaption>
+      </figure>
+      <figure>
+        <img src="https://support.microsoft.com/en-us/onedrive/media/file-explorer-onedrive-personal.png" alt="OneDrive - Personal in File Explorer">
+        <figcaption>OneDrive – Personal in File Explorer</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section>
+    <h2><span class="num">2</span> Sync your files</h2>
+    <p>Sync keeps your PC/Mac and the cloud matched — change in one place and it updates everywhere,
+       while synced files stay available offline.</p>
+
+    <h3>Windows</h3>
+    <ol class="steps">
+      <li>Install OneDrive (built into Windows 11) from microsoft.com/microsoft-365/onedrive/download.</li>
+      <li>Open OneDrive, enter your personal or work/school account, and <strong>Sign in</strong>.</li>
+      <li>Complete the two setup screens: your OneDrive <strong>folder location</strong>, and <strong>Files On-Demand</strong>.</li>
+    </ol>
+    <div class="grid">
+      <figure>
+        <img src="https://support.microsoft.com/en-us/onedrive/media/od-windows-fre-odfolder.png" alt="OneDrive folder setup screen">
+        <figcaption>OneDrive folder setup screen</figcaption>
+      </figure>
+      <figure>
+        <img src="https://support.microsoft.com/en-us/onedrive/media/od-windows-fre-filesondemand.png" alt="Files On-Demand setup screen">
+        <figcaption>Files On-Demand setup screen</figcaption>
+      </figure>
+    </div>
+
+    <h3>macOS</h3>
+    <ol class="steps">
+      <li>Install OneDrive, launch setup (Spotlight → “OneDrive”), and sign in.</li>
+      <li>Choose the folder location, then select which files/folders to sync.</li>
+    </ol>
+    <div class="grid">
+      <figure>
+        <img src="https://support.microsoft.com/en-us/onedrive/media/odb-mac-fre-pickfolderloc.png" alt="Choosing the OneDrive folder location on Mac">
+        <figcaption>Choosing the OneDrive folder location on Mac</figcaption>
+      </figure>
+      <figure>
+        <img src="https://support.microsoft.com/en-us/onedrive/media/od-mac-syncfiles-select-001.png" alt="Selecting which files to sync on Mac">
+        <figcaption>Selecting which files to sync on Mac</figcaption>
+      </figure>
+    </div>
+
+    <h3>Managing what syncs</h3>
+    <ul>
+      <li>Personal files live under <em>OneDrive – Personal</em>; work files under <em>OneDrive – [Company]</em>.</li>
+      <li>Use <strong>Choose folders</strong> / <strong>Files On-Demand</strong> to sync only what you need and save disk space.</li>
+      <li>Right-click the OneDrive folder → <strong>Settings → Sync and backup → Manage backup</strong> to change backed-up folders.</li>
+      <li><strong>Pause/resume</strong> from the taskbar (Windows) or menu bar (macOS) cloud icon; a green checkmark = fully synced.</li>
+    </ul>
+    <div class="grid">
+      <figure>
+        <img src="https://www.wikihow.com/images/thumb/4/42/Use-OneDrive-Step-18.jpg/v4-460px-Use-OneDrive-Step-18.jpg" alt="OneDrive desktop app sync status">
+        <figcaption>Checking sync status in the desktop app</figcaption>
+      </figure>
+      <figure>
+        <img src="https://www.wikihow.com/images/thumb/6/6c/Use-OneDrive-Step-19.jpg/v4-460px-Use-OneDrive-Step-19.jpg" alt="Managing OneDrive sync and backup settings">
+        <figcaption>Managing sync &amp; backup settings</figcaption>
+      </figure>
+    </div>
+    <figure>
+      <img src="https://www.wikihow.com/images/thumb/b/bc/Use-OneDrive-Step-20.jpg/v4-460px-Use-OneDrive-Step-20.jpg" alt="OneDrive synced folders in File Explorer">
+      <figcaption>OneDrive synced folders in File Explorer</figcaption>
+    </figure>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section>
+    <h2><span class="num">3</span> Manage your files</h2>
+
+    <h3>Organize &amp; share</h3>
+    <p>Rename, move, copy, or create folders directly in OneDrive or File Explorer; select a file and use
+       <strong>Share</strong> to collaborate.</p>
+    <div class="grid">
+      <figure>
+        <img src="https://www.wikihow.com/images/thumb/4/43/Use-OneDrive-Step-12-Version-2.jpg/v4-460px-Use-OneDrive-Step-12-Version-2.jpg" alt="File options in OneDrive">
+        <figcaption>File options in OneDrive</figcaption>
+      </figure>
+      <figure>
+        <img src="https://support.microsoft.com/en-us/onedrive/media/od-onedrive-fileexplorerscreenshot.png" alt="OneDrive files in File Explorer">
+        <figcaption>OneDrive files in File Explorer</figcaption>
+      </figure>
+    </div>
+
+    <h3>Delete</h3>
+    <p>Select the item(s) and choose <strong>Delete</strong> (or right-click → <strong>Move to trash</strong> on Mac).
+       You can multi-select, select all, or select an entire folder first.</p>
+    <div class="grid">
+      <figure>
+        <img src="https://support.microsoft.com/en-us/onedrive/media/delete.png" alt="Delete option in OneDrive">
+        <figcaption>Delete option in OneDrive</figcaption>
+      </figure>
+      <figure>
+        <img src="https://support.microsoft.com/en-us/onedrive/media/onedrive-delete-shared.png" alt="Delete a shared file">
+        <figcaption>Deleting a shared file</figcaption>
+      </figure>
+    </div>
+    <figure>
+      <img src="https://support.microsoft.com/en-us/onedrive/media/od-mac-movetotrash.png" alt="Moving a file to trash on Mac">
+      <figcaption>Moving a file to trash on Mac</figcaption>
+    </figure>
+
+    <h3>Restore</h3>
+    <p>Deleted items go to the <strong>OneDrive Recycle Bin</strong> (left nav, or <strong>Recycle bin</strong> in
+       File Explorer) — open it and restore anything removed by mistake. Items are recoverable for a limited time.</p>
+    <figure>
+      <img src="https://support.microsoft.com/en-us/onedrive/media/od-onedrive-recyclebin.png" alt="OneDrive Recycle Bin">
+      <figcaption>OneDrive Recycle Bin</figcaption>
+    </figure>
+
+    <div class="tip">
+      <strong>Quick tip:</strong> A green checkmark on a file means it's fully synced. A blue cloud icon
+      means it's online-only (Files On-Demand) and will download when opened.
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <h2>Sources</h2>
+  <ul>
+    <li><a href="https://support.microsoft.com/en-us/onedrive/sync-your-computer-s-files-and-folders-with-onedrive">Sync your computer's files and folders with OneDrive — Microsoft Support</a></li>
+    <li><a href="https://support.microsoft.com/en-us/onedrive/upload-and-save-files-and-folders-to-onedrive">Upload and save files and folders to OneDrive — Microsoft Support</a></li>
+    <li><a href="https://support.microsoft.com/en-us/onedrive/delete-files-or-folders-in-onedrive">Delete files or folders in OneDrive — Microsoft Support</a></li>
+    <li><a href="https://www.cloudfuze.com/how-to-synchronize-onedrive/">How to Synchronize OneDrive: Step-by-Step Guide — CloudFuze</a></li>
+    <li><a href="https://www.wikihow.com/Use-OneDrive">How to Use OneDrive: Step-by-Step Guide — wikiHow</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>

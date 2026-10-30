@@ -176,3 +176,43 @@ def test_missing_main_node_raises_honestly():
     broken = MINIMAL_DSL.replace("    id: intent_router\n", "    id: renamed_router\n")
     with pytest.raises(ValueError, match="intent_router"):
         patch_dsl(broken, NEW_MODEL)
+
+
+def test_strips_null_variable_selectors_from_agent_params():
+    """ppt-no-response (2026-10-29): {"type": "variable", "value": None} params
+    crash Dify 1.18's variable_pool.get(None) with len(None) before any
+    LLM/tool call; bare nulls fail AgentNodeData validation. patch_dsl must
+    leave the keys absent (the shape that ran before spec 026), while real
+    variable selectors pass through untouched."""
+    doc = yaml.safe_load(MINIMAL_DSL)
+    ppt = next(n for n in doc["workflow"]["graph"]["nodes"] if n["id"] == "ppt_master")
+    ap = ppt["data"]["agent_parameters"]
+    for k in ("allowed_tools", "context", "files"):
+        ap[k] = {"type": "variable", "value": None}
+    ap["files_keep"] = {"type": "variable", "value": ["sys", "files"]}
+
+    patched = yaml.safe_load(patch_dsl(yaml.dump(doc), NEW_MODEL))
+    out = next(
+        n for n in patched["workflow"]["graph"]["nodes"] if n["id"] == "ppt_master"
+    )["data"]["agent_parameters"]
+
+    for k in ("allowed_tools", "context", "files"):
+        assert k not in out, f"{k} must be absent, not a null variable selector"
+    assert out["files_keep"] == {"type": "variable", "value": ["sys", "files"]}
+    assert out["model"]["value"]["model"] == NEW_MODEL
+
+
+def test_strips_bare_null_agent_params_to_absent():
+    """Bare nulls are equally invalid at AgentNodeData validation — the
+    runnable shape is the key absent entirely."""
+    doc = yaml.safe_load(MINIMAL_DSL)
+    ppt = next(n for n in doc["workflow"]["graph"]["nodes"] if n["id"] == "ppt_master")
+    for k in ("allowed_tools", "context", "files"):
+        ppt["data"]["agent_parameters"][k] = None
+
+    patched = yaml.safe_load(patch_dsl(yaml.dump(doc), NEW_MODEL))
+    out = next(
+        n for n in patched["workflow"]["graph"]["nodes"] if n["id"] == "ppt_master"
+    )["data"]["agent_parameters"]
+    for k in ("allowed_tools", "context", "files"):
+        assert k not in out
