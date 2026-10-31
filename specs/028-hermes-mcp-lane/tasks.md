@@ -112,7 +112,7 @@ Sidecar Python at repo root: `src/agentic_rag_mcp/`, tests in `tests/unit/`, bat
 
 - [x] T019 [P] Docs sync: root `AGENTS.md` feature-surface line + `README.md` (new lane), `DEPLOY.md` (Hermes API server prerequisites row + troubleshooting: Hermes down, key rejected, 172.17.0.1 unreachable), deploy skill mirrors
 - [x] T020 Full green sweep: `pytest tests/unit -q` (gate/audit suites + existing 218+), `pnpm typecheck && pnpm lint && pnpm test` in `ai-chat-landing/` (untouched — must stay green), full battery live; update `specs/028-hermes-mcp-lane/quickstart.md` with the recorded D-matrix results
-- [ ] T021 [P] Commit: source + DSL + battery + spec artifacts; leave the audit log and `~/.hermes/.env` out (user data, never committed); note the pending sidecar image rebuild in the commit message (docker cp hot-patch caveat)
+- [x] T021 [P] Commit: source + DSL + battery + spec artifacts; leave the audit log and `~/.hermes/.env` out (user data, never committed); note the pending sidecar image rebuild in the commit message (docker cp hot-patch caveat)
 
 ---
 
