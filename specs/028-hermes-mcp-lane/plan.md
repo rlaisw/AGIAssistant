@@ -14,7 +14,7 @@ Add Hermes as a third agent lane in the AGI Assistant chatflow: prompts classifi
 
 **Primary Dependencies**: Hermes gateway API server (verified from the installed checkout, `gateway/platforms/api_server.py`): `POST /v1/responses` (OpenAI Responses-compatible: `input`, `instructions`, `store`, `session_id`, `conversation`, `previous_response_id`), `GET /v1/models` (advertises `hermes-agent` by default), bearer-key gated (`API_SERVER_KEY`), default port **8642**, default bind 127.0.0.1 (configurable via `API_SERVER_HOST`), concurrency-capped with per-run persistence in the response store. NO new pip packages; `httpx` already in use.
 
-**Storage**: host filesystem — target root `/mnt/c/temp` (Windows `C:\temp`); audit log = append-only JSONL on the host (sidecar-writable path from config, default `~/.hermes-mcp/audit.jsonl` — under the config home, NOT a gitignored-hidden-dir source root; see R5).
+**Storage**: host filesystem — target root `/mnt/c/temp` (Windows `C:\temp`); audit log = append-only JSONL on the host (sidecar-writable path from config, default `~/.config/agentic-rag-mcp/hermes-mcp/audit.jsonl` — under the config home, NOT a gitignored-hidden-dir source root; see R5).
 
 **Testing**: pytest (pure gate module + audit writer, failing-first), deploy battery scenario (E2E create + block + audit), CDP regression for classifier routing, `deploy chatflow` publish flow.
 

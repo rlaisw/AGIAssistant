@@ -42,7 +42,7 @@ Lifecycle: raw token from task text → normalize (drive map `C:\…` → `/mnt/
 ```
 
 - One entry per attempted operation, written by the sidecar tool at the single verdict point; executed entries are written post-completion with the outcome (FR-013 stop-truth); the lane never rewrites or prunes.
-- Default file `~/.hermes-mcp/audit.jsonl` (config `hermes.audit_path`); user data — never committed, never ingested.
+- Default file `~/.config/agentic-rag-mcp/hermes-mcp/audit.jsonl` (config `hermes.audit_path`); user data — never committed, never ingested.
 
 ## 5. HermesCall (per executed operation — stateless, R4)
 
