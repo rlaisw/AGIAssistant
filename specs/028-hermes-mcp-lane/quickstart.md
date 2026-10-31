@@ -57,6 +57,9 @@ A–D green; `pnpm test`-equivalents for the sidecar (`pytest tests/unit`) green
 
 ## Recorded results (2026-10-31)
 
+- **E2E routing through the published chatflow verified**: "Create a folder chat_e2e_check in C:\temp and write status.txt…" → classified as *Hermes file task* → Hermes File Agent → tool executed → `/mnt/c/temp/chat_e2e_check/status.txt` = "lane works", then cleaned up.
+- **Tool-cache gotcha hit and solved live**: Dify's `tool_mcp_providers` row for agentic-rag still held the 23-tool list from 2026-10-24; publishing never re-syncs it — rebuilt `tools` from the live `tools/list` (24) and restarted api+worker; the tool then resolved.
+
 - Unit: gate 18/18, audit 5/5, full suite 241/241 (incl. model_apply extended to the 4th node).
 - Battery: **12/12** — incl. `hermes-file-task` B1–B5 (B1 executed 2.4–7.0 s ✓ SC-001; B2/B3/B5 blocked with reasons; B4 audit tail `[executed, blocked, blocked]` ✓ SC-005).
 - D1 live-verified both directions (down → honest `error` + recovery hint; restarted → `ok`).
