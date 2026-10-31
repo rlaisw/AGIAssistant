@@ -321,7 +321,8 @@ def scenario_hermes_file_task(dcfg: DeployConfig) -> tuple[bool, str]:
     audit_detail = "audit unread"
     try:
         raw = subprocess.run(
-            ["docker", "exec", "agentic-rag", "cat", "/root/.hermes-mcp/audit.jsonl"],
+            ["docker", "exec", "agentic-rag", "cat",
+             "/root/.config/agentic-rag-mcp/hermes-mcp/audit.jsonl"],
             capture_output=True, text=True, timeout=30, check=True).stdout
         entries = [json.loads(line) for line in raw.splitlines() if line.strip()]
         tail = [e for e in entries if e.get("allowed_root") == allowed_root][-5:]

@@ -127,11 +127,14 @@ class Config:
     antv_infographic_max_syntax_bytes: int = 65_536
     antv_infographic_served_root: Path = Path("/opt/ppt-master/projects/infographics")
     # spec 028: Hermes Agent lane — gated Windows file tasks
+    # audit_path lives under the volume-backed config tree (~/.config/agentic-rag-mcp,
+    # mounted into the sidecar) so the append-only trail survives container
+    # recreation / image rebuilds (convergence T022).
     hermes_api_url: str = "http://172.17.0.1:8642"
     hermes_api_key: str = ""
     hermes_timeout_s: float = 300.0
     hermes_allowed_root: Path = Path("/mnt/c/temp")
-    hermes_audit_path: Path = Path("~/.hermes-mcp/audit.jsonl")
+    hermes_audit_path: Path = Path("~/.config/agentic-rag-mcp/hermes-mcp/audit.jsonl")
     raw: dict[str, Any] = field(default_factory=dict)
 
 

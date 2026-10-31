@@ -164,3 +164,9 @@ Sidecar Python at repo root: `src/agentic_rag_mcp/`, tests in `tests/unit/`, bat
 - The Hermes key lives in `~/.hermes/.env` and `~/.config/agentic-rag-mcp/config.toml` only — never in the DSL, answers, or repo
 - Battery scenario must not depend on spec-026 model state — the lane works for any configured model
 - Commit after each phase or logical group
+
+---
+
+## Phase 7: Convergence
+
+- [x] T022 Persist the Hermes audit log outside the container's ephemeral layer per FR-012 (partial): point `hermes.audit_path` in `src/agentic_rag_mcp/config.py` (and `~/.config/agentic-rag-mcp/config.toml`) at a volume-backed path (the mounted `/root/.config/agentic-rag-mcp/` tree or a new `~/.hermes-mcp` bind in the sidecar's compose volume set), update the audit-read path in `src/agentic_rag_mcp/deploy/battery.py` scenario B4, hot-patch + restart the sidecar, and live-verify one pre-existing audit entry survives a container restart (the pending image rebuild must not destroy the trail)
