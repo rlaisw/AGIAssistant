@@ -126,6 +126,12 @@ class Config:
     antv_max_inline_image_bytes: int = 2_097_152
     antv_infographic_max_syntax_bytes: int = 65_536
     antv_infographic_served_root: Path = Path("/opt/ppt-master/projects/infographics")
+    # spec 028: Hermes Agent lane — gated Windows file tasks
+    hermes_api_url: str = "http://172.17.0.1:8642"
+    hermes_api_key: str = ""
+    hermes_timeout_s: float = 300.0
+    hermes_allowed_root: Path = Path("/mnt/c/temp")
+    hermes_audit_path: Path = Path("~/.hermes-mcp/audit.jsonl")
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -207,6 +213,22 @@ def load_config(path: Path | None = None) -> Config:
     )
     cfg.antv_infographic_served_root = Path(
         str(_get(raw, "antv", "infographic_served_root", default=default_infographic_root))
+    ).expanduser()
+    # spec 028: [hermes] api_url / api_key / timeout_s / allowed_root / audit_path
+    cfg.hermes_api_url = str(
+        os.environ.get("HERMES_API_URL")
+        or _get(raw, "hermes", "api_url", default=cfg.hermes_api_url)
+    )
+    cfg.hermes_api_key = str(
+        os.environ.get("HERMES_API_KEY")
+        or _get(raw, "hermes", "api_key", default=cfg.hermes_api_key)
+    )
+    cfg.hermes_timeout_s = float(_get(raw, "hermes", "timeout_s", default=300.0))
+    cfg.hermes_allowed_root = Path(
+        str(_get(raw, "hermes", "allowed_root", default=str(cfg.hermes_allowed_root)))
+    ).expanduser()
+    cfg.hermes_audit_path = Path(
+        str(_get(raw, "hermes", "audit_path", default=str(cfg.hermes_audit_path)))
     ).expanduser()
     return cfg
 

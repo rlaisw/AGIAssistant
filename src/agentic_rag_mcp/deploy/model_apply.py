@@ -16,7 +16,7 @@ from .config import REPO_ROOT
 from .dify_console import DifyConsole
 
 CLOUD_PROVIDER = "langgenius/openrouter/openrouter"
-MAIN_NODE_IDS = ("intent_router", "agentic_strategy", "ppt_master")
+MAIN_NODE_IDS = ("intent_router", "agentic_strategy", "ppt_master", "hermes_agent")
 START_NODE_ID = "1776072202913"
 REMOVE_NODE_SUFFIXES = ("_kimi", "_glm", "_qwen38")
 REMOVE_CASE_IDS = {"kimi", "glm", "qwen38"}
@@ -61,7 +61,7 @@ def strip_null_variable_params(doc: dict) -> None:
 
 
 def patch_dsl(yaml_text: str, model_id: str) -> str:
-    """Set the three main LLM nodes to model_id + idempotent FR-005 cleanup."""
+    """Set the four main cloud LLM nodes to model_id + idempotent FR-005 cleanup."""
     doc = yaml.safe_load(yaml_text)
     graph = doc["workflow"]["graph"]
     nodes, edges = graph["nodes"], graph["edges"]

@@ -223,6 +223,30 @@ workflow:
       targetHandle: target
       type: custom
       zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: agent
+      id: router-hermes
+      source: intent_router
+      sourceHandle: hermes_file
+      target: hermes_agent
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: agent
+        targetType: answer
+      id: hermes-agent-answer
+      source: hermes_agent
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
     nodes:
     - data:
         desc: Capture user's chat messages and files.
@@ -506,7 +530,7 @@ workflow:
       width: 242
       zIndex: 0
     - data:
-        answer: '{{#agentic_strategy.text#}}{{#agentic_strategy_local.text#}}'
+        answer: '{{#agentic_strategy.text#}}{{#agentic_strategy_local.text#}}{{#hermes_agent.text#}}'
         desc: Return the agent's response to the user.
         selected: false
         title: Answer
@@ -536,8 +560,12 @@ workflow:
           label: ''
           name: General
           topic: 'Everything else: questions, research, chat, knowledge-base queries, and any request that is not about generating a PowerPoint/deck'
+        - id: hermes_file
+          label: ''
+          name: Hermes file task
+          topic: The user asks to create, write, read, or list files or folders on their Windows computer / local disk (e.g. 'create a folder hello_test in C:\\temp and write hello.txt inside it', 'list the files in C:\\temp', 'read C:\\temp\\notes.txt') — NOT decks/slides, NOT general questions.
         desc: Route deck-generation requests to PPT-Master; everything else to the AgenticRAG agent.
-        instruction: Classify the user's request. Choose 'PPT request' ONLY when the user wants a PowerPoint/deck/slides generated.
+        instruction: Classify the user's request. Choose 'PPT request' ONLY when the user wants a PowerPoint/deck/slides generated. Choose 'Hermes file task' when the user wants files or folders created, written, read, or listed on their local Windows computer or disk (paths like C:\\...). Otherwise choose 'General'.
         model:
           completion_params: {}
           mode: chat
@@ -1361,6 +1389,73 @@ workflow:
       type: custom
       width: 242
       zIndex: 0
+    - id: hermes_agent
+      data:
+        agent_parameters:
+          instruction:
+            type: constant
+            value: "# Hermes File Agent (spec 028, v1)\n\nYou route LOCAL WINDOWS FILE TASKS to the hermes_file_task tool — creating\nfolders, writing, reading, and listing files on the user's Windows computer,\nstrictly inside one allowed root (default C:\\temp, reached as /mnt/c/temp).\n\nRules:\n- Call hermes_file_task(task, allowed_root) for every file task. Pass the\n  user's task text as task; pass allowed_root only when the user names a\n  different root.\n- The tool is the ONLY way anything touches the disk. Never claim direct\n  disk access, and never describe operations the tool did not return.\n- Relay the verdict honestly:\n  - status ok -> report what the tool returned, including windows_path.\n  - status blocked -> give the user the reason verbatim (it names the active\n    root and the v1 scope). On a blocked ask-back, ask the user where under\n    the root the file/folder should go — never pick a location yourself.\n  - status error -> say the local agent failed and include\
+              \ the recovery hint.\n- Never re-attempt a blocked operation with rephrased or alternate paths.\n- File tasks only: if the user asks to run Windows programs, PowerShell, or\n  GUI automation, decline — v1 scope is create/write/read/list inside the root.\n- If a request is not a file task at all, answer it normally.\n"
+          model:
+            type: constant
+            value:
+              completion_params: {}
+              mode: chat
+              model: moonshotai/kimi-k3
+              model_type: llm
+              name: moonshotai/kimi-k3
+              provider: langgenius/openrouter/openrouter
+              type: model-selector
+          tools:
+            type: mixed
+            value:
+            - enabled: true
+              extra:
+                description: 'Perform a LOCAL FILE TASK on the user''s Windows computer via the Hermes agent (create folders, write files, read files, '
+              parameters: {}
+              provider_name: agentic-rag
+              settings: {}
+              tool_description: 'Perform a LOCAL FILE TASK on the user''s Windows computer via the Hermes agent (create folders, write files, read files, list folders) — strictly inside one allowed root (default C:\temp via /mnt/c/temp; pass allowed_root to use another root, Windows or host style). EVERY task is security-gated BEFORE execution: paths naming anything outside the active root (other drives, C:\Windows, /etc, ''..'' traversal) are BLOCKED with a reason and never executed; delete / rename / move / bulk-clear requests are BLOCKED everywhere (v1 scope: create/write/read/list only); a task naming NO location is BLOCKED with an ask-back — relay that question to the user verbatim instead of guessing. Windows-style and host-style paths are both accepted. Returns {status: ok|blocked|error, result?, reason?, windows_path?} — relay the verdict honestly: on ''ok'' report the result and windows_path; on ''blocked'' tell the user the reason; on ''error'' say the local agent failed and include
+                the recovery hint. Never claim an operation ran when the status is not ok.'
+              tool_label: hermes_file_task
+              tool_name: hermes_file_task
+              type: mcp
+          maximum_iterations:
+            type: constant
+            value: 10
+          query:
+            type: constant
+            value: '{{#sys.query#}}'
+        agent_strategy_label: FunctionCalling
+        agent_strategy_name: function_calling
+        agent_strategy_provider_name: langgenius/agent/agent
+        desc: 'Windows file-task agent wired to the hermes_file_task MCP tool (spec 028): gated create/write/read/list inside the allowed root.'
+        isInIteration: false
+        isInLoop: false
+        memory:
+          query_prompt_template: null
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        meta:
+          minimum_dify_version: 1.7.0
+          version: 0.0.2
+        plugin_unique_identifier: langgenius/agent:0.0.50@bf1040682cc9e1e5caf9b4670531639c440bf9448025cd5ee0915fdcf7a921f3
+        selected: false
+        title: Hermes File Agent
+        type: agent
+        version: '1'
+      position:
+        x: 380
+        y: 1080
+      height: 248
+      width: 242
+      sourcePosition: right
+      targetPosition: left
+      type: custom
     viewport:
       x: -4.323218813902486
       y: 132.00339200970615

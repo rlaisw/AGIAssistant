@@ -686,6 +686,62 @@ def build_server(cfg: Config | None = None, **fastmcp_kwargs) -> FastMCP:
         fields."""
         return _antv(antv_infographic_mod.create_infographic, description)
 
+    # ---- Hermes Agent lane (spec 028): gated Windows file tasks ----
+
+    from .hermes_audit import HermesAudit
+    from .hermes_client import run_task as _hermes_run_task
+    from .hermes_gate import DEFAULT_ALLOWED_ROOT, gate_task, normalize_path, to_windows
+
+    @mcp.tool()
+    def hermes_file_task(task: str, allowed_root: str = "") -> dict:
+        """Perform a LOCAL FILE TASK on the user's Windows computer via the Hermes
+        agent (create folders, write files, read files, list folders) — strictly
+        inside one allowed root (default C:\\temp via /mnt/c/temp; pass
+        allowed_root to use another root, Windows or host style).
+        EVERY task is security-gated BEFORE execution: paths naming anything
+        outside the active root (other drives, C:\\Windows, /etc, ".."
+        traversal) are BLOCKED with a reason and never executed; delete /
+        rename / move / bulk-clear requests are BLOCKED everywhere (v1 scope:
+        create/write/read/list only); a task naming NO location is BLOCKED
+        with an ask-back — relay that question to the user verbatim instead
+        of guessing. Windows-style and host-style paths are both accepted.
+        Returns {status: ok|blocked|error, result?, reason?, windows_path?} —
+        relay the verdict honestly: on "ok" report the result and windows_path;
+        on "blocked" tell the user the reason; on "error" say the local agent
+        failed and include the recovery hint. Never claim an operation ran
+        when the status is not ok."""
+        home = str(Path.home())
+        root_arg = allowed_root.strip() or None
+        active_root = (normalize_path(allowed_root.strip() or DEFAULT_ALLOWED_ROOT, home)
+                       or DEFAULT_ALLOWED_ROOT)
+        verdict = gate_task(task, allowed_root=root_arg, home=home)
+        audit = HermesAudit(cfg.hermes_audit_path)
+
+        if verdict.decision == "blocked":
+            audit.write_attempt(decision="blocked", operation=verdict.operation,
+                                normalized_path=verdict.normalized_path,
+                                allowed_root=active_root, reason=verdict.reason)
+            return {"status": "blocked", "decision": "blocked",
+                    "reason": verdict.reason}
+
+        outcome = _hermes_run_task(cfg, task)
+        if not outcome.get("ok"):
+            error = outcome.get("error", "error:unknown Hermes failure")
+            audit.write_attempt(decision="error", operation=verdict.operation,
+                                normalized_path=verdict.normalized_path,
+                                allowed_root=active_root, reason=error)
+            return {"status": "error", "reason": error}
+
+        output = outcome["output"]
+        audit.write_attempt(decision="executed", operation=verdict.operation,
+                            normalized_path=verdict.normalized_path,
+                            allowed_root=active_root,
+                            outcome=output[:200])
+        result: dict = {"status": "ok", "decision": "executed", "result": output}
+        if verdict.normalized_path:
+            result["windows_path"] = to_windows(verdict.normalized_path)
+        return result
+
     return mcp
 
 

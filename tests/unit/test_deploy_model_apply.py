@@ -75,6 +75,20 @@ workflow:
         title: PPT-Master
       id: ppt_master
     - data:
+        agent_parameters:
+          model:
+            value:
+              completion_params: {}
+              mode: chat
+              model: moonshotai/kimi-k3
+              model_type: llm
+              name: moonshotai/kimi-k3
+              provider: langgenius/openrouter/openrouter
+              type: model-selector
+        type: agent
+        title: Hermes File Agent
+      id: hermes_agent
+    - data:
         model:
           completion_params: {think: false}
           mode: chat
@@ -131,6 +145,7 @@ def test_sets_model_on_exactly_the_three_main_nodes():
         ("intent_router", lambda n: n["data"]["model"]),
         ("agentic_strategy", lambda n: n["data"]["agent_parameters"]["model"]["value"]),
         ("ppt_master", lambda n: n["data"]["agent_parameters"]["model"]["value"]),
+        ("hermes_agent", lambda n: n["data"]["agent_parameters"]["model"]["value"]),
     ):
         block = get_block(by_id[nid])
         assert block["model"] == NEW_MODEL
