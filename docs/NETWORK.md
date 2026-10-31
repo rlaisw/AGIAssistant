@@ -52,6 +52,7 @@ flowchart LR
 | ② | Dify api | ssrf_proxy | `ssrf_proxy:3128` | Container → container (Docker DNS) |
 | ③ | ssrf_proxy | **agentic-rag** | `http://agentic-rag:28080/mcp` | Container → container — **the MCP path** |
 | ④ | agentic-rag | searxng | `http://searxng:28888` | Container → container |
+| ⑨ | **agentic-rag** | Hermes gateway (host) | `http://172.17.0.1:8642/v1/responses` | Container → host — docker0 gateway IP, bearer `API_SERVER_KEY` (spec 028 file-task lane; the sidecar is the only Dify-path caller) |
 | ⑤ | You (terminal) | **agentic-rag** | `localhost:28080` → aligned to 28080 | Host → published port only |
 | ⑥ | You (terminal) | searxng | `localhost:28888` → aligned to 28080 | Host → published port only |
 | ⑦ | You (browser) | Chat UI | `localhost:3000` | Host → Next.js dev/prod server |

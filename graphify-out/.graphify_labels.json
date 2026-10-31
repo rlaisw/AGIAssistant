@@ -26,7 +26,6 @@
   "46": "Decision Routing Tests",
   "48": "Port Alignment Spec",
   "50": "State Snapshot Tests",
-  "55": "Implementation Task Plan",
   "56": "AgenticRAG Constitution",
   "57": "Test Fixture Corpus",
   "59": "Port Alignment Tasks",
@@ -62,6 +61,5 @@
   "101": "HTTP Test Server",
   "107": "Question Planner",
   "114": "Domain Filtering",
-  "121": "Reflexion End-State Tests",
-  "124": "AGENTS.md"
+  "121": "Reflexion End-State Tests"
 }

@@ -1,6 +1,6 @@
 # Agentic RAG MCP Server
 
-Agentic retrieval-augmented generation as an MCP server, with a **dual-system workflow**: an embedded structured **decision node** (System 1) routes every request, and a **LangGraph reflexion graph** (System 2) handles complex questions with self-correcting, memory-conditioned retries. 351 tests, contract-preserved responses, provenance on every decision.
+Agentic retrieval-augmented generation as an MCP server, with a **dual-system workflow**: an embedded structured **decision node** (System 1) routes every request, and a **LangGraph reflexion graph** (System 2) handles complex questions with self-correcting, memory-conditioned retries. Includes the **Hermes File Agent lane** (spec 028): a security-gated `hermes_file_task` tool that executes Windows file operations (create/write/read/list) inside an allowed root (`C:\temp` via `/mnt/c/temp`) through the host Hermes gateway, with an append-only audit log. 241 unit tests, contract-preserved responses, provenance on every decision.
 
 Specs: [`specs/001-agentic-rag-mcp/`](specs/001-agentic-rag-mcp/) (server, ingestion, contracts) · [`specs/002-laya-reflexion-nodes/`](specs/002-laya-reflexion-nodes/) (dual-system replacement — supersedes 001's routing/loop design).
 
@@ -20,7 +20,7 @@ question ──► System 1: embedded Laya decision model (one pass, no text gen
 
 Outage behavior: if the decision node is unavailable/invalid/timed-out, the keyword heuristic routes and responses are marked `provenance: "fallback"` (FR-003 of spec 002).
 
-## MCP tools — 23 total (16 core below + 5 `ppt_*` spec 009 + 2 `antv_*` spec 012)
+## MCP tools — 24 total (16 core below + 5 `ppt_*` spec 009 + 2 `antv_*` spec 012 + `hermes_file_task` spec 028)
 
 | Tool | Purpose |
 |---|---|
@@ -95,7 +95,11 @@ Dify UI → Tools → MCP → URL `http://agentic-rag:28080/mcp` (container port
 
 ## PPT-Master deck generation (specs 009–010)
 
-Users can type "help to generate a powerpoint, introduce Dify software" in the chat and get a native editable `.pptx`. Five additive MCP tools (`ppt_project_init`, `ppt_icon_sync`, `ppt_write_page`, `ppt_check`, `ppt_export` — 16 → 21 tools; spec 012 adds two AntV tools → 23 total) bridge the [ppt-master](https://github.com/hugohe3/ppt-master) toolchain; chatflow v2 (`dify/Chatflow Basic (AgenticRAG Agent + PPT-Master).yml`) routes deck requests to a PPT-Master agent node (rulebook: `dify/ppt-master-rulebook.md`) and everything else to the AgenticRAG agent. Every export returns a completion page (`http://localhost:28080/decks/<project>/<stem>/`) with per-slide previews and a download control (`/exports/<project>/<file>.pptx`); the Chat UI renders deck links as an action bar (⬇ Download / 👁 Preview-Edit). Setup: mount the ppt-master clone at `/opt/ppt-master`, rebuild, refresh Dify's tool cache — full runbook in `DEPLOY.md` Step 9.
+Users can type "help to generate a powerpoint, introduce Dify software" in the chat and get a native editable `.pptx`. Five additive MCP tools (`ppt_project_init`, `ppt_icon_sync`, `ppt_write_page`, `ppt_check`, `ppt_export` — 16 → 21 tools; spec 012 adds two AntV tools → 23 total; spec 028 adds `hermes_file_task` → 24) bridge the [ppt-master](https://github.com/hugohe3/ppt-master) toolchain; the AGI Assistant chatflow (`dify/AGIAssistant/AGI_Assistant.yml`) routes deck requests to a PPT-Master agent node (rulebook: `dify/ppt-master-rulebook.md`), Windows file-task prompts to the Hermes File Agent node, and everything else to the AgenticRAG agent. Every export returns a completion page (`http://localhost:28080/decks/<project>/<stem>/`) with per-slide previews and a download control (`/exports/<project>/<file>.pptx`); the Chat UI renders deck links as an action bar (⬇ Download / 👁 Preview-Edit). Setup: mount the ppt-master clone at `/opt/ppt-master`, rebuild, refresh Dify's tool cache — full runbook in `DEPLOY.md` Step 9.
+
+### Hermes File Agent lane (spec 028)
+
+Windows file tasks typed in the chat ("create a folder Test in C:\temp and write hello.txt inside it") route through the same classifier to a **Hermes File Agent** node whose only tool is `hermes_file_task`. The gate (`src/agentic_rag_mcp/hermes_gate.py`) normalizes Windows/host paths, enforces containment inside the active root (default `C:\temp` via the `/mnt/c` drive mount), allows only create/write/read/list (no delete/rename/move in v1), asks back when no location is named, and writes every verdict to an append-only audit log (`~/.config/agentic-rag-mcp/hermes-mcp/audit.jsonl`). Execution goes through the host Hermes gateway's `/v1/responses` (`172.17.0.1:8642`, bearer key) — the sidecar is the only caller. Blocked and out-of-scope prompts are refused with reasons and never reach Hermes. Full story: `specs/028-hermes-mcp-lane/`.
 
 ## AntV charts & infographics (spec 012)
 
