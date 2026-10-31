@@ -30,6 +30,7 @@
 ## R5 — Audit log (FR-012/013)
 
 - **Decision**: append-only JSONL on the host, written by the sidecar tool at the single verdict point — every attempt gets one entry: `{ts, decision: executed|blocked, reason?, normalized_path, operation, allowed_root, session_hint}`. Default path from config (`~/.hermes-mcp/audit.jsonl` — created on first write; the directory is the config home, not a source root, so the hidden-dir filter in `sources/local_folder.py` does not apply — but the audit file is user data, never ingested; if it ever lands inside a watched source root, it is excluded by gitignore rules). The lane never rewrites or prunes the log (FR-012).
+  **Superseded 2026-10-31 (convergence T022):** the container-ephemeral default moved to the volume-backed `~/.config/agentic-rag-mcp/hermes-mcp/audit.jsonl` (mounted into the sidecar) so the trail survives container recreation and the pending image rebuild.
 - **Rationale**: one writer (the tool), one verdict per attempt, host-side persistence; executed outcomes recorded post-completion (FR-013's stop-truth); blocked attempts recorded with reason — the battery asserts both directions (SC-005).
 - **Alternatives considered**: Hermes' built-in response store (covers executed calls only — blocked attempts never reach Hermes); Dify conversation records (not host-side, not append-only by contract).
 
